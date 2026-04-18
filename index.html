@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Interval</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #040d1a;
+    --bg2:     #071428;
+    --bg3:     #0a1d3a;
+    --surface: #0d2244;
+    --surface2:#112a54;
+    --border:  #1a3a6e;
+    --accent:  #3b82f6;
+    --accent2: #60a5fa;
+    --accent3: #93c5fd;
+    --gold:    #f59e0b;
+    --gold2:   #fbbf24;
+    --gold3:   #fde68a;
+    --green:   #10b981;
+    --red:     #ef4444;
+    --text:    #e2eeff;
+    --text2:   #94b4d4;
+    --text3:   #5a7fa8;
+    --glow:    rgba(59,130,246,0.35);
+    --gold-glow: rgba(245,158,11,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(16,185,129,0.06) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .app {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0 0 90px;
+    position: relative; z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 18px 18px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent2); }
+  .logo span { color: var(--text3); font-weight: 400; }
+
+  .coin-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 50px; padding: 6px 14px 6px 10px;
+    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--gold2);
+    position: relative; overflow: hidden; transition: box-shadow 0.3s;
+  }
+  .coin-badge.flash { box-shadow: 0 0 20px var(--gold-glow); }
+  .coin-icon {
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold3) 100%);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; box-shadow: 0 0 8px var(--gold-glow); flex-shrink: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 22px 18px 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+
+  .timer-display { text-align: center; }
+  .timer-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 4px;
+  }
+  .timer-value {
+    font-family: 'Space Mono', monospace; font-size: 44px; font-weight: 700;
+    color: var(--text); letter-spacing: -1px; line-height: 1; transition: color 0.8s;
+  }
+  .timer-value.great { color: var(--green); }
+  .timer-value.good  { color: var(--accent2); }
+
+  /* ── SMOKE BUTTON ── */
+  .smoke-btn-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+  .smoke-btn-ring {
+    position: absolute; width: 176px; height: 176px;
+    border-radius: 50%; border: 1.5px solid var(--border);
+    animation: ring-spin 12s linear infinite;
+  }
+  .smoke-btn-ring::after {
+    content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+    width: 6px; height: 6px; background: var(--accent2); border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent2);
+  }
+  @keyframes ring-spin { to { transform: rotate(360deg); } }
+
+  .smoke-btn {
+    width: 150px; height: 150px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--surface2) 0%, var(--surface) 60%, #091933 100%);
+    border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    position: relative;
+    box-shadow: 0 0 0 1px var(--border), 0 0 30px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: transform 0.15s, box-shadow 0.15s;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+  }
+  .smoke-btn:active { transform: scale(0.94); }
+  .smoke-btn.pulse-anim { animation: btn-pulse 0.55s ease-out; }
+  @keyframes btn-pulse {
+    0%   { box-shadow: 0 0 0 1px var(--border), 0 0 30px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06); }
+    40%  { box-shadow: 0 0 0 2px var(--accent), 0 0 80px rgba(59,130,246,0.65), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06); }
+    100% { box-shadow: 0 0 0 1px var(--border), 0 0 30px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06); }
+  }
+  .smoke-btn-icon { font-size: 28px; line-height: 1; }
+  .smoke-btn-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); }
+
+  /* ── COIN TOAST ── */
+  .coin-toast {
+    height: 28px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--gold2);
+    opacity: 0; transform: translateY(8px); transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+  .coin-toast.show { opacity: 1; transform: translateY(0); animation: toast-fade 2.2s ease-out forwards; }
+  @keyframes toast-fade { 0%{opacity:1} 60%{opacity:1} 100%{opacity:0} }
+
+  /* ── SECTIONS ── */
+  section {
+    margin: 0 14px 12px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 18px; padding: 15px; position: relative; overflow: hidden;
+  }
+  section::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
+  }
+  .section-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 12px;
+  }
+
+  /* ── STAT CARDS ── */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .stat-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 12px; padding: 11px;
+  }
+  .stat-card.wide { grid-column: span 2; }
+  .stat-card.accent-card {
+    background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, var(--bg3) 100%);
+    border-color: rgba(59,130,246,0.35);
+  }
+  .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+  .stat-value { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .stat-value.lg    { font-size: 26px; color: var(--accent2); }
+  .stat-value.green { color: var(--green); }
+  .stat-value.gold  { color: var(--gold2); }
+  .trend-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 50px; font-size: 10px; font-weight: 700; margin-top: 4px;
+  }
+  .trend-badge.up   { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .trend-badge.down { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .trend-badge.same { background: rgba(90,127,168,0.1); color: var(--text3); border: 1px solid var(--border); }
+
+  /* ── TODAY'S SMOKE LIST ── */
+  .today-list { display: flex; flex-direction: column; gap: 7px; }
+
+  .today-entry {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 11px; padding: 9px 12px;
+    animation: entry-in 0.3s ease-out;
+  }
+  @keyframes entry-in { from { opacity:0; transform: translateY(-6px); } to { opacity:1; transform: translateY(0); } }
+
+  .today-entry-left { display: flex; flex-direction: column; gap: 2px; }
+  .today-entry-time { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--text); }
+  .today-entry-gap  { font-size: 11px; color: var(--text3); }
+  .today-entry-coins { font-size: 11px; color: var(--gold2); }
+
+  .entry-del-btn {
+    background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25);
+    color: var(--red); border-radius: 8px; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; cursor: pointer; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .add-entry-row {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+  .time-input {
+    flex: 1; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 9px 12px;
+    color: var(--text); font-family: 'Space Mono', monospace; font-size: 14px;
+    outline: none; -webkit-appearance: none;
+  }
+  .time-input:focus { border-color: var(--accent); }
+  .add-btn {
+    background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.35);
+    color: var(--accent2); border-radius: 10px; padding: 9px 16px;
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  }
+  .today-empty { color: var(--text3); font-size: 13px; text-align: center; padding: 16px 0; }
+
+  /* ── GRAPH ── */
+  .graph-wrap { width: 100%; height: 160px; position: relative; }
+  canvas.chart { width: 100% !important; border-radius: 8px; }
+  .graph-empty { display: flex; align-items: center; justify-content: center; height: 130px; color: var(--text3); font-size: 13px; font-style: italic; text-align: center; padding: 0 20px; }
+
+  /* ── HISTORY ── */
+  .history-list { display: flex; flex-direction: column; gap: 7px; max-height: 400px; overflow-y: auto; }
+  .history-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 13px;
+  }
+  .history-time { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text2); }
+  .history-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .history-gap  { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent2); }
+
+  /* ── STORE ── */
+  .store-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 50px 20px; gap: 12px; text-align: center;
+  }
+  .store-empty-icon { font-size: 48px; }
+  .store-empty-title { font-size: 18px; font-weight: 700; color: var(--text2); }
+  .store-empty-sub { font-size: 13px; color: var(--text3); line-height: 1.6; }
+
+  /* ── DATA / GRAPHS PAGE ── */
+  .data-section { padding: 14px 14px 0; }
+
+  /* ── EXPORT / IMPORT ── */
+  .io-row { display: flex; gap: 8px; }
+  .io-btn {
+    flex: 1; padding: 11px; border-radius: 12px; font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .io-btn.export { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.35); color: var(--accent2); }
+  .io-btn.import { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
+  .io-btn.danger { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: var(--red); }
+  #importFile { display: none; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(7,20,40,0.97); backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around;
+    padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+  }
+  .nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: none; border: none; cursor: pointer;
+    padding: 5px 14px; border-radius: 12px; transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn.active { background: rgba(59,130,246,0.12); }
+  .nav-btn span:first-child { font-size: 19px; }
+  .nav-label { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); }
+  .nav-btn.active .nav-label { color: var(--accent2); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding-bottom: 10px; }
+  .page.active { display: block; }
+
+  /* ── PARTICLES ── */
+  .particle-container { position: fixed; pointer-events: none; z-index: 999; inset: 0; }
+  .particle {
+    position: absolute; font-size: 17px; pointer-events: none;
+    animation: particle-fly 1.2s ease-out forwards;
+  }
+  @keyframes particle-fly {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity: 0; }
+  }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 12px 0; opacity: 0.5; }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="particle-container" id="particles"></div>
+
+<div class="app">
+
+  <!-- ══════════════════════════════
+       HOME PAGE
+  ══════════════════════════════ -->
+  <div class="page active" id="page-home">
+
+    <header>
+      <div class="logo">Interval</div>
+      <div class="coin-badge" id="coinBadge">
+        <div class="coin-icon">🪙</div>
+        <span id="totalCoinsDisplay">0</span>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="timer-display">
+        <div class="timer-label">Time Since Last Smoke</div>
+        <div class="timer-value" id="timerDisplay">--:--:--</div>
+      </div>
+
+      <div class="smoke-btn-wrap">
+        <div class="smoke-btn-ring"></div>
+        <button class="smoke-btn" id="smokeBtn" onclick="logSmoke()">
+          <div class="smoke-btn-icon">🚬</div>
+          <div class="smoke-btn-label">I Just Smoked</div>
+        </button>
+      </div>
+
+      <div class="coin-toast" id="coinToast">
+        <span>🪙</span><span id="coinsEarnedAmt">+0</span> coins
+      </div>
+    </div>
+
+    <!-- TOP STATS -->
+    <section>
+      <div class="section-title">Today</div>
+      <div class="stats-grid">
+        <div class="stat-card accent-card">
+          <div class="stat-label">Avg Gap (this week)</div>
+          <div class="stat-value lg green" id="weekAvgGap">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Smokes Today</div>
+          <div class="stat-value" id="smokesToday">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">First Smoke</div>
+          <div class="stat-value gold" id="firstSmokeToday">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg First Smoke</div>
+          <div class="stat-value" id="avgFirstSmoke">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TODAY'S LOG -->
+    <section>
+      <div class="section-title">Today's Smokes</div>
+      <div class="today-list" id="todayList">
+        <div class="today-empty">No smokes logged today.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="add-entry-row">
+        <input type="time" class="time-input" id="manualTimeInput">
+        <button class="add-btn" onclick="addManualEntry()">+ Add</button>
+      </div>
+    </section>
+
+  </div><!-- /home -->
+
+
+  <!-- ══════════════════════════════
+       DATA PAGE
+  ══════════════════════════════ -->
+  <div class="page" id="page-data">
+
+    <header>
+      <div class="logo">Interval</div>
+      <div style="font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;">Trends</div>
+    </header>
+
+    <div style="height:14px;"></div>
+
+    <!-- FULL STATS -->
+    <section>
+      <div class="section-title">All-Time Stats</div>
+      <div class="stats-grid">
+        <div class="stat-card wide accent-card">
+          <div class="stat-label">Avg Gap (waking hours only)</div>
+          <div class="stat-value lg green" id="d-avgGap">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Longest Ever Gap</div>
+          <div class="stat-value" id="d-longestGap">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Smokes</div>
+          <div class="stat-value" id="d-totalSmokes">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Smokes This Week</div>
+          <div class="stat-value" id="d-weekSmokes">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Weekly Trend</div>
+          <div class="stat-value" id="d-trendVal">—</div>
+          <div id="d-trendBadge"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Daily Avg Smokes</div>
+          <div class="stat-value" id="d-dailyAvg">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAP CHART -->
+    <section>
+      <div class="section-title">Gap Between Smokes</div>
+      <div class="graph-wrap" id="gapGraphWrap">
+        <div class="graph-empty" id="gapGraphEmpty">Smoke at least twice to see your gap history</div>
+        <canvas id="gapChart" class="chart" height="160" style="display:none;"></canvas>
+      </div>
+    </section>
+
+    <!-- DAILY COUNT CHART -->
+    <section>
+      <div class="section-title">Daily Smoke Count</div>
+      <div class="graph-wrap" id="dailyGraphWrap">
+        <div class="graph-empty" id="dailyGraphEmpty">Smoke on multiple days to see daily trends</div>
+        <canvas id="dailyChart" class="chart" height="160" style="display:none;"></canvas>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section>
+      <div class="section-title">Full History</div>
+      <div class="history-list" id="historyList">
+        <div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">No data yet.</div>
+      </div>
+    </section>
+
+  </div><!-- /data -->
+
+
+  <!-- ══════════════════════════════
+       STORE PAGE
+  ══════════════════════════════ -->
+  <div class="page" id="page-store">
+    <header>
+      <div class="logo">Interval</div>
+      <div class="coin-badge" style="pointer-events:none;">
+        <div class="coin-icon">🪙</div>
+        <span id="storeCoinsDisplay">0</span>
+      </div>
+    </header>
+    <div class="store-empty">
+      <div class="store-empty-icon">🏪</div>
+      <div class="store-empty-title">Store Coming Soon</div>
+      <div class="store-empty-sub">Keep earning coins — rewards and upgrades will be available here.</div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       SETTINGS PAGE
+  ══════════════════════════════ -->
+  <div class="page" id="page-settings">
+    <header>
+      <div class="logo">Interval</div>
+      <div style="font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;">Settings</div>
+    </header>
+    <div style="height:14px;"></div>
+    <section>
+      <div class="section-title">Data</div>
+      <div class="io-row" style="margin-bottom:9px;">
+        <button class="io-btn export" onclick="exportData()">⬇ Export JSON</button>
+        <label class="io-btn import" for="importFile">⬆ Import JSON</label>
+        <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+      </div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.6;margin-bottom:14px;">
+        Export saves all your data as a .json file. Import it anytime to restore — even after updating the app.
+      </div>
+      <button class="io-btn danger" style="width:100%;" onclick="confirmReset()">⚠ Reset All Data</button>
+    </section>
+  </div>
+
+</div><!-- /app -->
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showPage('home')">
+    <span>🏠</span><span class="nav-label">Home</span>
+  </button>
+  <button class="nav-btn" id="nav-data" onclick="showPage('data')">
+    <span>📈</span><span class="nav-label">Trends</span>
+  </button>
+  <button class="nav-btn" id="nav-store" onclick="showPage('store')">
+    <span>🏪</span><span class="nav-label">Store</span>
+  </button>
+  <button class="nav-btn" id="nav-settings" onclick="showPage('settings')">
+    <span>⚙️</span><span class="nav-label">Settings</span>
+  </button>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// STATE & PERSISTENCE
+// ════════════════════════════════════════════
+let state = { smokes: [], totalCoins: 0, longestGap: 0 };
+let timerInterval = null;
+
+function save() { localStorage.setItem('interval_v3', JSON.stringify(state)); }
+
+function load() {
+  try {
+    const r = localStorage.getItem('interval_v3');
+    // Also try to migrate from v2
+    if (!r) {
+      const old = localStorage.getItem('interval_v2');
+      if (old) { state = JSON.parse(old); save(); return; }
+    }
+    if (r) state = JSON.parse(r);
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+// DAY / WEEK HELPERS  (5 AM boundary)
+// ════════════════════════════════════════════
+function getDayKey(ts) {
+  const d = new Date(ts);
+  if (d.getHours() < 5) d.setDate(d.getDate() - 1);
+  return `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function getTodayKey() { return getDayKey(Date.now()); }
+
+function getWeekNum(ts) {
+  const d = new Date(ts);
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const y = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil(((d - y) / 86400000 + 1) / 7);
+}
+function getThisWeekNum() { return getWeekNum(Date.now()); }
+
+// ════════════════════════════════════════════
+// COIN FORMULA
+// ════════════════════════════════════════════
+function calcCoins(ms) {
+  const mins = ms / 60000;
+  return mins < 1 ? 0 : Math.floor(Math.pow(mins, 1.3));
+}
+
+// ════════════════════════════════════════════
+// GAP VALIDITY
+// A gap counts in averages only if both smokes are in the same waking day
+// (i.e. getDayKey of smoke A === getDayKey of smoke B)
+// ════════════════════════════════════════════
+function isWakingGap(smoke) {
+  // smoke has prevTs property set when logged
+  if (!smoke.gap || !smoke.prevTs) return false;
+  return getDayKey(smoke.prevTs) === getDayKey(smoke.ts);
+}
+
+// ════════════════════════════════════════════
+// FORMAT HELPERS
+// ════════════════════════════════════════════
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function fmtHHMMSS(ms) {
+  if (!ms || ms < 0) return '--:--:--';
+  const s = Math.floor(ms / 1000);
+  return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;
+}
+
+function fmtShort(ms) {
+  if (!ms || ms < 0) return '--';
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m ${pad(s % 60)}s`;
+}
+
+function fmtTime(ts) {
+  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function fmtDateTime(ts) {
+  return new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// ════════════════════════════════════════════
+// LOG SMOKE
+// ════════════════════════════════════════════
+function logSmoke(tsOverride) {
+  const now = tsOverride || Date.now();
+  const smokes = state.smokes;
+
+  // Find previous smoke (chronologically before now)
+  const prev = [...smokes].reverse().find(s => s.ts < now);
+  const prevTs = prev ? prev.ts : null;
+  const gap = prevTs ? now - prevTs : 0;
+  const coins = (gap > 0 && getDayKey(prevTs) === getDayKey(now)) ? calcCoins(gap) : 0;
+
+  if (gap > 0 && gap > state.longestGap && getDayKey(prevTs) === getDayKey(now)) {
+    state.longestGap = gap;
+  }
+
+  const entry = { ts: now, prevTs: prevTs, gap: gap, coins: coins };
+
+  // Insert in chronological order
+  const insertIdx = smokes.findIndex(s => s.ts > now);
+  if (insertIdx === -1) smokes.push(entry);
+  else smokes.splice(insertIdx, 0, entry);
+
+  // Recalculate the entry immediately AFTER this one (its gap/prevTs changes)
+  recalcAfter(now);
+
+  state.totalCoins += coins;
+  save();
+
+  if (!tsOverride) {
+    // Button animation
+    const btn = document.getElementById('smokeBtn');
+    btn.classList.remove('pulse-anim');
+    void btn.offsetWidth;
+    btn.classList.add('pulse-anim');
+    setTimeout(() => btn.classList.remove('pulse-anim'), 600);
+
+    if (coins > 0) { showCoinToast(coins); spawnParticles(); flashCoinBadge(); }
+    restartTimer();
+  }
+
+  updateAll();
+}
+
+// After inserting/removing at ts, recalculate the next entry's gap
+function recalcAfter(ts) {
+  const smokes = state.smokes;
+  const idx = smokes.findIndex(s => s.ts === ts);
+  if (idx === -1 || idx === smokes.length - 1) return;
+  const next = smokes[idx + 1];
+  const oldCoins = next.coins || 0;
+  next.prevTs = ts;
+  next.gap = next.ts - ts;
+  next.coins = (getDayKey(ts) === getDayKey(next.ts)) ? calcCoins(next.gap) : 0;
+  state.totalCoins += (next.coins - oldCoins);
+}
+
+// ════════════════════════════════════════════
+// MANUAL ADD
+// ════════════════════════════════════════════
+function addManualEntry() {
+  const input = document.getElementById('manualTimeInput');
+  const val = input.value;
+  if (!val) return;
+
+  // Build today's timestamp from the time input
+  const [hh, mm] = val.split(':').map(Number);
+  const now = new Date();
+
+  // Determine which calendar date "today" (5am boundary) refers to
+  const todayKey = getTodayKey();
+  const [yr, mo, dy] = todayKey.split('-').map(Number);
+  const ts = new Date(yr, mo, dy, hh, mm, 0, 0).getTime();
+
+  // Validate it's within today's waking window
+  if (getDayKey(ts) !== getTodayKey()) {
+    alert("That time doesn't fall within today's window (5 AM to 4:59 AM next day).");
+    return;
+  }
+
+  logSmoke(ts);
+  input.value = '';
+}
+
+// ════════════════════════════════════════════
+// DELETE ENTRY
+// ════════════════════════════════════════════
+function deleteEntry(ts) {
+  const smokes = state.smokes;
+  const idx = smokes.findIndex(s => s.ts === ts);
+  if (idx === -1) return;
+
+  // Remove coins this entry earned
+  state.totalCoins -= (smokes[idx].coins || 0);
+
+  smokes.splice(idx, 1);
+
+  // Recalc the entry now at idx (previously idx+1), which has a new predecessor
+  if (idx < smokes.length) {
+    const next = smokes[idx];
+    const prev = idx > 0 ? smokes[idx - 1] : null;
+    const oldCoins = next.coins || 0;
+    next.prevTs = prev ? prev.ts : null;
+    next.gap = prev ? next.ts - prev.ts : 0;
+    next.coins = (prev && getDayKey(prev.ts) === getDayKey(next.ts)) ? calcCoins(next.gap) : 0;
+    state.totalCoins += (next.coins - oldCoins);
+  }
+
+  // Recalculate longestGap
+  const wakingGaps = smokes.filter(isWakingGap).map(s => s.gap);
+  state.longestGap = wakingGaps.length ? Math.max(...wakingGaps) : 0;
+
+  save();
+  restartTimer();
+  updateAll();
+}
+
+// ════════════════════════════════════════════
+// TIMER
+// ════════════════════════════════════════════
+function restartTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(tickTimer, 1000);
+  tickTimer();
+}
+
+function tickTimer() {
+  const el = document.getElementById('timerDisplay');
+  const smokes = state.smokes;
+  const last = smokes.length ? smokes[smokes.length - 1].ts : null;
+  if (!last) { el.textContent = '--:--:--'; el.className = 'timer-value'; return; }
+
+  const elapsed = Date.now() - last;
+  el.textContent = fmtHHMMSS(elapsed);
+  const mins = elapsed / 60000;
+  el.className = 'timer-value' + (mins >= 90 ? ' great' : mins >= 45 ? ' good' : '');
+}
+
+// ════════════════════════════════════════════
+// COIN ANIMATIONS
+// ════════════════════════════════════════════
+function showCoinToast(coins) {
+  const t = document.getElementById('coinToast');
+  document.getElementById('coinsEarnedAmt').textContent = '+' + coins;
+  t.classList.remove('show');
+  void t.offsetWidth;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2300);
+}
+
+function flashCoinBadge() {
+  const b = document.getElementById('coinBadge');
+  b.classList.add('flash');
+  setTimeout(() => b.classList.remove('flash'), 600);
+}
+
+function spawnParticles() {
+  const container = document.getElementById('particles');
+  const btn = document.getElementById('smokeBtn');
+  const r = btn.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  const emojis = ['🪙','✨','⭐','💫','🌟'];
+  for (let i = 0; i < 8; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const angle = (Math.PI * 2 * i / 8) + (Math.random() - 0.5) * 0.5;
+    const dist = 60 + Math.random() * 70;
+    p.style.left = cx + 'px'; p.style.top = cy + 'px';
+    p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--ty', Math.sin(angle) * dist - 20 + 'px');
+    p.style.animationDelay = (Math.random() * 0.2) + 's';
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 1500);
+  }
+}
+
+// ════════════════════════════════════════════
+// UPDATE ALL UI
+// ════════════════════════════════════════════
+function updateAll() {
+  const smokes = state.smokes;
+  const todayKey = getTodayKey();
+  const thisWeek = getThisWeekNum();
+
+  // Today's smokes
+  const todaySmokes = smokes.filter(s => getDayKey(s.ts) === todayKey);
+
+  // Waking-hours gaps only
+  const wakingGaps = smokes.filter(isWakingGap).map(s => s.gap);
+  const thisWeekWakingGaps = smokes.filter(s => isWakingGap(s) && getWeekNum(s.ts) === thisWeek).map(s => s.gap);
+  const lastWeekWakingGaps = smokes.filter(s => isWakingGap(s) && getWeekNum(s.ts) === thisWeek - 1).map(s => s.gap);
+
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+
+  const weekAvg = avg(thisWeekWakingGaps);
+  const allAvg  = avg(wakingGaps);
+  const lastWeekAvg = avg(lastWeekWakingGaps);
+
+  // First smoke of today
+  const todayFirst = todaySmokes.length ? todaySmokes[0].ts : null;
+
+  // Avg first smoke (per day)
+  const dayFirstMap = {};
+  smokes.forEach(s => {
+    const dk = getDayKey(s.ts);
+    if (!dayFirstMap[dk] || s.ts < dayFirstMap[dk]) dayFirstMap[dk] = s.ts;
+  });
+  const firstTimes = Object.values(dayFirstMap);
+  let avgFirstMs = 0;
+  if (firstTimes.length) {
+    const msFromMidnight = firstTimes.map(ts => {
+      const d = new Date(ts);
+      return d.getHours() * 3600000 + d.getMinutes() * 60000;
+    });
+    avgFirstMs = avg(msFromMidnight);
+  }
+
+  // Weekly smokes
+  const weekSmokes = smokes.filter(s => getWeekNum(s.ts) === thisWeek);
+
+  // Daily avg smokes (across all days recorded)
+  const daysRecorded = Object.keys(dayFirstMap).length;
+  const dailyAvgSmokes = daysRecorded ? (smokes.length / daysRecorded).toFixed(1) : '—';
+
+  // ── HOME ──
+  document.getElementById('totalCoinsDisplay').textContent = state.totalCoins.toLocaleString();
+  document.getElementById('storeCoinsDisplay').textContent = state.totalCoins.toLocaleString();
+  document.getElementById('weekAvgGap').textContent = weekAvg ? fmtShort(weekAvg) : '--';
+  document.getElementById('smokesToday').textContent = todaySmokes.length;
+  document.getElementById('firstSmokeToday').textContent = todayFirst ? fmtTime(todayFirst) : '—';
+
+  if (avgFirstMs > 0) {
+    const h = Math.floor(avgFirstMs / 3600000);
+    const m = Math.floor((avgFirstMs % 3600000) / 60000);
+    const fakeDate = new Date(); fakeDate.setHours(h, m, 0, 0);
+    document.getElementById('avgFirstSmoke').textContent = fakeDate.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  } else {
+    document.getElementById('avgFirstSmoke').textContent = '—';
+  }
+
+  renderTodayList(todaySmokes);
+
+  // ── DATA ──
+  document.getElementById('d-avgGap').textContent = allAvg ? fmtShort(allAvg) : '--';
+  document.getElementById('d-longestGap').textContent = state.longestGap ? fmtShort(state.longestGap) : '--';
+  document.getElementById('d-totalSmokes').textContent = smokes.length;
+  document.getElementById('d-weekSmokes').textContent = weekSmokes.length;
+  document.getElementById('d-dailyAvg').textContent = dailyAvgSmokes;
+
+  // Trend
+  const trendVal = document.getElementById('d-trendVal');
+  const trendBadge = document.getElementById('d-trendBadge');
+  if (weekAvg && lastWeekAvg) {
+    const pct = ((weekAvg - lastWeekAvg) / lastWeekAvg * 100).toFixed(0);
+    if (weekAvg > lastWeekAvg) {
+      trendVal.textContent = `+${pct}%`; trendVal.style.color = 'var(--green)';
+      trendBadge.innerHTML = `<div class="trend-badge up">▲ Improving</div>`;
+    } else if (weekAvg < lastWeekAvg) {
+      trendVal.textContent = `${pct}%`; trendVal.style.color = 'var(--red)';
+      trendBadge.innerHTML = `<div class="trend-badge down">▼ Declining</div>`;
+    } else {
+      trendVal.textContent = '0%'; trendVal.style.color = '';
+      trendBadge.innerHTML = `<div class="trend-badge same">— Same</div>`;
+    }
+  } else {
+    trendVal.textContent = '—'; trendVal.style.color = ''; trendBadge.innerHTML = '';
+  }
+
+  drawGapChart(smokes);
+  drawDailyChart(smokes, dayFirstMap);
+  renderHistory(smokes);
+}
+
+// ════════════════════════════════════════════
+// TODAY LIST
+// ════════════════════════════════════════════
+function renderTodayList(todaySmokes) {
+  const list = document.getElementById('todayList');
+  if (!todaySmokes.length) {
+    list.innerHTML = '<div class="today-empty">No smokes logged today.</div>';
+    return;
+  }
+
+  list.innerHTML = todaySmokes.map((s, i) => {
+    const gapStr = (isWakingGap(s) && s.gap)
+      ? `<div class="today-entry-gap">Gap: ${fmtShort(s.gap)}${s.coins ? ` · 🪙 +${s.coins}` : ''}</div>`
+      : `<div class="today-entry-gap" style="color:var(--text3)">First smoke of the day</div>`;
+
+    return `
+      <div class="today-entry">
+        <div class="today-entry-left">
+          <div class="today-entry-time">${fmtTime(s.ts)}</div>
+          ${gapStr}
+        </div>
+        <button class="entry-del-btn" onclick="deleteEntry(${s.ts})">✕</button>
+      </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+// CHARTS (pure canvas)
+// ════════════════════════════════════════════
+function drawGapChart(smokes) {
+  const points = smokes.filter(isWakingGap);
+  const canvas = document.getElementById('gapChart');
+  const empty  = document.getElementById('gapGraphEmpty');
+
+  if (points.length < 2) {
+    canvas.style.display = 'none'; empty.style.display = 'flex'; return;
+  }
+  canvas.style.display = 'block'; empty.style.display = 'none';
+
+  renderLineChart(canvas, points.map(s => s.gap / 60000), v => v >= 60 ? (v/60).toFixed(1)+'h' : Math.round(v)+'m');
+}
+
+function drawDailyChart(smokes, dayFirstMap) {
+  const days = Object.keys(dayFirstMap).sort();
+  const canvas = document.getElementById('dailyChart');
+  const empty  = document.getElementById('dailyGraphEmpty');
+
+  if (days.length < 2) {
+    canvas.style.display = 'none'; empty.style.display = 'flex'; return;
+  }
+  canvas.style.display = 'block'; empty.style.display = 'none';
+
+  const counts = days.map(dk => smokes.filter(s => getDayKey(s.ts) === dk).length);
+  renderBarChart(canvas, counts, days.map(dk => {
+    const [,m,d] = dk.split('-');
+    return `${parseInt(m)+1}/${d}`;
+  }));
+}
+
+function renderLineChart(canvas, values, labelFn) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth;
+  const H = 160;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { top: 12, right: 14, bottom: 20, left: 44 };
+  const gW = W - pad.left - pad.right;
+  const gH = H - pad.top - pad.bottom;
+  const n = values.length;
+  const maxV = Math.max(...values) * 1.15;
+
+  // Grid
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + gH - (i / 4) * gH;
+    ctx.strokeStyle = 'rgba(26,58,110,0.55)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + gW, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(90,127,168,0.8)';
+    ctx.font = `9px 'Space Mono', monospace`; ctx.textAlign = 'right';
+    ctx.fillText(labelFn((i / 4) * maxV), pad.left - 5, y + 3);
+  }
+
+  const pts = values.map((v, i) => ({
+    x: pad.left + (n === 1 ? gW/2 : (i / (n-1)) * gW),
+    y: pad.top + gH - (v / maxV) * gH
+  }));
+
+  // Fill
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + gH);
+  grad.addColorStop(0, 'rgba(59,130,246,0.28)');
+  grad.addColorStop(1, 'rgba(59,130,246,0)');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pad.top + gH);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, pad.top + gH);
+  ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+
+  // Line
+  ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+  for (let i = 1; i < pts.length; i++) {
+    const mx = (pts[i-1].x + pts[i].x) / 2;
+    ctx.bezierCurveTo(mx, pts[i-1].y, mx, pts[i].y, pts[i].x, pts[i].y);
+  }
+  ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.stroke();
+
+  // Dots
+  const maxVal = Math.max(...values);
+  pts.forEach((p, i) => {
+    const isHigh = values[i] === maxVal;
+    ctx.beginPath(); ctx.arc(p.x, p.y, isHigh ? 5 : 3.5, 0, Math.PI*2);
+    ctx.fillStyle = isHigh ? '#10b981' : '#60a5fa'; ctx.fill();
+    if (isHigh) {
+      ctx.beginPath(); ctx.arc(p.x, p.y, 7.5, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(16,185,129,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+  });
+}
+
+function renderBarChart(canvas, values, labels) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth;
+  const H = 160;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { top: 12, right: 10, bottom: 24, left: 30 };
+  const gW = W - pad.left - pad.right;
+  const gH = H - pad.top - pad.bottom;
+  const n = values.length;
+  const maxV = Math.max(...values, 1);
+
+  // Grid lines
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + gH - (i / 4) * gH;
+    ctx.strokeStyle = 'rgba(26,58,110,0.55)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + gW, y); ctx.stroke();
+    if (i > 0) {
+      ctx.fillStyle = 'rgba(90,127,168,0.8)';
+      ctx.font = `9px 'Space Mono', monospace`; ctx.textAlign = 'right';
+      ctx.fillText(Math.round((i/4)*maxV), pad.left - 4, y + 3);
+    }
+  }
+
+  const barW = Math.min(gW / n * 0.6, 28);
+  const step = gW / n;
+
+  values.forEach((v, i) => {
+    const bH = (v / maxV) * gH;
+    const x = pad.left + i * step + step/2 - barW/2;
+    const y = pad.top + gH - bH;
+
+    const grad = ctx.createLinearGradient(0, y, 0, pad.top + gH);
+    grad.addColorStop(0, 'rgba(59,130,246,0.8)');
+    grad.addColorStop(1, 'rgba(59,130,246,0.2)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(x, y, barW, bH, [4, 4, 0, 0]);
+    ctx.fill();
+
+    // X label
+    ctx.fillStyle = 'rgba(90,127,168,0.8)';
+    ctx.font = `8px 'Space Mono', monospace`; ctx.textAlign = 'center';
+    if (n <= 14 || i % Math.ceil(n/10) === 0)
+      ctx.fillText(labels[i], x + barW/2, pad.top + gH + 14);
+  });
+}
+
+// ════════════════════════════════════════════
+// HISTORY
+// ════════════════════════════════════════════
+function renderHistory(smokes) {
+  const list = document.getElementById('historyList');
+  if (!smokes.length) {
+    list.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">No data yet.</div>';
+    return;
+  }
+  list.innerHTML = [...smokes].reverse().map(s => `
+    <div class="history-item">
+      <div>
+        <div class="history-time">${fmtDateTime(s.ts)}</div>
+        <div class="history-meta">${isWakingGap(s) ? `Gap: ${fmtShort(s.gap)} · 🪙 +${s.coins}` : 'First smoke of day'}</div>
+      </div>
+      <div class="history-gap">${isWakingGap(s) ? fmtShort(s.gap) : '—'}</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'data') {
+    setTimeout(() => { drawGapChart(state.smokes); drawDailyChart(state.smokes, buildDayFirstMap()); }, 50);
+  }
+}
+
+function buildDayFirstMap() {
+  const map = {};
+  state.smokes.forEach(s => {
+    const dk = getDayKey(s.ts);
+    if (!map[dk] || s.ts < map[dk]) map[dk] = s.ts;
+  });
+  return map;
+}
+
+// ════════════════════════════════════════════
+// EXPORT / IMPORT
+// ════════════════════════════════════════════
+function exportData() {
+  const json = JSON.stringify(state, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `interval-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.smokes) throw new Error('Invalid file');
+      if (!confirm(`Import ${imported.smokes.length} entries? This will replace your current data.`)) return;
+      state = imported;
+      save();
+      restartTimer();
+      updateAll();
+      alert('Data imported successfully!');
+    } catch(err) {
+      alert('Could not read that file. Make sure it\'s a Interval backup.');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function confirmReset() {
+  if (confirm('⚠ Delete ALL data? This cannot be undone.')) {
+    state = { smokes: [], totalCoins: 0, longestGap: 0 };
+    save(); updateAll();
+    document.getElementById('timerDisplay').textContent = '--:--:--';
+    if (timerInterval) clearInterval(timerInterval);
+  }
+}
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+window.addEventListener('load', () => {
+  load();
+  // Set manual time input to current time as default
+  const now = new Date();
+  document.getElementById('manualTimeInput').value =
+    `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  updateAll();
+  if (state.smokes.length) restartTimer();
+});
+
+window.addEventListener('resize', () => updateAll());
+</script>
+</body>
+</html>
