@@ -1,778 +1,3 @@
-
-I'm trying to make an app. I know some coding but no where ne'er enough to make it myself without a ton of work. Can I have an AI make it and then onece I have a good template I download all the files and classes and whatnot and just make it on my phone.
-
-9:24 AM
-Yes, absolutely! That's a great workflow. Here's how it works:
-
-Describe your app idea — tell me what you want to build (what it does, who it's for, key features).
-I build a working template — I'll generate a full prototype right here in the chat as an interactive artifact you can click around in.
-You download the files — once you're happy with it, I can export the code files for you to download.
-You build on your phone — depending on what kind of app you want, you'd use something like:
-React Native / Expo Go for a mobile app (works great on iPhone/Android)
-Android Studio if you want a native Android app
-Xcode for native iOS (requires a Mac though)
-The main thing I need from you is: what's the app idea? Tell me as much or as little as you know — what it does, what problem it solves, anything you've imagined about how it looks. We'll figure out the rest together.
-
-Build a mobile-first web app called “SmokeGap” that helps users reduce smoking by increasing the time between cigarettes using tracking, rewards, and visual feedback.
-
-CORE FEATURE:
-- A large central button labeled “I just smoked”
-- When pressed:
-  - Log the current timestamp
-  - Reset a timer
-  - Start a live counter: “Time since last smoke” (updates every second)
-
-COIN REWARD SYSTEM:
-- Users earn coins based on time between smokes
-- Use a slightly exponential formula to reward longer gaps more:
-  coinsEarned = floor(minutesSinceLastSmoke ^ 1.3)
-- Display:
-  - Coins earned from the last interval (with animation)
-  - Total coins accumulated
-- Add satisfying visual feedback when coins are earned (glow, pulse, or count-up animation)
-
-STATS DASHBOARD:
-Display clearly:
-- Current streak (time since last smoke)
-- Longest streak ever
-- Average time between smokes (MOST IMPORTANT METRIC)
-- Total smokes today
-- Total smokes this week
-- Daily average gap
-- Weekly trend (compare this week vs last week: improving or declining)
-
-FIRST SMOKE METRIC:
-- Track the time of the first smoke each day
-- Display:
-  - “First smoke today: [time]”
-  - “Average first smoke time”
-- Reset this metric daily
-
-VISUAL FEEDBACK:
-- Line graph showing time gaps between smokes
-  - X-axis: smoke events or time
-  - Y-axis: minutes/hours between smokes
-- Make upward trends feel rewarding and motivating
-
-DAILY RESET (IMPORTANT):
-- The “day” resets at 5:00 AM (not midnight)
-- All “today” stats should reset at 5 AM:
-  - Total smokes today
-  - First smoke of the day
-- Handle edge cases (e.g., smoking at 3 AM should count toward the previous day)
-
-I want it to be nice colors, with a deep dark blue background
-
-Show more
-9:26 AM
-
-Reading frontend design skill
-Reading frontend design skill
-Now let me build this. This is a substantial app — I'll craft it with a deep navy theme, satisfying animations, and all the features you described.
-
-
-Created a file, read a file
-Created a file, read a file
-Here's SmokeGap — fully functional and ready to use! Here's what's packed in:
-
-Everything you asked for:
-
-🚬 Big central "I Just Smoked" button with a pulsing ring and glow animation
-⏱ Live timer updating every second (turns green after 90 min, blue after 45)
-🪙 Coin system with the mins^1.3 formula, animated toast + particle burst on earn
-📊 All stats — avg gap (highlighted as the #1 metric), longest streak, daily/weekly counts, weekly trend with improving/declining badge
-🌅 First smoke tracking with daily average
-📈 Smooth line graph with gradient fill and bezier curves
-🕔 5 AM day boundary — 3 AM smokes count toward yesterday
-To use on your phone:
-
-Download the .html file
-Open it in your phone's browser (Safari on iPhone, Chrome on Android)
-On iPhone: tap Share → "Add to Home Screen" to get an app icon
-All your data saves locally on the device
-It's a single self-contained file — no server, no login, no internet needed after download. Let me know if you want any changes to colors, layout, or features!
-
-
-Smokegap
-Code · HTML 
-damn thats perfect. im a little concerned though that as i make changes to the app, my old data will be deleted. is there a way to change that? i was thinking make some other file where u record the data but idk how that works or if its feesable
-
-11:52 AM
-Great instinct! Here's how data storage actually works for a local HTML app like this:
-
-The data already persists — it's saved in your browser's localStorage, which means it survives closing the app, restarting your phone, etc. It's tied to the browser, not the file itself.
-
-The real risk you're thinking of is this: if you open the file from a different location (moved the file, renamed it, different browser), it starts with a blank slate. Same if you clear your browser's site data.
-
-Your best options:
-
-Export/Import buttons (recommended) — I add a button that lets you download your data as a small .json file anytime, and another to load it back. You'd just save that JSON file before making changes, then re-import it after. Simple, portable, works everywhere.
-Cloud sync via a free service — more complex to set up, but data lives online and syncs across devices.
-A separate local database file — this isn't really feasible in a plain HTML file due to browser security rules. Browsers can't freely read/write files on your phone.
-Option 1 is the move — it takes 2 minutes to back up, works on any device, and you're in full control. Want me to add Export and Import buttons to SmokeGap?
-
-yeah lets do option one. also some other changes:
-
-remove quotes like "your most important metric"
-i want a tab for a store where i can spend coins, but leave the store empty for now.
-also a tab for the data and graphs of trends
-there is too much info in the hom page. i want first smoke today, weekly avrega between smokes, times smoked today (remeber today starts at 5am). u can keep the first smoke of today and avergae first smoke. 
-the math for the avergae smoke time should not include the gaps when i sleep.
-
-11:57 AM
-
-Reading frontend design skill for redesign guidance
-Reading frontend design skill for redesign guidance
-Good set of changes. One quick question on the sleep filter before I build:
-
-For excluding sleep gaps from the average — the standard approach is to ignore any gap longer than a certain number of hours (since a 7-hour gap is clearly overnight sleep, not a long smoke-free stretch). What threshold feels right to you?
-
-Q: What's the max gap to include in your averages? Gaps longer than this get treated as sleep and ignored.
-A: thats not the approach i want. starting past 5 am, whenever i smoke the first time that should be the first smoke of the day. after that its all considered a gap until the next day.  additionally i want at the bottom of the home page a list of todays smokes and times, and a way to manually add and remove those entries
-
-12:00 PM
-Got it — so gaps only get counted within a waking day (5am to next 5am), and the very first smoke of each day doesn't generate a gap since there's nothing to measure it against. That's clean and makes total sense.
-
-Let me build the full updated version now.
-
-
-Created a file, ran a command, read a file
-Created a file, ran a command, read a file
-Here's everything that changed:
-
-Home page is now clean — just weekly avg gap, smokes today, first smoke today, and avg first smoke time. Below that is your today's smoke list with ✕ buttons to delete entries and a time picker to manually add ones you forgot.
-
-Gap math now only counts gaps where both smokes fall within the same waking day (5am–4:59am). If you smoke at 11pm and again at 9am, that overnight gap is silently ignored in all averages.
-
-4 tabs — Home, Trends (all your graphs + full history), Store (placeholder), Settings.
-
-Settings tab has the export/import buttons. Export gives you a dated .json file, import loads it back and asks for confirmation first. It'll also auto-migrate your old v1 data if you have any.
-
-
-Smokegap v2
-Code · HTML 
-ok this is great! i have  google pixel, how do i get this working
-
-12:07 PM
-Great choice — Pixels make this easy. Here's exactly what to do:
-
-Step 1: Get the file on your phone
-
-Download the smokegap-v2.html file to your computer first
-Then either:
-Email it to yourself and open the attachment on your phone, or
-Upload it to Google Drive and open it from there (you're already connected to Drive here, I could do that for you)
-Step 2: Open it in Chrome
-
-Once the file is on your phone, tap it to open it in Chrome
-It'll work immediately — all features, saves data locally
-Step 3: Add it to your home screen (so it feels like a real app)
-
-In Chrome, tap the three dots menu (top right)
-Tap "Add to Home screen"
-Give it a name ("SmokeGap") and tap Add
-It'll appear on your home screen with its own icon, and when you open it from there it runs fullscreen with no browser bar — looks and feels exactly like an app
-That's it. No app store, no install, no account needed.
-
-Want me to upload the file directly to your Google Drive so you can open it straight from your phone?
-
-im not getting the option to add to my homscreen is all
-
-12:08 PM
-That's a common one. A few things to try:
-
-Make sure you're in Chrome (not the Files app or Gmail preview) — the file needs to actually be open in Chrome as a tab, not just previewed.
-
-If you are in Chrome, the "Add to Home screen" option sometimes hides depending on how the file is being served. The fix is to access it via a URL instead of a local file. The easiest free way to do that:
-
-Option 1 — Use GitHub Pages (free, permanent)
-
-Go to github.com and make a free account
-Create a new repository, name it smokegap
-Upload your smokegap-v2.html file, then rename it to index.html
-Go to Settings → Pages → set source to "main branch"
-GitHub gives you a URL like yourusername.github.io/smokegap
-Open that URL in Chrome on your Pixel → three dots → Add to Home screen ✓
-Option 2 — I upload it to your Google Drive and you use a hosting trick Drive itself won't serve it as a webpage, so this doesn't help directly.
-
-Option 3 — Quickest: use a free drag-and-drop host
-
-Go to tiiny.host in your phone or computer browser
-Drag and drop the html file
-It gives you a live URL instantly
-Open that on your Pixel → Add to Home screen ✓
-Option 3 is the fastest if you just want it working in the next 5 minutes. Option 1 is better long-term since you control it and can update the file whenever you make changes.
-
-Which sounds good to you?
-
-i have a github account but i dont ever want this seen by anyone. can it be completely private. and also please change the name from smokegap to interval allaround. but ill do github if it works well
-
-12:10 PM
-Two things to know about GitHub Pages:
-
-The catch: GitHub Pages only works on public repositories on free accounts. A private repo won't serve the page. So if you use the free tier, anyone with the URL could technically see it — but in practice it's just a random URL, nobody would ever find it.
-
-Your real options:
-
-Public repo, obscure URL — yourusername.github.io/interval — nobody finds it unless you share the link. Fine for most people.
-GitHub Pro ($4/month) — unlocks private repo + Pages. Fully hidden.
-Netlify (free, private-ish) — drag and drop the file, gives you a random URL like sparkly-fox-392810.netlify.app. No account needed to find it, effectively private, free forever.
-Netlify is probably your best bet — free, no one can find it, dead simple. But your call.
-
-Either way, here's the file with the name changed to Interval throughout:
-
-
-Ran 4 commands, edited a file, read a file
-Ran 4 commands, edited a file, read a file
-All renamed to Interval. Here's the GitHub Pages setup for a public repo (your URL will just be something like yourusername.github.io/interval — totally undiscoverable unless shared):
-
-Go to github.com → New repository → name it interval → set to Public → Create
-Click Add file → Upload files → upload interval.html
-Once uploaded, rename it to index.html (click the file → pencil icon → change the name at the top)
-Go to Settings → Pages → under Source select Deploy from branch → branch: main → Save
-Wait ~60 seconds, refresh — your URL will appear at the top of the Pages settings
-Then on your Pixel: open that URL in Chrome → three dots → Add to Home screen → done.
-
-When you want to update the app later, just upload a new index.html to the same repo and it'll update live within a minute.
-
-
-Interval
-Code · HTML 
-1776539655122_image.png
-im here, what do i do. i also made the repo private not public i hope thats ok
-
-12:14 PM
-I can see you're on the right page! But I notice it says Private at the top — as I mentioned, GitHub Pages won't work with a private repo on a free account.
-
-Two options right now:
-
-Option A — Make it public (easiest)
-
-Go to Settings (tab at the top of the repo)
-Scroll all the way down to the Danger Zone
-Click Change visibility → Make public
-Then come back and we'll upload the file
-Option B — Use Netlify instead (stays private, just as easy)
-
-Go to netlify.com on your computer
-Sign up free (can use your GitHub login)
-It'll show you a drag-and-drop box — just drop interval.html on it
-Done, gives you a live URL instantly, no one can find it
-Netlify is honestly easier and solves the privacy thing. Up to you — which way do you want to go?
-
-i went with a. lets upload it
-
-12:16 PM
-Perfect! Here's what to do right on that page you're already on:
-
-Click "uploading an existing file" (the link in the blue Quick Setup box)
-Drag and drop your interval.html file onto the page, or click "choose your files"
-Once it's uploaded, rename it to index.html — click the file name at the top of the upload page and change it before committing
-Scroll down and click "Commit changes" (the green button)
-Then once that's done, go to Settings → Pages in the top tabs and we'll turn on the live URL.
-
-is renaming it to index important after i upload it. i can either rename it before or just not do it, but i cannot figure out how once its uploaded
-
-12:18 PM
-Rename it before uploading — just find the file on your computer, right-click it, rename from interval.html to index.html, then upload that.
-
-It is important because GitHub Pages looks specifically for index.html as the homepage. If it's named anything else your URL won't load.
-
-okok done, now is it setup? also am i able to make another file for the inports and exports in github automatically or no
-
-12:19 PM
-Good progress! Now you need to turn on Pages — it's not live yet. Do this:
-
-Click Settings tab at the top of the repo
-Click Pages in the left sidebar
-Under Branch, change it from "None" to main
-Click Save
-Wait about 60 seconds, refresh the page, and a URL will appear at the top like danistecklov.github.io/interval
-That's your app URL — open it on your Pixel and add to home screen!
-
-On your second question — the export/import is already built into the app. In the Settings tab inside the app there's an "Export JSON" button that downloads your data as a file, and "Import JSON" to load it back. So your backup workflow would just be:
-
-Before updating the app: tap Export in the app → saves a .json file to your phone
-After updating: open the new version, tap Import → your data is back
-No need to store data in GitHub at all. The JSON file can live in your Google Drive or anywhere you want.
-
-Damn this is perfect. Honestly really impressed. Let's keep working on it.
-
-My ideas:
-
-Add more to the shop!
-I don't love the fonts too much, or the icons u picked. I want it looking nice and smoothe. I would love more ideas from you and if you just wanna brianstorm together
-
-4:56 PM
-Really glad it's working! Let's brainstorm before I touch any code.
-
-On the store — what kind of rewards feel motivating to you? Some directions we could go:
-
-Visual customization — unlock different color themes, button styles, backgrounds. Like spend 500 coins to unlock a "midnight green" theme or a "sunset orange" one
-Stats unlocks — spend coins to unlock deeper analytics, like a heatmap of what time of day you smoke most
-Streak shields — spend coins to "protect" a streak if you slip up
-Milestones/badges — free to earn but displayed as achievements, like "First 2 hour gap" or "7 day streak"
-Challenges — spend coins to activate a challenge like "beat your avg gap today" with a bonus reward
-What actually sounds fun to you? Or something totally different?
-
-On the look — tell me what you don't like specifically and what you're drawn to:
-
-The fonts are Syne + Space Mono right now. Too techy? Too blocky?
-Icons are just emojis. Want something cleaner, like minimal line icons?
-Overall vibe — do you want it feeling more like a wellness app (soft, calm, rounded), a game (energetic, rewards-forward), or something more clean and minimal (almost no decoration, just great typography)?
-What apps do you use that look good to you? Even non-related ones. That helps me a lot.
-
-Sure yeah different themes and stuff could be nice. 
-
-I think all the stats should be available out the gate
-
-I actually think a streak shield would be SICK. But that means I gotta set up a streak system. I'm thinking the streak should just be every day I smoke after 5pm it goes up. The shield should be SUPER expensive though, so I can only afford like one a week tops. 
-
-Ok I need to know how you calculate coins. I want a method that make a lot of sense, as in my best may to maximize my coin gain is by smoking less, less often, and later in the day. 
-
-As for the theme and text, yeah too blocky fs. Idk if I want complete wellness vibe, but def not game. And yeah, like icons are good instead of emojis
-
-5:04 PM
-Love the streak idea and the coin philosophy. Let me think through both properly before we build.
-
-On the streak system — "smoke after 5pm" is interesting but a bit easy to game (just always have one smoke at 6pm). What if the streak was based on beating your average? Like the streak goes up each day you smoke fewer times than your daily average, or your avg gap that day is better than your overall avg. That feels more meaningful and harder to cheese. Thoughts?
-
-On coins — here's a formula I think nails your goal:
-
-Base coins per gap = gap_minutes ^ 1.3 (keeps the exponential reward for waiting longer)
-Multiplier for smoking less that day = if today's smoke count is below your average, bonus ×1.5
-First smoke of the day before noon = small penalty (like ×0.8) to reward smoking later
-First smoke after noon = small bonus (×1.1)
-So your best day is: wake up, don't smoke until afternoon, then have long gaps between each one. That's exactly the behavior you want to reinforce.
-
-On the shield cost — what's a realistic good week of coins for you? I need to know roughly how many coins you'd earn in a good week so I can price the shield at "just barely affordable if you're disciplined."
-
-On the look — I'm thinking:
-
-Font: something elegant and geometric, not blocky. Maybe Outfit or DM Sans for body, Playfair Display or Cormorant for the logo — gives it a refined, almost lifestyle-brand feel
-Icons: clean SVG line icons, consistent stroke weight, no emojis anywhere
-Vibe: think premium health app — Whoop, Oura, that kind of energy. Dark background stays, but softer glows, more breathing room, smoother everything
-Does that direction sound right? And any answer on the streak question helps me lock in the logic before building.
-
-Yeah that's sounds great. I don't know what a good week of coins is tho at all. Let's have this as the baseline "good week" and you can calculate how many that would be. So a good week would be I started smoking after 5 pm every day and smoked 3 or 4 times with about 2-3 hour gaps
-
-5:10 PM
-Perfect, let me do the math.
-
-Good day scenario: First smoke 5pm, then 3 more smokes with 2.5hr gaps average.
-
-Gaps that count: 150min, 150min, 150min (3 gaps, first smoke earns nothing)
-
-150^1.3 = ~814 coins per gap × 3 gaps = ~2,440 coins/day
-
-With the "after noon" bonus ×1.1 = ~2,680 coins/day
-
-Good week = ~18,800 coins
-
-So for the shield to be "just barely one per week if you're disciplined" I'd price it at 15,000 coins. Affordable on a great week, out of reach on a bad one.
-
-Now the streak question — I want to nail this before building. Two options:
-
-Option A — Daily smoke count streak Streak goes up each day you smoke 4 or fewer times (your "good day" ceiling). Simple, clear, easy to understand.
-
-Option B — Beat your own average Streak goes up each day your avg gap beats your all-time avg gap. Scales with you as you improve, so it stays challenging.
-
-Option B is more sophisticated but Option A is easier to follow day to day. Which feels right? Or a mix — like Option A to start, we add B later?
-
-No ok, I want the streak to go up for every day I smoked past 5 pm, similar to the good week defention. This way it reinforces me smoking after 5 pm
-
-5:12 PM
-Got it — so the rule is simply: if your first smoke of the day is at 5pm or later, the streak goes up. Clean, clear, directly reinforces the exact behavior you want.
-
-One edge case to sort out: what counts as "the day" for the streak? Since your day starts at 5am, a smoke at 5pm is 12 hours into your waking day. So the streak rule would be:
-
-First smoke of the waking day (5am–4:59am) must be at 5:00pm or later.
-
-That means if you wake up and cave at 2pm, streak breaks. If you hold until 5pm or later, streak continues. Simple.
-
-A few quick questions before I build everything:
-
-1. Streak break behavior — if you break the streak, does it reset to 0 immediately, or do you want a grace period where a shield can save it?
-
-2. Shield mechanics — when you use a shield, does it just protect the current streak number and the next day starts fresh? Or does it also "count" the bad day as if you passed, keeping momentum?
-
-3. Themes in the store — want me to design 3-4 specific themes with names and color palettes for you to react to before I hardcode them? Or just build a few and you tell me what to change?
-
-If it breaks, that's on me. The shield basically yeah keeps the streak going. 
-
-And the colors for the store we can actually drop for now
-
-5:14 PM
-Perfect, clean and simple. Let me make sure I have everything locked before I build this whole thing fresh:
-
-Streak: First smoke at 5pm or later = streak +1. Miss it, streak resets to 0. A shield prevents the reset and keeps the streak alive for that day.
-
-Coins formula:
-
-gap_minutes ^ 1.3 base
-×1.1 if first smoke is after noon
-×0.8 if first smoke is before noon
-Shield costs 15,000 coins
-Store: Just the shield for now, no themes yet
-
-Look: Outfit or DM Sans + Playfair/Cormorant, SVG line icons, premium health app feel, no emojis in the UI
-
-One last thing — the multipliers apply to the whole day's coins, right? So if you smoke at 6pm the first time, every gap that day gets the ×1.1 bonus. That correct?
-
-Yeah correct!
-
-5:15 PM
-Perfect. Building now — this is a full rebuild so give it a moment.
-
-
-Viewed a file, created a file, ran a command
-Viewed a file, created a file, ran a command
-Here's everything that went into this version:
-
-Design — Cormorant Garamond for the logo and big numbers (elegant, serif), Outfit for all body text (clean, modern). All emojis replaced with SVG line icons. Much softer glows, more breathing room, premium health app feel. Subtle grain texture in the background.
-
-Streak system — tracks consecutive days where your first smoke was at 5pm or later. Shows flame emojis that stack up to 5🔥, live status of whether today qualifies, and your best streak ever on the Trends page.
-
-Streak Shield — buyable in the Store for 15,000 coins. Greys out if you can't afford it. Once bought, the "Use Shield" button appears on the home screen and protects that day's streak. Shows how many you own.
-
-New coin formula — minutes^1.3 base, ×1.1 all day if first smoke is after noon, ×0.8 if before. The multiplier recalculates across all gaps when you log your first smoke of the day.
-
-Settings tab — has the coin formula explained so you always know how to maximize.
-
-To push to GitHub just rename this to index.html and upload it to your repo — your data migrates automatically from the old version.
-
-
-Interval v3
-Code · HTML 
-Ok and now I gotta re-upload that to GitHub?
-
-I have a question though. I just exported my data from v2 I just have this file
-
-{
-  "smokes": [
-    {
-      "ts": 1776530160000,
-      "prevTs": null,
-      "gap": 0,
-      "coins": 0
-    },
-    {
-      "ts": 1776543665589,
-      "prevTs": 1776530160000,
-      "gap": 13505589,
-      "coins": 1143
-    }
-  ],
-  "totalCoins": 1143,
-  "longestGap": 13505589
-}
-
-I'm worried that either there will be inconsistentcies between versions or stuff like that, so I wanna make sure that we're always importing and exporting data on the exact same way, regardless of what changes I've made. I could be wrong, but the best way I can think of doing this is making sure that the data is simply the raw times I have smoke every single day. Then the code should be able to extract all the needed info from that. Is that smart? Is it a big change to make?
-
-Show more
-5:51 PM
-That's a really smart instinct and yes, it's the right call. Right now the exported data has computed fields baked in like coins, gap, prevTs — those are derived values that can get stale or inconsistent between versions. If the coin formula changes, your old data has the wrong coins forever.
-
-The clean approach: store only raw timestamps, compute everything on the fly. Your data file becomes just:
-
-json
-{
-  "smokes": [1776530160000, 1776543665589],
-  "shields": 2
-}
-That's it. Every time the app loads, it recomputes gaps, coins, streaks, everything from scratch using whatever the current formula is. Version changes can never corrupt your data because there's nothing to corrupt — just timestamps.
-
-The only tricky part is totalCoins — since coins are a running balance you spend from (shields cost coins), we need to store that. But we compute it fresh on import so it self-corrects.
-
-It's not a huge change — mostly rewriting the save/load and removing the derived fields from the smokes array. All the logic stays the same, just moves from "log-time" to "load-time."
-
-Want me to make that change now before you re-upload? Would also be a good moment since you only have 2 smokes logged so migration is trivial — just grab those two timestamps.
-
-Yeah let's make those changes!
-
-As you do that I have another question, where is this data stored, cause I can download the file to my phone but that can't be it right? Is it on GitHub somehow? Or when I upload does it save to my Google catch storage whatever
-
-5:57 PM
-Great question. The data lives in two places:
-
-1. Your browser's localStorage — this is the primary storage. When you tap "I Just Smoked", it saves instantly to a little private database built into Chrome on your phone. It stays there permanently until you clear your browser data or uninstall Chrome. GitHub has nothing to do with this — it just hosts the app's code, not your data.
-
-2. The exported JSON file — that's just a manual backup you create yourself. It doesn't auto-sync anywhere, it's just a snapshot you download on demand.
-
-So the flow is:
-
-Normal use → data saves to Chrome's localStorage automatically, you never think about it
-Before updating the app on GitHub → export a backup JSON to your phone's Downloads folder
-After uploading new code → open the app, import that JSON, done
-The risk is if you ever clear Chrome's cache/site data, or factory reset your phone — that wipes localStorage and if you didn't export recently, that data is gone.
-
-If you want it safer long-term, we could add an auto-export to Google Drive since you're already connected here. It would silently back up your data to Drive every time you log a smoke, so you never have to think about it. Worth doing eventually.
-
-For now let me make the clean timestamp-only data changes:
-
-
-Viewed 2 files
-Viewed 2 files
-Good, I have a clear picture of the whole state structure. Now I'll rewrite the JS section with the clean timestamp-only approach:
-
-
-Ran 2 commands, edited a file, viewed a file
-Ran 2 commands, edited a file, viewed a file
-Good. Now I'll replace the entire script section with the clean timestamp-only rewrite:
-
-
-Ran 4 commands
-Ran 4 commands
-All good — those s.ts references are only in rendering code that uses the enriched objects (which do have .ts), and in migration/import code. The raw S.smokes array is pure timestamps throughout.
-
-
-Ran a command, read a file
-Ran a command, read a file
-Done. Here's what changed under the hood:
-
-The new data format — your backup file now looks like this:
-
-json
-{
-  "smokes": [1776530160000, 1776543665589],
-  "coinBalance": 1143,
-  "shields": 0,
-  "shieldDays": [],
-  "bestStreak": 0
-}
-Just raw timestamps. Every time the app loads, buildSmokes() recomputes all gaps, coins, and multipliers fresh from those timestamps. Change the formula in the future? Just import your backup and everything recalculates correctly.
-
-Migration is automatic — it handles your current v2 export file, the old object format, and even the original smokegap format. So you can import your existing backup directly into this version.
-
-To get it live: rename to index.html, upload to GitHub replacing the old one. Export your data from the current app first, then import it into the new version after it's live.
-
-
-Interval v4
-Code · HTML 
-ok ok here are some more changes i wanna make.  
-
-add a tiny bit more of a gap between the big time that i just smoked and the i just smoked button, the digits of the time overlap with the circle slightly.
-i dont want a whole box for the daily streak, just add something at the top right of th escreen, just left of the money. I want it to be like a little icon for your streak, and next to it a little number wit the amount of shields i have.
-also this i want but i need to make very clear. u know the box that said "first smoke" in the home page? the way you colored just the time and border of the box a different color i love. thing is i dont want it to be static, it should change from red to green with gradiants depending on how good the time was.
-first of all the shield should cost more, i have over 3k and today isnt even over and its been a bad day.
-Also, should i upload the code to a new chat so u dont start getting mixed up and halucinating and all that. at the same time im worried that the other one would lose all the context. u havent made mistekaes yet though
-
-Show more
-9:48 PM
-Great changes, let me address all of them. On the last question — you're thinking about this the right way. I haven't made mistakes yet and we have good context built up. I'd say stay in this chat for now, but export a copy of the latest code before each session just in case. If I start making weird errors or forgetting things, that's when to start fresh with the code pasted in.
-
-A few quick questions before I build:
-
-Shield cost — you said bad day and already have 3k+. Based on our earlier math a perfect week was ~18,800 coins. What feels right — 40,000? 50,000? Something that takes roughly 2-3 good weeks to save up?
-
-The first smoke color gradient — I want to make sure I nail the logic. What counts as "green" (great) vs "red" (bad)?
-
-My instinct: red = before noon, full green = 5pm or later, gradient in between. So 8am is deep red, 2pm is yellow-orange, 5pm+ is green. Does that feel right, or do you want different cutoffs?
-
-The streak icon in the header — just to confirm the layout you're imagining: [interval•] on the left, then [🔥12] [🛡2] [🪙 3,420] on the right, roughly like that?
-
-lets do 25k coins. 
-
-ur instinct is great here do that.
-
-[🛡2 🔥12] [🪙 3,420] thats how i would want it.
-
-and you can remove the dot in interval [interval•]
-
-10:21 PM
-Perfect, clear enough to build. Let me make all these changes now.
-
-
-Ran 2 commands, viewed a file
-Ran 2 commands, viewed a file
-Good, I have everything I need. Now making all the changes:
-
-
-Copy to v5
-Copy to v5
-1. Remove logo dot, add streak/shield pill to header, fix hero gap:
-
-
-Ran 2 commands
-Ran 2 commands
-Now add the new CSS and update the JS:
-
-
-Viewed a file, ran a command
-Viewed a file, ran a command
-Now update the JS to handle the dynamic first smoke color and new header elements:
-
-
-Ran 6 commands, viewed a file
-Ran 6 commands, viewed a file
-All 11 checks pass. Copying to output:
-
-
-Ran a command, read a file
-Ran a command, read a file
-Here's everything that changed:
-
-Header — interval with no dot, then [🛡 2  🔥 12] pill left of coins. Shield icon dims to 35% opacity when you own zero. Streak count always shows.
-Timer gap — extra space between the time digits and the button so they don't overlap the ring.
-Streak card gone — that whole block is removed from home. The "Use Shield" button moved to the Store page where it makes more sense anyway.
-First smoke color — fully dynamic gradient: deep red before 5am, slides through orange, yellow, and hits full green exactly at 5pm. The card background, border, and number all shift together.
-Shield cost — 25,000 coins.
-Upload to GitHub as index.html when ready — export your data from the current live version first!
-
-
-Interval v5
-Code · HTML 
-okok almost perfect, now i just want the i just smoked circle, and all the fading out rings around it to be centered correctly, whecih they arent. move them down a little so it doesnt overlap with the text.
-
-10:25 PM
-
-Ran 3 commands, read a file
-Ran 3 commands, read a file
-The button and its rings are now pushed down 18px, clearing the timer text above. Let me know if it needs to move a bit more or less.
-
-
-Interval v5
-Code · HTML 
-thats almost perfect. only porbblem is, and i know its hard to see, you added a slightly darker blue background around that button, and its off center, can you just remove it. to clarify, i still like all the rings fading out, this is just the different background
-
-10:27 PM
-
-Find the orbit ring CSS to identify the darker background
-Find the orbit ring CSS to identify the darker background
-That's it — orbit-ring-2 has border-color: rgba(79,142,247,0.08) which is creating a faint filled-looking circle. But it's actually the border on a transparent element that looks like a background patch. Let me check the smoke-btn background too:
-
-
-View smoke btn CSS
-View smoke btn CSS
-It's the box-shadow: 0 0 40px rgba(79,142,247,0.1) on the button — that's the off-center blue glow patch. I'll remove just that layer:
-
-
-Ran a command, read a file
-Ran a command, read a file
-That blue patch was a box-shadow glow on the button itself — it spread outward and looked like a background since it wasn't centered with the rings. Removed it. The rings and the pulse animation on tap are all still there, just no static ambient glow.
-
-
-Interval v5
-Code · HTML 
-1776576477597_image.png
-it didnt change, that what im talking about if u can see it
-
-10:28 PM
-I can see it clearly now — it's not the box-shadow, it's the button's own background. The button has a dark radial gradient (var(--surface2) to var(--surface)) that's larger/darker than the page background, making it look like an off-center filled circle behind the rings. I need to make the button background transparent or match the page bg exactly.
-
-
-Ran a command, read a file
-Ran a command, read a file
-That darker filled circle was the button's own background gradient — it was slightly offset from the rings so it looked wrong. Now the button is transparent so only the rings and the border define the circle shape. Should blend cleanly into the page background.
-
-
-Interval v5
-Code · HTML 
-nonono. can you just work on the design on the button for a sec
-
-10:28 PM
-Of course! Tell me what you're going for — what do you want it to look like? Feel free to describe it loosely, like a vibe, a reference, anything. Or if you want I can just pitch you a few directions and you pick one.
-
-its just almost so good, but the backround behind the botton is different than the rest of the page, and its annoying me. bascially a circle a little bigger than the largest fading ring around the i just smoked button. that circle is a slightly darker blue than the rest of the page background
-
-10:31 PM
-Got it — there are actually multiple rings stacked up and one of them has a solid-ish background. Let me look at all of them:
-
-
-Ran 2 commands, viewed a file
-Ran 2 commands, viewed a file
-The rings themselves are fine — just borders, no fill. The culprit is the padding-top: 18px on .btn-zone. Because .btn-zone is position: relative, the absolutely-positioned rings are centered within it — but the padding-top shifts the button down while the rings stay centered on the element's center, not the button's center. That asymmetry creates the illusion of a dark filled area.
-
-The fix: remove padding-top from btn-zone and add margin-top to the whole btn-zone instead, so the rings and button stay perfectly concentric:
-
-
-Ran a command, read a file
-Ran a command, read a file
-padding-top was pushing the button down inside the container while the rings (being position: absolute) stayed centered on the container itself — so they were offset from each other, creating that lopsided dark patch. margin-top moves the whole zone down together, so the button and rings stay perfectly concentric.
-
-
-Interval v5
-Code · HTML 
-noep not fixed. just change it to a super simple i just smoked button
-
-10:31 PM
-What kind of simple? Like a plain rounded rectangle button with text? Or a circle still, just without all the ring effects?
-
-just a circle. well add carefully from there
-
-10:32 PM
-
-Ran a command, read a file
-Ran a command, read a file
-Bare circle now — transparent background, single border, scales down slightly on tap. Tell me what you want to add back and we'll do it one piece at a time.
-
-
-Interval v5
-Code · HTML 
-perff, now i would love a small circle expanding out from the outer ring, that like fades as it expands. a slow rythem yknow
-
-10:33 PM
-
-Ran a command, read a file
-Ran a command, read a file
-Three rings staggered evenly, each taking 3.5 seconds to expand and fade out, so there's always one mid-expansion — gives it that slow breathing rhythm. Let me know if you want it slower, faster, more rings, or a different color.
-
-
-Interval v5
-Code · HTML 
-okk good, now just make it smaller so it never overlaps with the digits that are underthe time since last smoked. and intead of  just the ring of a circle expanding, make it like a solid circle expaind
-
-10:34 PM
-
-Ran a command, read a file
-Ran a command, read a file
-Solid filled circles now, and they only expand to 1.35× so they stay well clear of the timer digits above. Let me know if you want them to expand a bit more or less, or tweak the opacity/speed.
-
-
-Interval v5
-Code · HTML 
-ok close just make it much slower. also theres a bug now where the whole button is like flashing, it looks like its cuase by a ton of expanding rings being spawned inside of the botton. fix this by making sure the button is a solid color and in front  of the rings
-
-10:36 PM
-
-Ran a command, read a file
-Ran a command, read a file
-Two fixes: button is now z-index: 1 with a solid var(--bg) background so it sits cleanly on top of the rings, and the pulse is slowed to 6 seconds with rings spaced 2s apart. Should be a slow calm breathe now with no flashing.
-
-
-Interval v5
-Code · HTML 
-perfff. now the circles just still look slightly laggy. just have them slowly expand and fade out, one by one
-
-10:37 PM
-
-Ran a command, read a file
-Ran a command, read a file
-9 seconds per ring, staggered 3s apart, linear so no easing jank — just a smooth steady drift outward and gone. One ring fully fades before the next one is halfway through.
-
-
-Interval v5
-Code · HTML 
-okok perfect, now just move that whole thing, all the rings and button, down a little more
-
-10:41 PM
-
-Ran a command, read a file
-Ran a command, read a file
-Moved down 24px. Want it more or is that about right?
-
-
-Interval v5
-Code · HTML 
-
-
-
-
-
-Claude is AI and can make mistakes. Please double-check responses.
-Interval v5 · HTML
-Copy
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -807,9 +32,9 @@ Copy
   --shield:   #a78bfa;
   --shield2:  #c4b5fd;
 }
- 
+
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
- 
+
 html, body {
   background: var(--bg);
   color: var(--text);
@@ -818,7 +43,7 @@ html, body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
- 
+
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -827,7 +52,7 @@ body::before {
     radial-gradient(ellipse 60% 40% at 90% 110%, rgba(45,212,160,0.05) 0%, transparent 55%),
     radial-gradient(ellipse 40% 30% at 10% 80%, rgba(79,142,247,0.04) 0%, transparent 50%);
 }
- 
+
 /* subtle grain overlay */
 body::after {
   content: '';
@@ -835,38 +60,38 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
   background-size: 180px 180px;
 }
- 
+
 .app {
   max-width: 430px; margin: 0 auto;
   padding: 0 0 88px;
   position: relative; z-index: 1;
 }
- 
+
 /* ── PAGES ── */
 .page { display: none; }
 .page.active { display: block; }
- 
+
 /* ── HEADER ── */
 header {
   padding: 20px 20px 0;
   display: flex; justify-content: space-between; align-items: center;
 }
- 
+
 .logo {
   font-family: 'Cormorant Garamond', serif;
   font-size: 26px; font-weight: 600;
   letter-spacing: 0.5px;
   color: var(--text);
 }
- 
- 
- 
- 
+
+
+
+
 /* ── HEADER RIGHT CLUSTER ── */
 .header-right {
   display: flex; align-items: center; gap: 8px;
 }
- 
+
 .streak-shield-pill {
   display: flex; align-items: center; gap: 0;
   background: var(--surface);
@@ -875,22 +100,22 @@ header {
   padding: 6px 12px;
   gap: 8px;
 }
- 
+
 .ss-item {
   display: flex; align-items: center; gap: 4px;
   font-size: 13px; font-weight: 600;
   color: var(--text2);
 }
- 
+
 .ss-item svg { flex-shrink: 0; }
 .ss-fire { font-size: 13px; line-height: 1; }
- 
+
 .ss-divider {
   width: 1px; height: 12px;
   background: var(--border2);
   flex-shrink: 0;
 }
- 
+
 /* ── USE SHIELD BTN (now in store page only) ── */
 .coin-pill {
   display: flex; align-items: center; gap: 7px;
@@ -901,7 +126,7 @@ header {
   transition: box-shadow 0.4s;
 }
 .coin-pill.flash { box-shadow: 0 0 24px var(--glow-gold); }
- 
+
 .coin-pill-icon {
   width: 22px; height: 22px;
   background: linear-gradient(135deg, var(--gold) 0%, var(--gold3) 100%);
@@ -910,31 +135,31 @@ header {
   box-shadow: 0 0 10px var(--glow-gold);
   flex-shrink: 0;
 }
- 
+
 .coin-count {
   font-size: 14px; font-weight: 600;
   color: var(--gold2);
   letter-spacing: 0.3px;
   min-width: 28px;
 }
- 
+
 /* ── SVG ICON SYSTEM ── */
 .icon { display: inline-block; flex-shrink: 0; }
- 
+
 /* ── HERO ── */
 .hero {
   padding: 28px 20px 18px;
   display: flex; flex-direction: column; align-items: center; gap: 26px;
 }
- 
+
 .timer-wrap { text-align: center; }
- 
+
 .timer-label {
   font-size: 10px; font-weight: 500;
   letter-spacing: 3px; text-transform: uppercase;
   color: var(--text3); margin-bottom: 6px;
 }
- 
+
 .timer-value {
   font-family: 'Cormorant Garamond', serif;
   font-size: 52px; font-weight: 500;
@@ -943,13 +168,13 @@ header {
 }
 .timer-value.good  { color: var(--blue2); }
 .timer-value.great { color: var(--green); }
- 
+
 /* ── MAIN BUTTON ── */
 .btn-zone { position: relative; display: flex; align-items: center; justify-content: center; margin-top: 24px; }
- 
+
 @keyframes orbit1 { to { transform: rotate(360deg); } }
 @keyframes orbit2 { to { transform: rotate(360deg); } }
- 
+
 .smoke-btn {
   width: 160px; height: 160px; border-radius: 50%;
   background: var(--bg);
@@ -974,26 +199,26 @@ header {
 }
 .pulse-ring:nth-child(2) { animation-delay: 3s; }
 .pulse-ring:nth-child(3) { animation-delay: 6s; }
- 
+
 @keyframes pulse-out {
   0%   { transform: scale(1);    opacity: 0.15; }
   100% { transform: scale(1.45); opacity: 0; }
 }
- 
+
 .smoke-btn.fired { animation: btn-fire 0.6s ease-out; }
 @keyframes btn-fire {
   0%   { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
   35%  { box-shadow: 0 0 0 2px var(--blue), 0 0 80px rgba(79,142,247,0.55), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
   100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
 }
- 
+
 .btn-icon { opacity: 0.9; }
 .btn-label {
   font-size: 9px; font-weight: 600;
   letter-spacing: 2.5px; text-transform: uppercase;
   color: var(--text3);
 }
- 
+
 /* ── COIN TOAST ── */
 .coin-toast {
   height: 28px; display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -1004,10 +229,10 @@ header {
 }
 .coin-toast.show { opacity: 1; transform: translateY(0); animation: toast-out 2.4s ease-out forwards; }
 @keyframes toast-out { 0%{opacity:1} 55%{opacity:1} 100%{opacity:0} }
- 
+
 /* ── CARDS / SECTIONS ── */
 .cards { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
- 
+
 .card {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -1019,17 +244,17 @@ header {
   content: ''; position: absolute; top: 0; left: 16px; right: 16px; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(79,142,247,0.2), transparent);
 }
- 
+
 .card-title {
   font-size: 9px; font-weight: 600;
   letter-spacing: 3px; text-transform: uppercase;
   color: var(--text3); margin-bottom: 14px;
 }
- 
+
 /* ── STAT GRID ── */
 .sg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .sg-wide { grid-column: span 2; }
- 
+
 .stat {
   background: var(--bg3);
   border: 1px solid var(--border);
@@ -1047,7 +272,7 @@ header {
   background: linear-gradient(135deg, rgba(45,212,160,0.08) 0%, var(--bg3) 100%);
   border-color: rgba(45,212,160,0.2);
 }
- 
+
 .stat-label {
   font-size: 9px; font-weight: 500;
   letter-spacing: 2px; text-transform: uppercase;
@@ -1063,11 +288,11 @@ header {
 .stat-val.gold  { color: var(--gold2); }
 .stat-val.green { color: var(--green); }
 .stat-val.shield-color { color: var(--shield2); }
- 
+
 .stat-sub {
   font-size: 11px; color: var(--text3); margin-top: 3px;
 }
- 
+
 /* ── STREAK DISPLAY ── */
 .streak-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -1084,7 +309,7 @@ header {
 .streak-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .streak-flames { font-size: 22px; letter-spacing: -2px; }
 .streak-status { font-size: 11px; color: var(--text3); }
- 
+
 /* ── TREND BADGE ── */
 .trend-pill {
   display: inline-flex; align-items: center; gap: 4px;
@@ -1094,10 +319,10 @@ header {
 .trend-pill.up   { background: rgba(45,212,160,0.12); color: var(--green2); border: 1px solid rgba(45,212,160,0.25); }
 .trend-pill.down { background: rgba(240,96,96,0.1); color: var(--red); border: 1px solid rgba(240,96,96,0.2); }
 .trend-pill.same { background: rgba(72,102,136,0.15); color: var(--text3); border: 1px solid var(--border); }
- 
+
 /* ── TODAY LIST ── */
 .today-list { display: flex; flex-direction: column; gap: 6px; }
- 
+
 .today-row {
   display: flex; align-items: center; justify-content: space-between;
   background: var(--bg3); border: 1px solid var(--border);
@@ -1105,12 +330,12 @@ header {
   animation: row-in 0.25s ease-out;
 }
 @keyframes row-in { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
- 
+
 .today-row-left { display: flex; flex-direction: column; gap: 2px; }
 .today-time { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 500; color: var(--text); }
 .today-meta { font-size: 11px; color: var(--text3); }
 .today-coins { font-size: 11px; color: var(--gold2); }
- 
+
 .del-btn {
   width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer;
   background: rgba(240,96,96,0.08); border: 1px solid rgba(240,96,96,0.18);
@@ -1118,16 +343,16 @@ header {
   transition: background 0.2s;
 }
 .del-btn:active { background: rgba(240,96,96,0.2); }
- 
+
 .empty-state {
   text-align: center; padding: 20px 0;
   font-size: 13px; color: var(--text3);
 }
- 
+
 /* ── ADD ROW ── */
 .add-row { display: flex; gap: 8px; margin-top: 10px; }
 .sep { height: 1px; background: var(--border); margin: 10px 0; opacity: 0.5; }
- 
+
 .t-input {
   flex: 1; background: var(--bg3); border: 1px solid var(--border);
   border-radius: 11px; padding: 10px 13px;
@@ -1135,14 +360,14 @@ header {
   outline: none;
 }
 .t-input:focus { border-color: rgba(79,142,247,0.5); }
- 
+
 .add-btn {
   background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3);
   color: var(--blue2); border-radius: 11px; padding: 10px 18px;
   font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
   cursor: pointer;
 }
- 
+
 /* ── GRAPH ── */
 .graph-wrap { width: 100%; height: 160px; position: relative; }
 .graph-empty {
@@ -1151,7 +376,7 @@ header {
   text-align: center; padding: 0 24px; line-height: 1.6;
 }
 canvas.chart { width: 100% !important; border-radius: 8px; }
- 
+
 /* ── HISTORY ── */
 .hist-list { display: flex; flex-direction: column; gap: 6px; max-height: 380px; overflow-y: auto; }
 .hist-row {
@@ -1162,7 +387,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 .hist-time { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--text2); }
 .hist-sub  { font-size: 10px; color: var(--text3); margin-top: 1px; }
 .hist-gap  { font-size: 13px; font-weight: 500; color: var(--blue2); }
- 
+
 /* ── STORE ── */
 .store-balance {
   display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -1173,7 +398,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   font-size: 40px; font-weight: 600; color: var(--gold2);
 }
 .store-balance-label { font-size: 11px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
- 
+
 .store-item {
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: 16px; padding: 16px;
@@ -1190,12 +415,12 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   flex-shrink: 0;
 }
 .shield-bg { background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25); }
- 
+
 .store-item-info { flex: 1; }
 .store-item-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
 .store-item-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
 .store-item-owned { font-size: 11px; color: var(--shield2); margin-top: 4px; font-weight: 500; }
- 
+
 .buy-btn {
   border: none; border-radius: 10px; padding: 9px 14px; cursor: pointer;
   font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600;
@@ -1206,14 +431,14 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 .buy-btn.shield-buy { background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: var(--shield2); }
 .buy-btn.cant-afford { opacity: 0.4; cursor: not-allowed; }
 .buy-btn-price { font-size: 10px; opacity: 0.7; }
- 
+
 .shields-owned {
   display: flex; align-items: center; gap: 6px;
   background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.2);
   border-radius: 10px; padding: 8px 12px; margin-top: 4px;
   font-size: 12px; color: var(--shield2);
 }
- 
+
 /* ── USE SHIELD BUTTON ── */
 .use-shield-btn {
   width: 100%; padding: 11px; border-radius: 12px; border: none; cursor: pointer;
@@ -1224,7 +449,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 }
 .use-shield-btn:active { background: rgba(167,139,250,0.22); }
 .use-shield-btn:disabled { opacity: 0.35; cursor: not-allowed; }
- 
+
 /* ── SETTINGS ── */
 .io-row { display: flex; gap: 8px; }
 .io-btn {
@@ -1238,7 +463,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 .io-btn.danger { background: rgba(240,96,96,0.08); border: 1px solid rgba(240,96,96,0.2); color: var(--red); }
 .io-hint { font-size: 11px; color: var(--text3); line-height: 1.65; margin: 10px 0 14px; }
 #importFile { display: none; }
- 
+
 /* ── BOTTOM NAV ── */
 .nav {
   position: fixed; bottom: 0; left: 0; right: 0;
@@ -1262,7 +487,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   text-transform: uppercase; color: var(--text3);
 }
 .nav-item.active .nav-label { color: var(--blue2); }
- 
+
 /* ── PARTICLES ── */
 .particles { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
 .pt {
@@ -1273,11 +498,11 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   0%   { transform: translate(0,0) scale(1); opacity: 1; }
   100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
- 
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
- 
+
 /* ── PAGE HEADER ── */
 .page-header {
   padding: 20px 20px 0;
@@ -1292,14 +517,14 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 </style>
 </head>
 <body>
- 
+
 <div class="particles" id="particles"></div>
- 
+
 <div class="app">
- 
+
 <!-- ══════════════ HOME ══════════════ -->
 <div class="page active" id="page-home">
- 
+
   <header>
     <div class="logo">interval</div>
     <div class="header-right">
@@ -1322,13 +547,13 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
       </div>
     </div>
   </header>
- 
+
   <div class="hero">
     <div class="timer-wrap">
       <div class="timer-label">Time Since Last Smoke</div>
       <div class="timer-value" id="timerVal">--:--:--</div>
     </div>
- 
+
     <div class="btn-zone">
       <div class="pulse-ring"></div>
       <div class="pulse-ring"></div>
@@ -1340,15 +565,15 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <span class="btn-label">I Just Smoked</span>
       </button>
     </div>
- 
+
     <div class="coin-toast" id="coinToast">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/></svg>
       <span id="toastAmt">+0</span> coins earned
     </div>
   </div>
- 
+
   <div class="cards">
- 
+
     <!-- TODAY STATS -->
     <div class="card">
       <div class="card-title">Today</div>
@@ -1375,7 +600,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         </div>
       </div>
     </div>
- 
+
     <!-- TODAY LIST -->
     <div class="card">
       <div class="card-title">Today's Log</div>
@@ -1388,11 +613,11 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <button class="add-btn" onclick="addManual()">+ Add</button>
       </div>
     </div>
- 
+
   </div>
 </div><!-- /home -->
- 
- 
+
+
 <!-- ══════════════ TRENDS ══════════════ -->
 <div class="page" id="page-trends">
   <div class="page-header">
@@ -1400,7 +625,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
     <div class="page-title">Trends</div>
   </div>
   <div class="cards">
- 
+
     <div class="card">
       <div class="card-title">All-Time</div>
       <div class="sg">
@@ -1441,7 +666,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         </div>
       </div>
     </div>
- 
+
     <div class="card">
       <div class="card-title">Gap History</div>
       <div class="graph-wrap">
@@ -1449,7 +674,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <canvas id="gapChart" class="chart" height="160" style="display:none;"></canvas>
       </div>
     </div>
- 
+
     <div class="card">
       <div class="card-title">Daily Smoke Count</div>
       <div class="graph-wrap">
@@ -1457,35 +682,35 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <canvas id="dailyChart" class="chart" height="160" style="display:none;"></canvas>
       </div>
     </div>
- 
+
     <div class="card">
       <div class="card-title">Full History</div>
       <div class="hist-list" id="histList">
         <div class="empty-state">No data yet.</div>
       </div>
     </div>
- 
+
   </div>
 </div><!-- /trends -->
- 
- 
+
+
 <!-- ══════════════ STORE ══════════════ -->
 <div class="page" id="page-store">
   <div class="page-header">
     <div class="logo">interval</div>
     <div class="page-title">Store</div>
   </div>
- 
+
   <div style="display:flex;flex-direction:column;align-items:center;padding:4px 0 20px;">
     <div class="store-balance-label">Your Balance</div>
     <div class="store-balance-num" id="storeCoins">0</div>
     <div class="store-balance-label">coins</div>
   </div>
- 
+
   <div class="cards">
     <div class="card">
       <div class="card-title">Protection</div>
- 
+
       <div class="store-item shield-item">
         <div class="store-item-icon shield-bg">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--shield2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
@@ -1507,12 +732,12 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
         Activate Shield for Today
       </button>
- 
+
     </div>
   </div>
 </div><!-- /store -->
- 
- 
+
+
 <!-- ══════════════ SETTINGS ══════════════ -->
 <div class="page" id="page-settings">
   <div class="page-header">
@@ -1539,7 +764,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         Reset All Data
       </button>
     </div>
- 
+
     <div class="card">
       <div class="card-title">How Coins Work</div>
       <div style="font-size:13px;color:var(--text2);line-height:1.75;">
@@ -1551,9 +776,9 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
     </div>
   </div>
 </div><!-- /settings -->
- 
+
 </div><!-- /app -->
- 
+
 <!-- NAV -->
 <nav class="nav">
   <button class="nav-item active" id="nav-home" onclick="showPage('home')">
@@ -1573,7 +798,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
     <span class="nav-label">Settings</span>
   </button>
 </nav>
- 
+
 <script>
 // ══════════════════════════════════════════════
 // STATE
@@ -1592,21 +817,21 @@ let S = {
   shieldDays:  [],   // ["2024-03-15", ...]
   bestStreak:  0,
 };
- 
+
 let timerTick = null;
- 
+
 // ══════════════════════════════════════════════
 // PERSIST
 // ══════════════════════════════════════════════
 function save() {
   localStorage.setItem('interval_v2', JSON.stringify(S));
 }
- 
+
 function load() {
   try {
     const r = localStorage.getItem('interval_v2');
     if (r) { S = { ...S, ...JSON.parse(r) }; return; }
- 
+
     // Migrate from interval_v1 (smokes were objects with .ts)
     const v1 = localStorage.getItem('interval_v1');
     if (v1) {
@@ -1617,7 +842,7 @@ function load() {
       S.coinBalance = computeTotalCoins(S.smokes); // recompute from scratch
       save(); return;
     }
- 
+
     // Migrate from smokegap_v3
     const v3 = localStorage.getItem('smokegap_v3');
     if (v3) {
@@ -1628,19 +853,19 @@ function load() {
     }
   } catch(e) { console.warn('Load error', e); }
 }
- 
+
 // ══════════════════════════════════════════════
 // TIME HELPERS
 // ══════════════════════════════════════════════
 function pad(n) { return String(n).padStart(2, '0'); }
- 
+
 function dayKey(ts) {
   const d = new Date(ts);
   if (d.getHours() < 5) d.setDate(d.getDate() - 1);
   return `${d.getFullYear()}-${pad(d.getMonth())}-${pad(d.getDate())}`;
 }
 function todayKey() { return dayKey(Date.now()); }
- 
+
 function weekNum(ts) {
   const d = new Date(ts); d.setHours(0,0,0,0);
   d.setDate(d.getDate() + 4 - (d.getDay() || 7));
@@ -1648,7 +873,7 @@ function weekNum(ts) {
   return Math.ceil(((d - y) / 86400000 + 1) / 7);
 }
 function thisWeek() { return weekNum(Date.now()); }
- 
+
 function fmtHMS(ms) {
   if (!ms || ms < 0) return '--:--:--';
   const s = Math.floor(ms / 1000);
@@ -1661,11 +886,11 @@ function fmtShort(ms) {
 }
 function fmtTime(ts) { return new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
 function fmtDT(ts)   { return new Date(ts).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
- 
+
 // ══════════════════════════════════════════════
 // COMPUTE HELPERS  (work on raw timestamp arrays)
 // ══════════════════════════════════════════════
- 
+
 // Build enriched smoke objects from raw timestamps for rendering/logic.
 // Each object: { ts, prevTs, gap, waking, coins }
 function buildSmokes(timestamps) {
@@ -1678,7 +903,7 @@ function buildSmokes(timestamps) {
     return { ts, prevTs, gap, waking, coins };
   });
 }
- 
+
 // Day multiplier based on first smoke hour of that waking day
 function getDayMultFromTs(ts, timestamps) {
   const dk = dayKey(ts);
@@ -1687,18 +912,18 @@ function getDayMultFromTs(ts, timestamps) {
   const h = new Date(firstInDay).getHours();
   return h < 12 ? 0.8 : 1.1;
 }
- 
+
 // Compute total coins earned from a raw timestamp array
 function computeTotalCoins(timestamps) {
   return buildSmokes(timestamps).reduce((sum, s) => sum + s.coins, 0);
 }
- 
+
 function calcCoins(gapMs, mult) {
   const mins = gapMs / 60000;
   if (mins < 1) return 0;
   return Math.floor(Math.pow(mins, 1.3) * mult);
 }
- 
+
 // Build dayKey -> firstTs map
 function buildDayFirstMap(timestamps) {
   const m = {};
@@ -1708,20 +933,20 @@ function buildDayFirstMap(timestamps) {
   });
   return m;
 }
- 
+
 // Compute current streak from timestamps + shieldDays
 function computeStreak(timestamps, shieldDays) {
   const firstMap = buildDayFirstMap(timestamps);
   const days = Object.keys(firstMap).sort().reverse(); // newest first
   if (!days.length) return 0;
- 
+
   let streak = 0;
   for (let i = 0; i < days.length; i++) {
     const dk = days[i];
     const firstH = new Date(firstMap[dk]).getHours();
     const shielded = shieldDays.includes(dk);
     const qualifies = firstH >= 17 || shielded;
- 
+
     if (i === 0) {
       if (!qualifies) break;
       streak = 1;
@@ -1738,41 +963,41 @@ function computeStreak(timestamps, shieldDays) {
   }
   return streak;
 }
- 
+
 // ══════════════════════════════════════════════
 // LOG SMOKE
 // ══════════════════════════════════════════════
 function logSmoke(tsOverride) {
   const now = tsOverride || Date.now();
- 
+
   // Insert in sorted order
   const idx = S.smokes.findIndex(t => t > now);
   if (idx === -1) S.smokes.push(now);
   else S.smokes.splice(idx, 0, now);
- 
+
   // Recompute coinBalance from scratch (handles mult changes from inserting)
   S.coinBalance = computeTotalCoins(S.smokes);
- 
+
   // Update bestStreak
   const streak = computeStreak(S.smokes, S.shieldDays);
   if (streak > S.bestStreak) S.bestStreak = streak;
- 
+
   save();
- 
+
   if (!tsOverride) {
     // Figure out coins just earned for this smoke (for toast)
     const built = buildSmokes(S.smokes);
     const entry = built.find(s => s.ts === now);
     const coinsEarned = entry ? entry.coins : 0;
- 
+
     animBtn();
     if (coinsEarned > 0) { showToast(coinsEarned); spawnParticles(); flashPill(); }
     restartTimer();
   }
- 
+
   updateAll();
 }
- 
+
 // ══════════════════════════════════════════════
 // DELETE
 // ══════════════════════════════════════════════
@@ -1785,7 +1010,7 @@ function deleteEntry(ts) {
   restartTimer();
   updateAll();
 }
- 
+
 // ══════════════════════════════════════════════
 // MANUAL ADD
 // ══════════════════════════════════════════════
@@ -1800,12 +1025,12 @@ function addManual() {
   logSmoke(ts);
   document.getElementById('addTimeInput').value = '';
 }
- 
+
 // ══════════════════════════════════════════════
 // STORE
 // ══════════════════════════════════════════════
 const SHIELD_COST = 25000;
- 
+
 function buyShield() {
   if (S.coinBalance < SHIELD_COST) return;
   S.coinBalance -= SHIELD_COST;
@@ -1813,7 +1038,7 @@ function buyShield() {
   save();
   updateAll();
 }
- 
+
 function useShield() {
   if (S.shields <= 0) return;
   const tk = todayKey();
@@ -1826,7 +1051,7 @@ function useShield() {
   save();
   updateAll();
 }
- 
+
 // ══════════════════════════════════════════════
 // TIMER
 // ══════════════════════════════════════════════
@@ -1835,7 +1060,7 @@ function restartTimer() {
   timerTick = setInterval(tick, 1000);
   tick();
 }
- 
+
 function tick() {
   const el = document.getElementById('timerVal');
   const last = S.smokes.length ? S.smokes[S.smokes.length-1] : null;
@@ -1845,7 +1070,7 @@ function tick() {
   const m = elapsed / 60000;
   el.className = 'timer-value' + (m >= 90 ? ' great' : m >= 45 ? ' good' : '');
 }
- 
+
 // ══════════════════════════════════════════════
 // ANIMATIONS
 // ══════════════════════════════════════════════
@@ -1877,57 +1102,57 @@ function spawnParticles() {
     c.appendChild(p); setTimeout(() => p.remove(), 1200);
   }
 }
- 
+
 // ══════════════════════════════════════════════
 // UPDATE ALL UI
 // ══════════════════════════════════════════════
 function avg(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
- 
+
 function updateAll() {
   const timestamps = S.smokes;
   const smokes = buildSmokes(timestamps);  // enriched for rendering
   const tk = todayKey();
   const wk = thisWeek();
- 
+
   const todaySmokes  = smokes.filter(s => dayKey(s.ts) === tk);
   const wakingGaps   = smokes.filter(s => s.waking).map(s => s.gap);
   const weekWaking   = smokes.filter(s => s.waking && weekNum(s.ts) === wk).map(s => s.gap);
   const lastWkWaking = smokes.filter(s => s.waking && weekNum(s.ts) === wk-1).map(s => s.gap);
- 
+
   const weekAvg   = avg(weekWaking);
   const allAvg    = avg(wakingGaps);
   const lastWkAvg = avg(lastWkWaking);
- 
+
   const dayFirstMap = buildDayFirstMap(timestamps);
   const todayFirst  = dayFirstMap[tk] || null;
- 
+
   const firstTimes = Object.values(dayFirstMap);
   const avgFirstMs = firstTimes.length ? avg(firstTimes.map(ts => {
     const d = new Date(ts);
     return d.getHours()*3600000 + d.getMinutes()*60000;
   })) : 0;
- 
+
   const weekSmokeCount = timestamps.filter(ts => weekNum(ts) === wk).length;
   const days = Object.keys(dayFirstMap);
   const dailyAvg = days.length ? (timestamps.length / days.length).toFixed(1) : '—';
- 
+
   const longestGap = wakingGaps.length ? Math.max(...wakingGaps) : 0;
   const streak = computeStreak(timestamps, S.shieldDays);
   if (streak > S.bestStreak) { S.bestStreak = streak; }
- 
+
   // ── Coins ──
   const coinStr = S.coinBalance.toLocaleString();
   document.getElementById('coinCount').textContent = coinStr;
   document.getElementById('storeCoins').textContent = coinStr;
- 
+
   // ── Streak / shield header pill ──
   const shieldedToday = S.shieldDays.includes(tk);
   document.getElementById('headerStreakCount').textContent = streak;
   document.getElementById('headerShieldCount').textContent = S.shields;
- 
+
   // Dim shield icon if 0 owned
   document.getElementById('headerShields').style.opacity = S.shields > 0 ? '1' : '0.35';
- 
+
   // Use shield btn in store page
   const shieldBtn = document.getElementById('useShieldBtn');
   if (shieldBtn) {
@@ -1935,23 +1160,23 @@ function updateAll() {
   }
   document.getElementById('shieldsOwnedText').textContent = `You own ${S.shields} shield${S.shields !== 1 ? 's' : ''}`;
   document.getElementById('buyShieldBtn').classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
- 
+
   // ── Home stats ──
   document.getElementById('weekAvgGap').textContent   = weekAvg   ? fmtShort(weekAvg) : '--';
   document.getElementById('smokesToday').textContent  = todaySmokes.length;
   document.getElementById('longestGap').textContent   = longestGap ? fmtShort(longestGap) : '--';
- 
+
   // ── First smoke dynamic color ──
   const todayFirstH = todayFirst ? new Date(todayFirst).getHours() + new Date(todayFirst).getMinutes()/60 : -1;
   const firstSmokeEl = document.getElementById('firstSmokeToday');
   const firstSmokeStat = document.getElementById('firstSmokeStat');
   firstSmokeEl.textContent = todayFirst ? fmtTime(todayFirst) : '—';
- 
+
   if (todayFirst && todayFirstH >= 0) {
     // Map hour to 0..1: 0=red (5am), 1=green (17:00=5pm)
     // Before 5am treated as red, after 5pm treated as full green
     const t = Math.max(0, Math.min(1, (todayFirstH - 5) / (17 - 5)));
- 
+
     // Interpolate: red(240,96,96) -> yellow(240,190,50) -> green(45,212,160)
     let r, g, b;
     if (t < 0.5) {
@@ -1966,7 +1191,7 @@ function updateAll() {
     const col = `rgb(${r},${g},${b})`;
     const colAlpha = `rgba(${r},${g},${b},0.12)`;
     const colBorder = `rgba(${r},${g},${b},0.3)`;
- 
+
     firstSmokeStat.style.background = `linear-gradient(135deg, ${colAlpha} 0%, var(--bg3) 100%)`;
     firstSmokeStat.style.borderColor = colBorder;
     firstSmokeEl.style.color = col;
@@ -1976,15 +1201,15 @@ function updateAll() {
     firstSmokeStat.style.borderColor = '';
     firstSmokeEl.style.color = 'var(--text3)';
   }
- 
+
   if (avgFirstMs > 0) {
     const h = Math.floor(avgFirstMs/3600000), m = Math.floor((avgFirstMs%3600000)/60000);
     const d = new Date(); d.setHours(h, m, 0, 0);
     document.getElementById('avgFirstSmoke').textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   } else document.getElementById('avgFirstSmoke').textContent = '—';
- 
+
   renderTodayList(todaySmokes);
- 
+
   // ── Trends ──
   document.getElementById('t-avgGap').textContent     = allAvg    ? fmtShort(allAvg) : '--';
   document.getElementById('t-weekAvg').textContent    = weekAvg   ? fmtShort(weekAvg) : '--';
@@ -1993,7 +1218,7 @@ function updateAll() {
   document.getElementById('t-weekCount').textContent  = weekSmokeCount;
   document.getElementById('t-dailyAvg').textContent   = dailyAvg;
   document.getElementById('t-bestStreak').textContent = S.bestStreak;
- 
+
   const tv = document.getElementById('t-trendVal');
   const tb = document.getElementById('t-trendBadge');
   if (weekAvg && lastWkAvg) {
@@ -2009,11 +1234,11 @@ function updateAll() {
       tb.innerHTML=`<div class="trend-pill same">— Same</div>`;
     }
   } else { tv.textContent='—'; tv.style.color=''; tb.innerHTML=''; }
- 
+
   drawCharts(smokes, dayFirstMap);
   renderHistory(smokes);
 }
- 
+
 // ══════════════════════════════════════════════
 // TODAY LIST
 // ══════════════════════════════════════════════
@@ -2035,7 +1260,7 @@ function renderTodayList(todaySmokes) {
     </div>`;
   }).join('');
 }
- 
+
 // ══════════════════════════════════════════════
 // CHARTS
 // ══════════════════════════════════════════════
@@ -2047,7 +1272,7 @@ function drawCharts(smokes, dayFirstMap) {
     gapCanvas.style.display='block'; gapEmpty.style.display='none';
     drawLine(gapCanvas, gapPts.map(s=>s.gap/60000), v=>v>=60?(v/60).toFixed(1)+'h':Math.round(v)+'m');
   } else { gapCanvas.style.display='none'; gapEmpty.style.display='flex'; }
- 
+
   const days = Object.keys(dayFirstMap).sort();
   const dcCanvas = document.getElementById('dailyChart');
   const dcEmpty  = document.getElementById('dailyEmpty');
@@ -2058,7 +1283,7 @@ function drawCharts(smokes, dayFirstMap) {
     drawBars(dcCanvas, counts, labels);
   } else { dcCanvas.style.display='none'; dcEmpty.style.display='flex'; }
 }
- 
+
 function canvasSetup(canvas) {
   const dpr=window.devicePixelRatio||1, W=canvas.parentElement.clientWidth, H=160;
   canvas.width=W*dpr; canvas.height=H*dpr;
@@ -2066,7 +1291,7 @@ function canvasSetup(canvas) {
   const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr); ctx.clearRect(0,0,W,H);
   return {ctx,W,H};
 }
- 
+
 function drawLine(canvas, values, labelFn) {
   const {ctx,W,H}=canvasSetup(canvas);
   const p={top:12,right:14,bottom:20,left:44},gW=W-p.left-p.right,gH=H-p.top-p.bottom;
@@ -2095,7 +1320,7 @@ function drawLine(canvas, values, labelFn) {
     if(hi){ctx.beginPath();ctx.arc(pt.x,pt.y,8,0,Math.PI*2);ctx.strokeStyle='rgba(45,212,160,0.3)';ctx.lineWidth=1.5;ctx.stroke();}
   });
 }
- 
+
 function drawBars(canvas, values, labels) {
   const {ctx,W,H}=canvasSetup(canvas);
   const p={top:12,right:10,bottom:22,left:28},gW=W-p.left-p.right,gH=H-p.top-p.bottom;
@@ -2115,7 +1340,7 @@ function drawBars(canvas, values, labels) {
     if(n<=16||i%Math.ceil(n/10)===0){ctx.fillStyle='rgba(72,102,136,0.85)';ctx.font='8px Outfit,sans-serif';ctx.textAlign='center';ctx.fillText(labels[i],x+bW/2,p.top+gH+14);}
   });
 }
- 
+
 // ══════════════════════════════════════════════
 // HISTORY
 // ══════════════════════════════════════════════
@@ -2131,7 +1356,7 @@ function renderHistory(smokes) {
       <div class="hist-gap">${s.waking?fmtShort(s.gap):'—'}</div>
     </div>`).join('');
 }
- 
+
 // ══════════════════════════════════════════════
 // NAV
 // ══════════════════════════════════════════════
@@ -2142,7 +1367,7 @@ function showPage(name) {
   document.getElementById('nav-'+name).classList.add('active');
   if (name==='trends') setTimeout(()=>drawCharts(buildSmokes(S.smokes), buildDayFirstMap(S.smokes)), 50);
 }
- 
+
 // ══════════════════════════════════════════════
 // EXPORT / IMPORT / RESET
 // ══════════════════════════════════════════════
@@ -2153,7 +1378,7 @@ function exportData() {
   a.download = `interval-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
 }
- 
+
 function importData(e) {
   const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
@@ -2161,7 +1386,7 @@ function importData(e) {
     try {
       const d = JSON.parse(ev.target.result);
       if (!Array.isArray(d.smokes)) throw new Error('No smokes array');
- 
+
       // New format: smokes are numbers
       if (d.smokes.length === 0 || typeof d.smokes[0] === 'number') {
         if (!confirm(`Import ${d.smokes.length} entries? This replaces current data.`)) return;
@@ -2182,14 +1407,14 @@ function importData(e) {
         S.bestStreak  = d.bestStreak || 0;
         S.coinBalance = computeTotalCoins(S.smokes);
       } else throw new Error('Unrecognised format');
- 
+
       save(); restartTimer(); updateAll();
       alert('Imported successfully!');
     } catch(err) { alert("Couldn't read that file. Use an Interval backup."); }
   };
   reader.readAsText(file); e.target.value='';
 }
- 
+
 function confirmReset() {
   if (!confirm('Delete ALL data? This cannot be undone.')) return;
   S = { smokes:[], coinBalance:0, shields:0, shieldDays:[], bestStreak:0 };
@@ -2197,7 +1422,7 @@ function confirmReset() {
   document.getElementById('timerVal').textContent='--:--:--';
   if (timerTick) clearInterval(timerTick);
 }
- 
+
 // ══════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════
@@ -2208,10 +1433,8 @@ window.addEventListener('load', () => {
   updateAll();
   if (S.smokes.length) restartTimer();
 });
- 
+
 window.addEventListener('resize', updateAll);
 </script>
 </body>
 </html>
- 
-
