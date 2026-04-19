@@ -6,6 +6,15 @@
 <title>Interval</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/*
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │  AI-CONTEXT: DESIGN SYSTEM                                      │
+ * │  Dark navy/blue aesthetic. CSS variables defined here control   │
+ * │  everything. Gold = coins. Blue = stats/gaps. Green = good.     │
+ * │  Red = bad/early smoke. Shield = purple (--shield vars).        │
+ * │  Never hardcode colors — always use these vars.                 │
+ * └─────────────────────────────────────────────────────────────────┘
+ */
 :root {
   --bg:       #050d1c;
   --bg2:      #081426;
@@ -23,6 +32,7 @@
   --green:    #2dd4a0;
   --green2:   #5ee8bc;
   --red:      #f06060;
+  --red2:     #ff8080;
   --text:     #ddeaff;
   --text2:    #8aaac8;
   --text3:    #486688;
@@ -106,6 +116,18 @@ header {
   flex-shrink: 0;
 }
 
+/* 
+ * AI-CONTEXT: COIN PILL
+ * Top-right header element. Shows running total balance.
+ * Below it (class .coin-pending-shadow) shows today's PENDING coins
+ * — what would land if the ideal time passed right now.
+ * Pending is floored at 0 (can't show negative). See calcPendingToday().
+ * The pending text is small/gray so it doesn't compete with balance.
+ */
+.coin-pill-wrap {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+}
+
 .coin-pill {
   display: flex; align-items: center; gap: 7px;
   background: var(--surface);
@@ -133,6 +155,19 @@ header {
   min-width: 28px;
 }
 
+/* Pending shadow — shows today's running net (floored 0) in small gray */
+.coin-pending-shadow {
+  font-size: 10px; font-weight: 500;
+  color: var(--text3);
+  letter-spacing: 0.3px;
+  text-align: right;
+  padding-right: 4px;
+  min-height: 13px;
+  transition: color 0.3s;
+}
+.coin-pending-shadow.positive { color: var(--green); }
+.coin-pending-shadow.negative { color: var(--red); }
+
 .icon { display: inline-block; flex-shrink: 0; }
 
 .hero {
@@ -158,9 +193,6 @@ header {
 .timer-value.great { color: var(--green); }
 
 .btn-zone { position: relative; display: flex; align-items: center; justify-content: center; margin-top: 24px; }
-
-@keyframes orbit1 { to { transform: rotate(360deg); } }
-@keyframes orbit2 { to { transform: rotate(360deg); } }
 
 .smoke-btn {
   width: 160px; height: 160px; border-radius: 50%;
@@ -213,6 +245,8 @@ header {
   transition: opacity 0.35s, transform 0.35s;
   pointer-events: none;
 }
+/* AI-CONTEXT: Toast also used for negative coin feedback. See showToast(). */
+.coin-toast.negative { color: var(--red2); }
 .coin-toast.show { opacity: 1; transform: translateY(0); animation: toast-out 2.4s ease-out forwards; }
 @keyframes toast-out { 0%{opacity:1} 55%{opacity:1} 100%{opacity:0} }
 
@@ -304,11 +338,23 @@ header {
 
 .today-list { display: flex; flex-direction: column; gap: 6px; }
 
+/*
+ * AI-CONTEXT: TODAY ROW COLORS
+ * Each smoke entry in today's log is colored by sign:
+ *   - Early smoke (before idealFirstSmokeHour): red tint, shows negative coins
+ *   - Late smoke (after idealFirstSmokeHour): normal/gold, shows positive coins
+ * The .early class is applied in renderTodayList().
+ * The coin amount shown is always the entry's raw coin value with sign.
+ */
 .today-row {
   display: flex; align-items: center; justify-content: space-between;
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: 12px; padding: 10px 13px;
   animation: row-in 0.25s ease-out;
+}
+.today-row.early {
+  background: rgba(240,96,96,0.05);
+  border-color: rgba(240,96,96,0.18);
 }
 @keyframes row-in { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
 
@@ -316,6 +362,7 @@ header {
 .today-time { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 500; color: var(--text); }
 .today-meta { font-size: 11px; color: var(--text3); }
 .today-coins { font-size: 11px; color: var(--gold2); }
+.today-coins.negative { color: var(--red2); }
 
 .del-btn {
   width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer;
@@ -438,6 +485,33 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 .io-btn.danger { background: rgba(240,96,96,0.08); border: 1px solid rgba(240,96,96,0.2); color: var(--red); }
 .io-hint { font-size: 11px; color: var(--text3); line-height: 1.65; margin: 10px 0 14px; }
 #importFile { display: none; }
+
+/*
+ * AI-CONTEXT: SETTINGS — TIME PICKER
+ * The ideal first smoke time is set via a <select> in the settings page.
+ * It's stored in S.settings.idealFirstSmokeHour (integer 0–23).
+ * Default: 17 (5pm).
+ * This value gates: coin sign, streak qualification, shield auto-trigger.
+ * See: IDEAL_HOUR(), calcEntryCoins(), computeStreak(), maybeAutoShield().
+ * If you add more configurable time thresholds, add them here in S.settings
+ * and expose them in renderSettings(). Add an AI-CONTEXT comment for each.
+ */
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-size: 14px; color: var(--text2); }
+.settings-sublabel { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.settings-select {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 8px 12px;
+  color: var(--text); font-family: 'Outfit', sans-serif; font-size: 13px;
+  outline: none; cursor: pointer;
+  min-width: 90px; text-align: center;
+}
+.settings-select:focus { border-color: rgba(79,142,247,0.5); }
 
 .nav {
   position: fixed; bottom: 0; left: 0; right: 0;
@@ -604,11 +678,16 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <span id="headerStreakCount">0</span>
       </span>
     </div>
-    <div class="coin-pill" id="coinPill">
-      <div class="coin-pill-icon">
-        <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#050d1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9.5 9.5c0-1.1.9-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.5-2.5 1.5-2.5.5-2.5 1.5 .9 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg>
+    <!-- AI-CONTEXT: coin-pill-wrap holds both the balance pill and the pending shadow.
+         The pending shadow updates every tick alongside the timer. See tick(). -->
+    <div class="coin-pill-wrap">
+      <div class="coin-pill" id="coinPill">
+        <div class="coin-pill-icon">
+          <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#050d1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9.5 9.5c0-1.1.9-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.5-2.5 1.5-2.5.5-2.5 1.5 .9 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg>
+        </div>
+        <span class="coin-count" id="coinCount">0</span>
       </div>
-      <span class="coin-count" id="coinCount">0</span>
+      <div class="coin-pending-shadow" id="coinPendingShadow"></div>
     </div>
   </header>
 
@@ -631,8 +710,8 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
     </div>
 
     <div class="coin-toast" id="coinToast">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/></svg>
-      <span id="toastAmt">+0</span> coins earned
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/></svg>
+      <span id="toastAmt">+0</span> coins pending
     </div>
   </div>
 
@@ -766,6 +845,38 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
     <div class="page-title">Settings</div>
   </div>
   <div class="cards">
+
+    <!--
+      AI-CONTEXT: USER PREFERENCES CARD
+      This card holds all user-configurable behaviour settings.
+      Each setting lives in S.settings.* and is persisted with save().
+      IDEAL FIRST SMOKE TIME: S.settings.idealFirstSmokeHour (integer 0-23)
+        - Controls coin sign: smokes before this hour = negative coins
+        - Controls streak: first smoke must be >= this hour to count as a good day
+        - Controls shield auto-trigger: first smoke before this hour triggers auto-shield
+        - Controls coin "landing": pending coins are added to balance when this hour passes
+      
+      TO ADD A NEW CONFIGURABLE SETTING:
+        1. Add a default value in the S.settings block in the STATE section below
+        2. Add a .settings-row here in the HTML (or in renderSettings() if dynamic)
+        3. Add a handler function that calls save() + updateAll()
+        4. Add an AI-CONTEXT comment explaining what it gates
+        5. Replace any hardcoded equivalent in the logic with IDEAL_HOUR() or your new accessor
+    -->
+    <div class="card">
+      <div class="card-title">Preferences</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Ideal First Smoke Time</div>
+          <div class="settings-sublabel">Smokes before this time cost coins. After earns coins.</div>
+        </div>
+        <select class="settings-select" id="idealTimeSelect" onchange="setIdealTime(this.value)">
+          <!-- Populated by renderSettings() -->
+        </select>
+      </div>
+      <!-- AI-CONTEXT: ADD MORE PREFERENCE ROWS HERE as needed. Follow the pattern above. -->
+    </div>
+
     <div class="card">
       <div class="card-title">Data Backup</div>
       <div class="io-row" style="margin-bottom:0;">
@@ -788,12 +899,10 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 
     <div class="card">
       <div class="card-title">How Coins Work</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.75;">
-        Base coins per gap: <span style="color:var(--blue2)">minutes ^ 1.3</span><br>
-        First smoke after noon: <span style="color:var(--green)">×1.1 bonus all day</span><br>
-        First smoke before noon: <span style="color:var(--red)">×0.8 penalty all day</span><br>
-        Shield cost: <span style="color:var(--shield2)">25,000 coins</span>
-      </div>
+      <!-- AI-CONTEXT: This explanation card is updated by renderSettings() so it always
+           reflects the current idealFirstSmokeHour. If you add more coin rules, update
+           renderSettings() to refresh this text too. -->
+      <div id="coinExplainer" style="font-size:13px;color:var(--text2);line-height:1.75;"></div>
     </div>
   </div>
 </div>
@@ -831,8 +940,34 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 </nav>
 
 <script>
+/*
+ * ╔══════════════════════════════════════════════════════════════════════╗
+ * ║  AI-CONTEXT: HOW TO USE THESE COMMENTS                              ║
+ * ║                                                                      ║
+ * ║  Comments marked AI-CONTEXT explain the *intent* behind the code    ║
+ * ║  — not just what it does, but WHY it exists and what it connects to. ║
+ * ║  When editing this file:                                             ║
+ * ║    1. Read nearby AI-CONTEXT comments before changing logic          ║
+ * ║    2. If you change a system, update its AI-CONTEXT comment          ║
+ * ║    3. If you add a new configurable value, add it to S.settings      ║
+ * ║       and document it in the SETTINGS AI-CONTEXT block in the HTML   ║
+ * ║    4. Use IDEAL_HOUR() everywhere — never hardcode 17 (5pm) or any   ║
+ * ║       other time threshold. All time gates go through S.settings.    ║
+ * ║    5. The coin system has two phases: PENDING (today's running net)  ║
+ * ║       and LANDED (added to S.coinBalance at ideal time). Don't       ║
+ * ║       conflate them. See COIN SYSTEM section below.                  ║
+ * ╚══════════════════════════════════════════════════════════════════════╝
+ */
+
 // ══════════════════════════════════════════════
 // STATE
+// AI-CONTEXT: S is the single source of truth. Everything persists via save().
+// S.settings holds all user-configurable values. Never read settings directly
+// from the DOM — always read from S.settings and keep DOM in sync.
+// S.coinBalance = coins that have LANDED (past ideal time, locked in).
+// Today's pending coins are computed live — see calcPendingToday().
+// S.landedDays = set of dayKeys where coins have already been added to balance,
+// so we never double-credit a day when the app is reopened.
 // ══════════════════════════════════════════════
 let S = {
   smokes:      [],
@@ -843,9 +978,43 @@ let S = {
   activeTank:  'classic',
   inventory:   {},
   bestStreak:  0,
+  landedDays:  [],   // AI-CONTEXT: days whose coins have been committed to balance
+
+  // AI-CONTEXT: S.settings — ALL user-configurable behaviour lives here.
+  // Default values are set here. Actual values come from localStorage via load().
+  // Add new settings here with sensible defaults, then expose in renderSettings().
+  settings: {
+    idealFirstSmokeHour: 17,  // 0-23. THE central threshold. See AI-CONTEXT in HTML settings card.
+    // AI-CONTEXT: ADD NEW SETTINGS HERE with defaults. Document what they gate above.
+  },
 };
 
 let timerTick = null;
+
+// ══════════════════════════════════════════════
+// SETTINGS ACCESSOR
+// AI-CONTEXT: ALWAYS use IDEAL_HOUR() to get the ideal smoke threshold.
+// Never hardcode 17 or any hour number anywhere else in this file.
+// This was previously hardcoded as 17 (5pm) in multiple places — those
+// are all now routed through here so changing the setting affects everything:
+//   - Coin sign (positive/negative)
+//   - Streak qualification
+//   - Shield auto-trigger
+//   - Coin landing (balance commit)
+//   - UI color coding in today's log
+// ══════════════════════════════════════════════
+function IDEAL_HOUR() {
+  return (S.settings && S.settings.idealFirstSmokeHour != null)
+    ? S.settings.idealFirstSmokeHour
+    : 17;
+}
+
+function idealTimeLabel() {
+  const h = IDEAL_HOUR();
+  const ampm = h >= 12 ? 'pm' : 'am';
+  const disp = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return disp + ampm;
+}
 
 // ══════════════════════════════════════════════
 // PERSIST
@@ -857,23 +1026,32 @@ function save() {
 function load() {
   try {
     const r = localStorage.getItem('interval_v2');
-    if (r) { S = { ...S, ...JSON.parse(r) }; return; }
+    if (r) {
+      const parsed = JSON.parse(r);
+      // Deep merge settings so new defaults aren't clobbered by old saves
+      // AI-CONTEXT: When adding a new S.settings key, add its default to the
+      // initial S declaration above. This merge ensures old saves get the new default.
+      S = {
+        ...S,
+        ...parsed,
+        settings: { ...S.settings, ...(parsed.settings || {}) },
+      };
+      return;
+    }
 
     const v1 = localStorage.getItem('interval_v1');
     if (v1) {
       const o = JSON.parse(v1);
-      S.smokes = (o.smokes || []).map(s => typeof s === 'object' ? s.ts : s).filter(Boolean).sort((a,b)=>a-b);
+      S.smokes = (o.smokes || []).map(function(s) { return typeof s === 'object' ? s.ts : s; }).filter(Boolean).sort(function(a,b){return a-b;});
       S.shields = o.shields || 0;
       S.bestStreak = o.bestStreak || 0;
-      S.coinBalance = computeTotalCoins(S.smokes);
       save(); return;
     }
 
     const v3 = localStorage.getItem('smokegap_v3');
     if (v3) {
       const o = JSON.parse(v3);
-      S.smokes = (o.smokes || []).map(s => s.ts).filter(Boolean).sort((a,b)=>a-b);
-      S.coinBalance = computeTotalCoins(S.smokes);
+      S.smokes = (o.smokes || []).map(function(s) { return s.ts; }).filter(Boolean).sort(function(a,b){return a-b;});
       save();
     }
   } catch(e) { console.warn('Load error', e); }
@@ -913,72 +1091,102 @@ function fmtTime(ts) { return new Date(ts).toLocaleTimeString([], {hour:'2-digit
 function fmtDT(ts)   { return new Date(ts).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
 
 // ══════════════════════════════════════════════
-// COMPUTE HELPERS
+// COIN SYSTEM
+/*
+ * AI-CONTEXT: THE COIN SYSTEM — read this before touching any coin logic.
+ *
+ * CORE IDEA: The app rewards smoking LATER in the day.
+ *   - First smoke of the day has no gap so earns no coins (it's the baseline).
+ *   - Each subsequent smoke earns or loses coins based on:
+ *       (a) The SIZE of the gap since last smoke (magnitude = gap_minutes ^ 1.3)
+ *       (b) WHETHER the smoke happened before or after IDEAL_HOUR()
+ *           BEFORE ideal time → NEGATIVE coins (and longer gap = less negative)
+ *           AFTER ideal time  → POSITIVE coins (and longer gap = more positive)
+ *
+ * PENDING vs LANDED:
+ *   - Coins are PENDING during the day (shown as shadow below coin pill).
+ *   - Coins LAND (are added to S.coinBalance) automatically when the clock
+ *     crosses IDEAL_HOUR(). This is checked every tick().
+ *   - S.landedDays tracks which dayKeys have already been committed.
+ *   - Pending is always floored at 0 — you can't "owe" coins from a bad day.
+ *
+ * GAP CALCULATION:
+ *   - Only waking gaps count (both smokes in the same logical day, 5am–4:59am)
+ *   - calcEntryCoins(gapMs, ts) returns a SIGNED integer (positive or negative)
+ *   - calcPendingToday() sums all today's entry coins and floors at 0
+ *
+ * IF YOU CHANGE THE FORMULA: update the "How Coins Work" card in renderSettings().
+ */
 // ══════════════════════════════════════════════
+
+function calcEntryCoins(gapMs, smokeTs) {
+  // AI-CONTEXT: gapMs = milliseconds since previous smoke.
+  // smokeTs = timestamp of this smoke, used to determine sign via IDEAL_HOUR().
+  // Returns a signed integer. First smoke of day has gap=0, caller skips it.
+  const mins = gapMs / 60000;
+  if (mins < 1) return 0;
+  const magnitude = Math.floor(Math.pow(mins, 1.3));
+  const smokeHour = new Date(smokeTs).getHours();
+  // BEFORE ideal time: negative. Longer gap = smaller negative (less punishment).
+  // AFTER ideal time:  positive. Longer gap = bigger positive (more reward).
+  return smokeHour < IDEAL_HOUR() ? -magnitude : magnitude;
+}
+
 function buildSmokes(timestamps) {
-  return timestamps.map((ts, i) => {
+  // AI-CONTEXT: Converts raw timestamp array into enriched smoke objects.
+  // Each object gets: gap (ms), waking (bool), coins (signed int).
+  // "waking" means both this smoke and the previous are on the same logical day.
+  // Only waking smokes get coins — cross-day gaps don't count (sleep time).
+  return timestamps.map(function(ts, i) {
     const prevTs = i > 0 ? timestamps[i-1] : null;
     const gap    = prevTs ? ts - prevTs : 0;
     const waking = gap > 0 && prevTs != null && dayKey(prevTs) === dayKey(ts);
-    const mult   = waking ? getDayMultFromTs(ts, timestamps) : 1;
-    const coins  = waking ? calcCoins(gap, mult) : 0;
-    return { ts, prevTs, gap, waking, coins };
+    const coins  = waking ? calcEntryCoins(gap, ts) : 0;
+    return { ts: ts, prevTs: prevTs, gap: gap, waking: waking, coins: coins };
   });
 }
 
-function getDayMultFromTs(ts, timestamps) {
-  const dk = dayKey(ts);
-  const firstInDay = timestamps.find(t => dayKey(t) === dk);
-  if (!firstInDay) return 1;
-  const h = new Date(firstInDay).getHours();
-  return h < 12 ? 0.8 : 1.1;
+function calcPendingToday() {
+  // AI-CONTEXT: Returns today's net coin value (floored at 0) without modifying balance.
+  // This is what the shadow pill shows. Called every tick.
+  // "Pending" means coins from today that haven't landed yet (ideal time hasn't passed).
+  const tk = todayKey();
+  const todaySmokes = buildSmokes(S.smokes).filter(function(s) { return dayKey(s.ts) === tk && s.waking; });
+  const net = todaySmokes.reduce(function(sum, s) { return sum + s.coins; }, 0);
+  return Math.max(0, net);
 }
 
-function computeTotalCoins(timestamps) {
-  return buildSmokes(timestamps).reduce((sum, s) => sum + s.coins, 0);
-}
-
-function calcCoins(gapMs, mult) {
-  const mins = gapMs / 60000;
-  if (mins < 1) return 0;
-  return Math.floor(Math.pow(mins, 1.3) * mult);
-}
-
-function buildDayFirstMap(timestamps) {
-  const m = {};
-  timestamps.forEach(ts => {
-    const dk = dayKey(ts);
-    if (!m[dk] || ts < m[dk]) m[dk] = ts;
+function calcTotalLandedCoins() {
+  // AI-CONTEXT: Recomputes the total balance from scratch by summing all
+  // non-today landed days. Used on import/reset. Today's coins are not included
+  // since they may not have landed yet.
+  // Note: We DON'T use this to update S.coinBalance during normal use —
+  // coins are added incrementally at landing time to preserve any shop purchases.
+  const tk = todayKey();
+  const smokes = buildSmokes(S.smokes);
+  const pastSmokes = smokes.filter(function(s) { return dayKey(s.ts) !== tk && s.waking; });
+  const byDay = {};
+  pastSmokes.forEach(function(s) {
+    const dk = dayKey(s.ts);
+    if (!byDay[dk]) byDay[dk] = 0;
+    byDay[dk] += s.coins;
   });
-  return m;
+  return Object.values(byDay).reduce(function(sum, net) { return sum + Math.max(0, net); }, 0);
 }
 
-function computeStreak(timestamps, shieldDays) {
-  const firstMap = buildDayFirstMap(timestamps);
-  const days = Object.keys(firstMap).sort().reverse();
-  if (!days.length) return 0;
-
-  let streak = 0;
-  for (let i = 0; i < days.length; i++) {
-    const dk = days[i];
-    const firstH = new Date(firstMap[dk]).getHours();
-    const shielded = shieldDays.includes(dk);
-    const qualifies = firstH >= 17 || shielded;
-
-    if (i === 0) {
-      if (!qualifies) break;
-      streak = 1;
-    } else {
-      const prevDk = days[i-1];
-      const d1 = new Date(prevDk.replace(/-(\d+)-(\d+)$/, function(_, m, d) { return '-' + String(parseInt(m)+1).padStart(2,'0') + '-' + d; }));
-      const d2 = new Date(dk.replace(/-(\d+)-(\d+)$/, function(_, m, d) { return '-' + String(parseInt(m)+1).padStart(2,'0') + '-' + d; }));
-      const diffDays = Math.round((d1 - d2) / 86400000);
-      if (diffDays !== 1) break;
-      if (!qualifies) break;
-      streak++;
-    }
+function maybeLandTodayCoins() {
+  // AI-CONTEXT: Called every tick. If the current time has passed IDEAL_HOUR()
+  // and today hasn't landed yet, commit today's pending coins to S.coinBalance.
+  // S.landedDays prevents double-crediting if the app is reopened after midnight.
+  const now = new Date();
+  const tk = todayKey();
+  if (now.getHours() >= IDEAL_HOUR() && !S.landedDays.includes(tk)) {
+    const pending = calcPendingToday();
+    S.coinBalance += pending;
+    S.landedDays.push(tk);
+    save();
+    updateAll();
   }
-  return streak;
 }
 
 // ══════════════════════════════════════════════
@@ -987,11 +1195,9 @@ function computeStreak(timestamps, shieldDays) {
 function logSmoke(tsOverride) {
   const now = tsOverride || Date.now();
 
-  const idx = S.smokes.findIndex(t => t > now);
+  const idx = S.smokes.findIndex(function(t) { return t > now; });
   if (idx === -1) S.smokes.push(now);
   else S.smokes.splice(idx, 0, now);
-
-  S.coinBalance = computeTotalCoins(S.smokes);
 
   const streak = computeStreak(S.smokes, S.shieldDays);
   if (streak > S.bestStreak) S.bestStreak = streak;
@@ -1000,12 +1206,16 @@ function logSmoke(tsOverride) {
   save();
 
   if (!tsOverride) {
+    // Find the coins for this specific entry to show in the toast
     const built = buildSmokes(S.smokes);
-    const entry = built.find(s => s.ts === now);
-    const coinsEarned = entry ? entry.coins : 0;
+    const entry = built.find(function(s) { return s.ts === now; });
+    const coinsEntry = entry ? entry.coins : 0;
 
     animBtn();
-    if (coinsEarned > 0) { showToast(coinsEarned); spawnParticles(); flashPill(); }
+    if (coinsEntry !== 0) {
+      showToast(coinsEntry);
+      if (coinsEntry > 0) { spawnParticles(); flashPill(); }
+    }
     restartTimer();
   }
 
@@ -1017,8 +1227,7 @@ function logSmoke(tsOverride) {
 // ══════════════════════════════════════════════
 function deleteEntry(ts) {
   if (!confirm("Remove this entry?")) return;
-  S.smokes = S.smokes.filter(t => t !== ts);
-  S.coinBalance = computeTotalCoins(S.smokes);
+  S.smokes = S.smokes.filter(function(t) { return t !== ts; });
   const streak = computeStreak(S.smokes, S.shieldDays);
   if (streak > S.bestStreak) S.bestStreak = streak;
   save();
@@ -1038,7 +1247,7 @@ function addManual() {
   const tkParts = tk.split('-').map(Number);
   const yr = tkParts[0], mo = tkParts[1], dy = tkParts[2];
   const ts = new Date(yr, mo, dy, hh, mm, 0, 0).getTime();
-  if (dayKey(ts) !== tk) { alert("That time doesn't fall within today (5am\u20134:59am)."); return; }
+  if (dayKey(ts) !== tk) { alert("That time doesn't fall within today (5am–4:59am)."); return; }
   logSmoke(ts);
   document.getElementById('addTimeInput').value = '';
 }
@@ -1074,14 +1283,100 @@ function applyShield(tk) {
 }
 
 function maybeAutoShield(tk) {
+  // AI-CONTEXT: Auto-triggers a shield if the user smokes before IDEAL_HOUR()
+  // on a day where they have shields available and haven't used one yet.
+  // Previously this was hardcoded to check hour < 17. Now uses IDEAL_HOUR().
   if (S.shields <= 0) return;
   if (S.shieldDays.includes(tk)) return;
-  const firstTs = S.smokes.find(ts => dayKey(ts) === tk);
+  const firstTs = S.smokes.find(function(ts) { return dayKey(ts) === tk; });
   if (!firstTs) return;
   const h = new Date(firstTs).getHours();
-  if (h < 17) {
+  if (h < IDEAL_HOUR()) {
     applyShield(tk);
   }
+}
+
+// ══════════════════════════════════════════════
+// STREAK
+// AI-CONTEXT: A day "qualifies" for the streak if the first smoke of that day
+// was at or after IDEAL_HOUR(). Previously hardcoded as hour >= 17.
+// Shielded days always qualify regardless of when first smoke was.
+// ══════════════════════════════════════════════
+function computeStreak(timestamps, shieldDays) {
+  const firstMap = buildDayFirstMap(timestamps);
+  const days = Object.keys(firstMap).sort().reverse();
+  if (!days.length) return 0;
+
+  let streak = 0;
+  for (let i = 0; i < days.length; i++) {
+    const dk = days[i];
+    const firstH = new Date(firstMap[dk]).getHours();
+    const shielded = shieldDays.includes(dk);
+    // AI-CONTEXT: IDEAL_HOUR() gates streak qualification — not hardcoded 17
+    const qualifies = firstH >= IDEAL_HOUR() || shielded;
+
+    if (i === 0) {
+      if (!qualifies) break;
+      streak = 1;
+    } else {
+      const prevDk = days[i-1];
+      const d1 = new Date(prevDk.replace(/-(\d+)-(\d+)$/, function(_, m, d) { return '-' + String(parseInt(m)+1).padStart(2,'0') + '-' + d; }));
+      const d2 = new Date(dk.replace(/-(\d+)-(\d+)$/, function(_, m, d) { return '-' + String(parseInt(m)+1).padStart(2,'0') + '-' + d; }));
+      const diffDays = Math.round((d1 - d2) / 86400000);
+      if (diffDays !== 1) break;
+      if (!qualifies) break;
+      streak++;
+    }
+  }
+  return streak;
+}
+
+// ══════════════════════════════════════════════
+// SETTINGS UI
+// ══════════════════════════════════════════════
+function renderSettings() {
+  // AI-CONTEXT: Populates the ideal time <select> and the coin explainer text.
+  // Called by showPage('settings') and after setIdealTime().
+  // If you add new settings UI, wire them up here.
+  const select = document.getElementById('idealTimeSelect');
+  if (select) {
+    select.innerHTML = '';
+    for (let h = 0; h < 24; h++) {
+      const ampm = h >= 12 ? 'pm' : 'am';
+      const disp = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      const label = disp + ':00 ' + ampm;
+      const opt = document.createElement('option');
+      opt.value = h;
+      opt.textContent = label;
+      if (h === IDEAL_HOUR()) opt.selected = true;
+      select.appendChild(opt);
+    }
+  }
+
+  // Update the "How Coins Work" explainer to reflect current setting
+  const explainer = document.getElementById('coinExplainer');
+  if (explainer) {
+    const t = idealTimeLabel();
+    explainer.innerHTML =
+      'Smokes <span style="color:var(--green)">after ' + t + '</span>: earn coins<br>' +
+      'Smokes <span style="color:var(--red)">before ' + t + '</span>: lose coins<br>' +
+      'Formula: <span style="color:var(--blue2)">gap_minutes ^ 1.3</span> (longer gap = larger magnitude)<br>' +
+      'Before ' + t + ': longer gap = <span style="color:var(--green)">less punishment</span><br>' +
+      'Day net is always <span style="color:var(--text2)">floored at 0</span> — can\'t go negative<br>' +
+      'Coins land to your balance at <span style="color:var(--gold2)">' + t + '</span> each day<br>' +
+      'Shield cost: <span style="color:var(--shield2)">25,000 coins</span>';
+  }
+}
+
+function setIdealTime(val) {
+  // AI-CONTEXT: Called when user changes the ideal time select.
+  // Updates S.settings and recalculates everything.
+  // Note: landedDays is NOT cleared — past landed days stay as-is.
+  // Only future behaviour (and today if ideal time hasn't passed yet) changes.
+  S.settings.idealFirstSmokeHour = parseInt(val);
+  save();
+  renderSettings();
+  updateAll();
 }
 
 // ══════════════════════════════════════════════
@@ -1094,13 +1389,51 @@ function restartTimer() {
 }
 
 function tick() {
+  // AI-CONTEXT: Called every second. Updates timer display, pending coin shadow,
+  // and checks if today's coins should land (maybeLandTodayCoins).
   const el = document.getElementById('timerVal');
   const last = S.smokes.length ? S.smokes[S.smokes.length-1] : null;
-  if (!last) { el.textContent = '--:--:--'; el.className = 'timer-value'; return; }
-  const elapsed = Date.now() - last;
-  el.textContent = fmtHMS(elapsed);
-  const m = elapsed / 60000;
-  el.className = 'timer-value' + (m >= 90 ? ' great' : m >= 45 ? ' good' : '');
+  if (!last) { el.textContent = '--:--:--'; el.className = 'timer-value'; }
+  else {
+    const elapsed = Date.now() - last;
+    el.textContent = fmtHMS(elapsed);
+    const m = elapsed / 60000;
+    el.className = 'timer-value' + (m >= 90 ? ' great' : m >= 45 ? ' good' : '');
+  }
+
+  // Update pending shadow
+  updatePendingShadow();
+
+  // Check if coins should land
+  maybeLandTodayCoins();
+}
+
+function updatePendingShadow() {
+  // AI-CONTEXT: The small gray number below the coin pill.
+  // Shows today's pending net (floored at 0) as "today's running total".
+  // If the day has already landed (ideal time passed), hide it.
+  const shadow = document.getElementById('coinPendingShadow');
+  if (!shadow) return;
+  const tk = todayKey();
+  if (S.landedDays.includes(tk)) {
+    shadow.textContent = '';
+    return;
+  }
+  const pending = calcPendingToday();
+
+  // Show the raw (unflored) net to give meaningful signal even when negative
+  const smokes = buildSmokes(S.smokes);
+  const todayWaking = smokes.filter(function(s) { return dayKey(s.ts) === tk && s.waking; });
+  const rawNet = todayWaking.reduce(function(sum, s) { return sum + s.coins; }, 0);
+
+  if (rawNet === 0 && todayWaking.length === 0) {
+    shadow.textContent = '';
+    return;
+  }
+
+  const sign = rawNet >= 0 ? '+' : '';
+  shadow.textContent = 'today: ' + sign + rawNet.toLocaleString();
+  shadow.className = 'coin-pending-shadow' + (rawNet > 0 ? ' positive' : rawNet < 0 ? ' negative' : '');
 }
 
 // ══════════════════════════════════════════════
@@ -1111,16 +1444,26 @@ function animBtn() {
   b.classList.remove('fired'); void b.offsetWidth; b.classList.add('fired');
   setTimeout(function() { b.classList.remove('fired'); }, 700);
 }
+
 function showToast(coins) {
-  document.getElementById('toastAmt').textContent = '+' + coins;
+  // AI-CONTEXT: coins is a signed integer. Negative = before ideal time.
+  // Toast color changes to red for negative, gold for positive.
+  const isNeg = coins < 0;
+  const sign = isNeg ? '' : '+';
+  document.getElementById('toastAmt').textContent = sign + coins;
   const t = document.getElementById('coinToast');
-  t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 2500);
+  t.classList.remove('show', 'negative');
+  void t.offsetWidth;
+  if (isNeg) t.classList.add('negative');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show', 'negative'); }, 2500);
 }
+
 function flashPill() {
   const p = document.getElementById('coinPill');
   p.classList.add('flash'); setTimeout(function() { p.classList.remove('flash'); }, 700);
 }
+
 function spawnParticles() {
   const c = document.getElementById('particles');
   const b = document.getElementById('smokeBtn').getBoundingClientRect();
@@ -1140,6 +1483,15 @@ function spawnParticles() {
 // ══════════════════════════════════════════════
 function avg(arr) { return arr.length ? arr.reduce(function(a,b){return a+b;},0)/arr.length : 0; }
 
+function buildDayFirstMap(timestamps) {
+  const m = {};
+  timestamps.forEach(function(ts) {
+    const dk = dayKey(ts);
+    if (!m[dk] || ts < m[dk]) m[dk] = ts;
+  });
+  return m;
+}
+
 function updateAll() {
   const timestamps = S.smokes;
   const smokes = buildSmokes(timestamps);
@@ -1157,13 +1509,6 @@ function updateAll() {
 
   const dayFirstMap = buildDayFirstMap(timestamps);
   const todayFirst  = dayFirstMap[tk] || null;
-
-  const firstTimes = Object.values(dayFirstMap);
-  const avgFirstMs = firstTimes.length ? avg(firstTimes.map(function(ts) {
-    const d = new Date(ts);
-    return d.getHours()*3600000 + d.getMinutes()*60000;
-  })) : 0;
-
   const weekSmokeCount = timestamps.filter(function(ts) { return weekNum(ts) === wk; }).length;
   const days = Object.keys(dayFirstMap);
   const dailyAvg = days.length ? (timestamps.length / days.length).toFixed(1) : '—';
@@ -1187,19 +1532,21 @@ function updateAll() {
   const bsb = document.getElementById('buyShieldBtn');
   if (bsb) bsb.classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
 
-  document.getElementById('weekAvgGap').textContent   = weekAvg   ? fmtShort(weekAvg) : '--';
+  document.getElementById('weekAvgGap').textContent = weekAvg ? fmtShort(weekAvg) : '--';
   const todayWaking = smokes.filter(function(s) { return s.waking && dayKey(s.ts) === tk; }).map(function(s) { return s.gap; });
   const todayAvg = avg(todayWaking);
   document.getElementById('todayAvgGap').textContent = todayAvg ? fmtShort(todayAvg) : '--';
-  document.getElementById('smokesToday').textContent  = todaySmokes.length;
+  document.getElementById('smokesToday').textContent = todaySmokes.length;
 
   const todayFirstH = todayFirst ? new Date(todayFirst).getHours() + new Date(todayFirst).getMinutes()/60 : -1;
   const firstSmokeEl = document.getElementById('firstSmokeToday');
   const firstSmokeStat = document.getElementById('firstSmokeStat');
   firstSmokeEl.textContent = todayFirst ? fmtTime(todayFirst) : '—';
 
+  // AI-CONTEXT: First smoke stat card color transitions from red (very early)
+  // to green (at/after ideal time). The gradient pivot is IDEAL_HOUR().
   if (todayFirst && todayFirstH >= 0) {
-    const t = Math.max(0, Math.min(1, (todayFirstH - 5) / (17 - 5)));
+    const t = Math.max(0, Math.min(1, (todayFirstH - 5) / (IDEAL_HOUR() - 5)));
     let r, g, b;
     if (t < 0.5) {
       const tt = t / 0.5;
@@ -1221,14 +1568,15 @@ function updateAll() {
   }
 
   renderTodayList(todaySmokes);
+  updatePendingShadow();
 
-  document.getElementById('t-avgGap').textContent     = allAvg    ? fmtShort(allAvg) : '--';
-  document.getElementById('t-weekAvg').textContent    = weekAvg   ? fmtShort(weekAvg) : '--';
-  document.getElementById('t-lastWeekAvg').textContent= lastWkAvg ? fmtShort(lastWkAvg) : '--';
-  document.getElementById('t-total').textContent      = timestamps.length;
-  document.getElementById('t-weekCount').textContent  = weekSmokeCount;
-  document.getElementById('t-dailyAvg').textContent   = dailyAvg;
-  document.getElementById('t-bestStreak').textContent = S.bestStreak;
+  document.getElementById('t-avgGap').textContent      = allAvg    ? fmtShort(allAvg) : '--';
+  document.getElementById('t-weekAvg').textContent     = weekAvg   ? fmtShort(weekAvg) : '--';
+  document.getElementById('t-lastWeekAvg').textContent = lastWkAvg ? fmtShort(lastWkAvg) : '--';
+  document.getElementById('t-total').textContent       = timestamps.length;
+  document.getElementById('t-weekCount').textContent   = weekSmokeCount;
+  document.getElementById('t-dailyAvg').textContent    = dailyAvg;
+  document.getElementById('t-bestStreak').textContent  = S.bestStreak;
 
   const tv = document.getElementById('t-trendVal');
   const tb = document.getElementById('t-trendBadge');
@@ -1252,18 +1600,32 @@ function updateAll() {
 
 // ══════════════════════════════════════════════
 // TODAY LIST
+// AI-CONTEXT: Each row is styled by whether the smoke was before/after IDEAL_HOUR().
+// Early smokes get .early class (red tint) and show negative coin amounts in red.
+// Late smokes show positive coins in gold. First smoke of day shows no coins.
 // ══════════════════════════════════════════════
 function renderTodayList(todaySmokes) {
   const list = document.getElementById('todayList');
   if (!todaySmokes.length) { list.innerHTML = '<div class="empty-state">Nothing logged today.</div>'; return; }
   list.innerHTML = todaySmokes.map(function(s) {
-    const gapLine = s.waking
-      ? '<div class="today-meta">Gap: ' + fmtShort(s.gap) + '</div><div class="today-coins">+ ' + s.coins + ' coins</div>'
-      : '<div class="today-meta" style="color:var(--text3)">First smoke of the day</div>';
-    return '<div class="today-row">' +
+    const smokeHour = new Date(s.ts).getHours();
+    const isEarly = s.waking && smokeHour < IDEAL_HOUR();
+    const rowClass = isEarly ? ' early' : '';
+
+    let coinLine = '';
+    if (s.waking) {
+      const sign = s.coins >= 0 ? '+' : '';
+      const coinClass = s.coins < 0 ? ' negative' : '';
+      coinLine = '<div class="today-coins' + coinClass + '">' + sign + s.coins + ' coins pending</div>';
+    } else {
+      coinLine = '<div class="today-meta" style="color:var(--text3)">First smoke of the day</div>';
+    }
+
+    return '<div class="today-row' + rowClass + '">' +
       '<div class="today-row-left">' +
         '<div class="today-time">' + fmtTime(s.ts) + '</div>' +
-        gapLine +
+        '<div class="today-meta">Gap: ' + (s.waking ? fmtShort(s.gap) : '—') + '</div>' +
+        coinLine +
       '</div>' +
       '<button class="del-btn" onclick="deleteEntry(' + s.ts + ')">' +
         '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
@@ -1361,10 +1723,12 @@ function renderHistory(smokes) {
   const list = document.getElementById('histList');
   if (!smokes.length) { list.innerHTML='<div class="empty-state">No data yet.</div>'; return; }
   list.innerHTML = smokes.slice().reverse().map(function(s){
+    const sign = s.coins >= 0 ? '+' : '';
+    const coinColor = s.coins < 0 ? 'var(--red2)' : 'var(--gold2)';
     return '<div class="hist-row">' +
       '<div>' +
         '<div class="hist-time">' + fmtDT(s.ts) + '</div>' +
-        '<div class="hist-sub">' + (s.waking ? 'Gap: ' + fmtShort(s.gap) + ' · +' + s.coins + ' coins' : 'First smoke of day') + '</div>' +
+        '<div class="hist-sub">' + (s.waking ? 'Gap: ' + fmtShort(s.gap) + ' · <span style="color:' + coinColor + '">' + sign + s.coins + ' coins</span>' : 'First smoke of day') + '</div>' +
       '</div>' +
       '<div class="hist-gap">' + (s.waking ? fmtShort(s.gap) : '—') + '</div>' +
     '</div>';
@@ -1382,6 +1746,7 @@ function showPage(name) {
   if (name==='trends') setTimeout(function(){drawCharts(buildSmokes(S.smokes), buildDayFirstMap(S.smokes));}, 50);
   if (name==='aquarium') { initTankState(); setTimeout(renderAquarium, 30); }
   if (name==='store') { initTankState(); renderStore(); }
+  if (name==='settings') renderSettings();
 }
 
 // ══════════════════════════════════════════════
@@ -1412,15 +1777,19 @@ function importData(e) {
         S.tanks       = d.tanks || null;
         S.activeTank  = d.activeTank || 'classic';
         S.inventory   = d.inventory || {};
-        S.coinBalance = computeTotalCoins(S.smokes) - ((d.shields||0) * SHIELD_COST);
-        if (typeof d.coinBalance === 'number') S.coinBalance = d.coinBalance;
+        S.landedDays  = d.landedDays || [];
+        S.settings    = { ...S.settings, ...(d.settings || {}) };
+        // AI-CONTEXT: On import, recompute balance from scratch to handle format changes.
+        // calcTotalLandedCoins() sums past days only. Today's pending is not included.
+        S.coinBalance = typeof d.coinBalance === 'number' ? d.coinBalance : calcTotalLandedCoins();
       } else if (typeof d.smokes[0] === 'object' && d.smokes[0].ts) {
         if (!confirm('Import ' + d.smokes.length + ' entries (older format)? This replaces current data.')) return;
         S.smokes      = d.smokes.map(function(s){return s.ts;}).filter(Boolean).sort(function(a,b){return a-b;});
         S.shields     = d.shields || 0;
         S.shieldDays  = [];
         S.bestStreak  = d.bestStreak || 0;
-        S.coinBalance = computeTotalCoins(S.smokes);
+        S.landedDays  = [];
+        S.coinBalance = calcTotalLandedCoins();
       } else throw new Error('Unrecognised format');
 
       save(); restartTimer(); updateAll();
@@ -1432,7 +1801,12 @@ function importData(e) {
 
 function confirmReset() {
   if (!confirm('Delete ALL data? This cannot be undone.')) return;
-  S = { smokes:[], coinBalance:0, shields:0, shieldDays:[], bestStreak:0, tanks:null, activeTank:'classic', inventory:{} };
+  S = {
+    smokes:[], coinBalance:0, shields:0, shieldDays:[], bestStreak:0,
+    tanks:null, activeTank:'classic', inventory:{}, landedDays:[],
+    settings: { idealFirstSmokeHour: 17 }
+    // AI-CONTEXT: When adding new S.settings keys, add their defaults here too.
+  };
   save(); updateAll();
   document.getElementById('timerVal').textContent='--:--:--';
   if (timerTick) clearInterval(timerTick);
@@ -1447,12 +1821,17 @@ window.addEventListener('load', function() {
   document.getElementById('addTimeInput').value = pad(now.getHours()) + ':' + pad(now.getMinutes());
   updateAll();
   if (S.smokes.length) restartTimer();
+  else timerTick = setInterval(tick, 1000); // still need tick for pending shadow
 });
 
 window.addEventListener('resize', updateAll);
 
 // ══════════════════════════════════════════════
 // TANK CATALOGUE
+// AI-CONTEXT: Tanks and creatures are cosmetic rewards purchased with coins.
+// They have no gameplay effect. IDEAL_HOUR() does not affect this system.
+// If you add gameplay mechanics that interact with the tank (e.g. fish die
+// on bad days), you'd wire into calcPendingToday() or maybeLandTodayCoins().
 // ══════════════════════════════════════════════
 var TANKS = {
   classic: {
@@ -1818,7 +2197,6 @@ function renderStore() {
 
   let html = '';
 
-  // Shield card
   html += '<div class="card">' +
     '<div class="card-title">Protection</div>' +
     '<div class="store-item shield-item">' +
@@ -1827,7 +2205,7 @@ function renderStore() {
       '</div>' +
       '<div class="store-item-info">' +
         '<div class="store-item-name">Streak Shield</div>' +
-        '<div class="store-item-desc">Auto-activates to protect your streak if you smoke before 5 pm.</div>' +
+        '<div class="store-item-desc">Auto-activates to protect your streak if you smoke before ' + idealTimeLabel() + '.</div>' +
         '<div class="shields-owned" id="shieldsOwnedRow">' +
           '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' +
           '<span id="shieldsOwnedText">You own 0 shields</span>' +
@@ -1843,7 +2221,6 @@ function renderStore() {
     '</button>' +
   '</div>';
 
-  // Owned tank sections
   ownedTankIds.forEach(function(tid) {
     const tankDef = TANKS[tid]; if (!tankDef) return;
     html += '<div class="card">' +
@@ -1855,7 +2232,6 @@ function renderStore() {
     '</div>';
   });
 
-  // Locked tanks
   if (lockedTanks.length > 0) {
     html += '<div class="card"><div class="card-title">More Tanks</div>' +
       lockedTanks.map(function(t) {
@@ -1876,7 +2252,6 @@ function renderStore() {
 
   cards.innerHTML = html;
 
-  // Refresh dynamic state
   const sot = document.getElementById('shieldsOwnedText');
   if (sot) sot.textContent = 'You own ' + S.shields + ' shield' + (S.shields !== 1 ? 's' : '');
   const bsb = document.getElementById('buyShieldBtn');
@@ -1906,7 +2281,7 @@ function storeItemRow(key, type, tankId) {
 function storeBuyItem(defKey, type) {
   const def = type === 'creature' ? CREATURE_DEFS[defKey] : DECO_DEFS[defKey];
   if (!def || S.coinBalance < def.price) { alert('Not enough coins!'); return; }
-  if (!confirm('Buy ' + def.name + ' for \uD83E\uDE99 ' + def.price.toLocaleString() + '?')) return;
+  if (!confirm('Buy ' + def.name + ' for 🪙 ' + def.price.toLocaleString() + '?')) return;
   S.coinBalance -= def.price;
   invAdd(defKey, 1);
   save(); renderStore(); updateAll();
@@ -1968,7 +2343,7 @@ function renderTankSelector() {
       '<span class="tank-option-emoji">' + t.emoji + '</span>' +
       '<div class="tank-option-info">' +
         '<div class="tank-option-name">' + t.name + '</div>' +
-        '<div class="tank-option-sub">' + (owned ? (active ? 'Currently viewing' : 'Tap to switch') : '\uD83E\uDE99 ' + t.cost.toLocaleString()) + '</div>' +
+        '<div class="tank-option-sub">' + (owned ? (active ? 'Currently viewing' : 'Tap to switch') : '🪙 ' + t.cost.toLocaleString()) + '</div>' +
       '</div>' +
       (active ? '<div class="tank-active-dot"></div>' : '') +
       (!owned ? '<div class="tank-lock" style="font-size:11px;color:var(--text3)">Buy in Store</div>' : '') +
@@ -1984,26 +2359,23 @@ function renderTankSelector() {
   '</div>';
 }
 
-// ── Actions ──
 function setAqMode(mode) {
   aqMode = aqMode === mode ? 'view' : mode;
   if (aqAnimFrame) cancelAnimationFrame(aqAnimFrame);
   renderAquarium();
 }
 
-function openTankSelector() {
-  document.getElementById('tankSelector').style.display = 'block';
-}
-function closeTankSelector() {
-  document.getElementById('tankSelector').style.display = 'none';
-}
+function openTankSelector()  { document.getElementById('tankSelector').style.display = 'block'; }
+function closeTankSelector() { document.getElementById('tankSelector').style.display = 'none'; }
+
 function selectTank(id) {
   S.activeTank = id; save(); aqMode = 'view'; closeTankSelector(); renderAquarium();
 }
+
 function buyTank(id) {
   const t = TANKS[id];
   if (!t || S.coinBalance < t.cost) { alert('Not enough coins!'); return; }
-  if (!confirm('Buy ' + t.name + ' for \uD83E\uDE99 ' + t.cost.toLocaleString() + '?')) return;
+  if (!confirm('Buy ' + t.name + ' for 🪙 ' + t.cost.toLocaleString() + '?')) return;
   S.coinBalance -= t.cost;
   if (!S.tanks) S.tanks = {};
   S.tanks[id] = { owned: true, creatures: [], decos: [] };
@@ -2029,11 +2401,7 @@ function addCreature(tankId, defKey) {
 function removeCreature(tankId, defKey) {
   const td = S.tanks[tankId];
   const idx = td.creatures.map(function(c){return c.defKey;}).lastIndexOf(defKey);
-  if (idx >= 0) {
-    td.creatures.splice(idx, 1);
-    invAdd(defKey, 1);
-    save(); renderAquarium();
-  }
+  if (idx >= 0) { td.creatures.splice(idx, 1); invAdd(defKey, 1); save(); renderAquarium(); }
 }
 
 function addDeco(tankId, defKey) {
@@ -2049,11 +2417,7 @@ function addDeco(tankId, defKey) {
 function removeDeco(tankId, defKey) {
   const td = S.tanks[tankId];
   const idx = td.decos.map(function(d){return d.defKey;}).lastIndexOf(defKey);
-  if (idx >= 0) {
-    td.decos.splice(idx, 1);
-    invAdd(defKey, 1);
-    save(); renderAquarium();
-  }
+  if (idx >= 0) { td.decos.splice(idx, 1); invAdd(defKey, 1); save(); renderAquarium(); }
 }
 </script>
 </body>
