@@ -87,18 +87,15 @@ header {
 
 
 
-/* ── HEADER RIGHT CLUSTER ── */
-.header-right {
-  display: flex; align-items: center; gap: 8px;
-}
-
+/* ── HEADER CLUSTER ── */
 .streak-shield-pill {
-  display: flex; align-items: center; gap: 0;
+  display: flex; align-items: center;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 100px;
-  padding: 6px 12px;
+  padding: 7px 14px;
   gap: 8px;
+  height: 38px;
 }
 
 .ss-item {
@@ -124,6 +121,7 @@ header {
   border-radius: 100px;
   padding: 7px 14px 7px 10px;
   transition: box-shadow 0.4s;
+  height: 38px;
 }
 .coin-pill.flash { box-shadow: 0 0 24px var(--glow-gold); }
 
@@ -526,25 +524,22 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 <div class="page active" id="page-home">
 
   <header>
-    <div class="logo">interval</div>
-    <div class="header-right">
-      <div class="streak-shield-pill">
-        <span class="ss-item" id="headerShields">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--shield2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span id="headerShieldCount">0</span>
-        </span>
-        <span class="ss-divider"></span>
-        <span class="ss-item" id="headerStreak">
-          <span class="ss-fire">🔥</span>
-          <span id="headerStreakCount">0</span>
-        </span>
+    <div class="streak-shield-pill">
+      <span class="ss-item" id="headerShields">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--shield2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span id="headerShieldCount">0</span>
+      </span>
+      <span class="ss-divider"></span>
+      <span class="ss-item" id="headerStreak">
+        <span class="ss-fire">🔥</span>
+        <span id="headerStreakCount">0</span>
+      </span>
+    </div>
+    <div class="coin-pill" id="coinPill">
+      <div class="coin-pill-icon">
+        <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#050d1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9.5 9.5c0-1.1.9-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.5-2.5 1.5-2.5.5-2.5 1.5 .9 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg>
       </div>
-      <div class="coin-pill" id="coinPill">
-        <div class="coin-pill-icon">
-          <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#050d1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9.5 9.5c0-1.1.9-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.5-2.5 1.5-2.5.5-2.5 1.5 .9 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg>
-        </div>
-        <span class="coin-count" id="coinCount">0</span>
-      </div>
+      <span class="coin-count" id="coinCount">0</span>
     </div>
   </header>
 
@@ -576,27 +571,22 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 
     <!-- TODAY STATS -->
     <div class="card">
-      <div class="card-title">Today</div>
       <div class="sg">
-        <div class="stat accent sg-wide">
-          <div class="stat-label">Weekly Avg Gap</div>
-          <div class="stat-val lg blue" id="weekAvgGap">--</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Smokes Today</div>
-          <div class="stat-val" id="smokesToday">0</div>
-        </div>
         <div class="stat" id="firstSmokeStat">
           <div class="stat-label">First Smoke</div>
           <div class="stat-val" id="firstSmokeToday">—</div>
         </div>
         <div class="stat">
-          <div class="stat-label">Avg First Smoke</div>
-          <div class="stat-val" id="avgFirstSmoke">—</div>
+          <div class="stat-label">Smokes Today</div>
+          <div class="stat-val" id="smokesToday">0</div>
         </div>
-        <div class="stat">
-          <div class="stat-label">Longest Gap Ever</div>
-          <div class="stat-val blue" id="longestGap">--</div>
+        <div class="stat accent">
+          <div class="stat-label">Today's Avg Gap</div>
+          <div class="stat-val blue" id="todayAvgGap">--</div>
+        </div>
+        <div class="stat accent">
+          <div class="stat-label">Weekly Avg Gap</div>
+          <div class="stat-val blue" id="weekAvgGap">--</div>
         </div>
       </div>
     </div>
@@ -982,6 +972,7 @@ function logSmoke(tsOverride) {
   const streak = computeStreak(S.smokes, S.shieldDays);
   if (streak > S.bestStreak) S.bestStreak = streak;
 
+  maybeAutoShield(dayKey(now));
   save();
 
   if (!tsOverride) {
@@ -1002,6 +993,7 @@ function logSmoke(tsOverride) {
 // DELETE
 // ══════════════════════════════════════════════
 function deleteEntry(ts) {
+  if (!confirm("Remove this entry?")) return;
   S.smokes = S.smokes.filter(t => t !== ts);
   S.coinBalance = computeTotalCoins(S.smokes);
   const streak = computeStreak(S.smokes, S.shieldDays);
@@ -1042,14 +1034,32 @@ function buyShield() {
 function useShield() {
   if (S.shields <= 0) return;
   const tk = todayKey();
-  if (S.shieldDays.includes(tk)) { alert('Shield already used today.'); return; }
-  if (!confirm('Use a Streak Shield to protect today\'s streak?')) return;
+  if (S.shieldDays.includes(tk)) { alert('Shield already active today.'); return; }
+  if (!confirm('Activate a Streak Shield for today?')) return;
+  applyShield(tk);
+}
+
+function applyShield(tk) {
   S.shields--;
   S.shieldDays.push(tk);
   const streak = computeStreak(S.smokes, S.shieldDays);
   if (streak > S.bestStreak) S.bestStreak = streak;
   save();
   updateAll();
+}
+
+// Auto-apply shield when first smoke of day would break streak
+function maybeAutoShield(tk) {
+  if (S.shields <= 0) return;
+  if (S.shieldDays.includes(tk)) return;
+  // Check if today's first smoke was before 5pm (streak-breaking)
+  const firstTs = S.smokes.find(ts => dayKey(ts) === tk);
+  if (!firstTs) return;
+  const h = new Date(firstTs).getHours();
+  if (h < 17) {
+    // Would break streak — auto-apply shield silently
+    applyShield(tk);
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1158,13 +1168,16 @@ function updateAll() {
   if (shieldBtn) {
     shieldBtn.disabled = S.shields <= 0 || shieldedToday;
   }
-  document.getElementById('shieldsOwnedText').textContent = `You own ${S.shields} shield${S.shields !== 1 ? 's' : ''}`;
-  document.getElementById('buyShieldBtn').classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
+  const sot = document.getElementById('shieldsOwnedText'); if(sot) sot.textContent = `You own ${S.shields} shield${S.shields !== 1 ? 's' : ''}`;
+  const bsb = document.getElementById('buyShieldBtn'); if(bsb) bsb.classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
 
   // ── Home stats ──
   document.getElementById('weekAvgGap').textContent   = weekAvg   ? fmtShort(weekAvg) : '--';
+  const todayWaking = smokes.filter(s => s.waking && dayKey(s.ts) === tk).map(s => s.gap);
+  const todayAvg = avg(todayWaking);
+  document.getElementById('todayAvgGap').textContent = todayAvg ? fmtShort(todayAvg) : '--';
   document.getElementById('smokesToday').textContent  = todaySmokes.length;
-  document.getElementById('longestGap').textContent   = longestGap ? fmtShort(longestGap) : '--';
+  const lgEl = document.getElementById('longestGap'); if (lgEl) lgEl.textContent = longestGap ? fmtShort(longestGap) : '--';
 
   // ── First smoke dynamic color ──
   const todayFirstH = todayFirst ? new Date(todayFirst).getHours() + new Date(todayFirst).getMinutes()/60 : -1;
@@ -1205,8 +1218,8 @@ function updateAll() {
   if (avgFirstMs > 0) {
     const h = Math.floor(avgFirstMs/3600000), m = Math.floor((avgFirstMs%3600000)/60000);
     const d = new Date(); d.setHours(h, m, 0, 0);
-    document.getElementById('avgFirstSmoke').textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  } else document.getElementById('avgFirstSmoke').textContent = '—';
+    const afe = document.getElementById('avgFirstSmoke'); if(afe) afe.textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  } else { const afe2 = document.getElementById('avgFirstSmoke'); if(afe2) afe2.textContent = '—'; }
 
   renderTodayList(todaySmokes);
 
