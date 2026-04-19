@@ -2,1155 +2,1391 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Interval</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:      #040d1a;
-    --bg2:     #071428;
-    --bg3:     #0a1d3a;
-    --surface: #0d2244;
-    --surface2:#112a54;
-    --border:  #1a3a6e;
-    --accent:  #3b82f6;
-    --accent2: #60a5fa;
-    --accent3: #93c5fd;
-    --gold:    #f59e0b;
-    --gold2:   #fbbf24;
-    --gold3:   #fde68a;
-    --green:   #10b981;
-    --red:     #ef4444;
-    --text:    #e2eeff;
-    --text2:   #94b4d4;
-    --text3:   #5a7fa8;
-    --glow:    rgba(59,130,246,0.35);
-    --gold-glow: rgba(245,158,11,0.4);
-  }
+:root {
+  --bg:       #050d1c;
+  --bg2:      #081426;
+  --bg3:      #0c1d36;
+  --surface:  #101f38;
+  --surface2: #162844;
+  --border:   #1c3252;
+  --border2:  #243f65;
+  --blue:     #4f8ef7;
+  --blue2:    #7aaeff;
+  --blue3:    #b8d4ff;
+  --gold:     #e8a020;
+  --gold2:    #f0bc5a;
+  --gold3:    #f8d898;
+  --green:    #2dd4a0;
+  --green2:   #5ee8bc;
+  --red:      #f06060;
+  --text:     #ddeaff;
+  --text2:    #8aaac8;
+  --text3:    #486688;
+  --glow-blue: rgba(79,142,247,0.2);
+  --glow-gold: rgba(232,160,32,0.25);
+  --glow-green: rgba(45,212,160,0.2);
+  --shield:   #a78bfa;
+  --shield2:  #c4b5fd;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  html, body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(16,185,129,0.06) 0%, transparent 60%);
-    pointer-events: none; z-index: 0;
-  }
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 50% at 50% -5%, rgba(79,142,247,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(45,212,160,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 10% 80%, rgba(79,142,247,0.04) 0%, transparent 50%);
+}
 
-  .app {
-    max-width: 430px;
-    margin: 0 auto;
-    padding: 0 0 90px;
-    position: relative; z-index: 1;
-  }
+/* subtle grain overlay */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
 
-  /* ── HEADER ── */
-  header {
-    padding: 18px 18px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.app {
+  max-width: 430px; margin: 0 auto;
+  padding: 0 0 88px;
+  position: relative; z-index: 1;
+}
 
-  .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent2); }
-  .logo span { color: var(--text3); font-weight: 400; }
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
 
-  .coin-badge {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 50px; padding: 6px 14px 6px 10px;
-    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--gold2);
-    position: relative; overflow: hidden; transition: box-shadow 0.3s;
-  }
-  .coin-badge.flash { box-shadow: 0 0 20px var(--gold-glow); }
-  .coin-icon {
-    width: 20px; height: 20px;
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold3) 100%);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 11px; box-shadow: 0 0 8px var(--gold-glow); flex-shrink: 0;
-  }
+/* ── HEADER ── */
+header {
+  padding: 20px 20px 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
 
-  /* ── HERO ── */
-  .hero {
-    padding: 22px 18px 14px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-  }
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
 
-  .timer-display { text-align: center; }
-  .timer-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--text3); margin-bottom: 4px;
-  }
-  .timer-value {
-    font-family: 'Space Mono', monospace; font-size: 44px; font-weight: 700;
-    color: var(--text); letter-spacing: -1px; line-height: 1; transition: color 0.8s;
-  }
-  .timer-value.great { color: var(--green); }
-  .timer-value.good  { color: var(--accent2); }
+.logo-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--blue);
+  border-radius: 50%;
+  margin-left: 2px;
+  margin-bottom: 6px;
+  box-shadow: 0 0 8px var(--blue);
+}
 
-  /* ── SMOKE BUTTON ── */
-  .smoke-btn-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
-  .smoke-btn-ring {
-    position: absolute; width: 176px; height: 176px;
-    border-radius: 50%; border: 1.5px solid var(--border);
-    animation: ring-spin 12s linear infinite;
-  }
-  .smoke-btn-ring::after {
-    content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
-    width: 6px; height: 6px; background: var(--accent2); border-radius: 50%;
-    box-shadow: 0 0 8px var(--accent2);
-  }
-  @keyframes ring-spin { to { transform: rotate(360deg); } }
+.coin-pill {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 7px 14px 7px 10px;
+  transition: box-shadow 0.4s;
+}
+.coin-pill.flash { box-shadow: 0 0 24px var(--glow-gold); }
 
-  .smoke-btn {
-    width: 150px; height: 150px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, var(--surface2) 0%, var(--surface) 60%, #091933 100%);
-    border: none; cursor: pointer;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-    position: relative;
-    box-shadow: 0 0 0 1px var(--border), 0 0 30px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
-    transition: transform 0.15s, box-shadow 0.15s;
-    -webkit-tap-highlight-color: transparent; user-select: none;
-  }
-  .smoke-btn:active { transform: scale(0.94); }
-  .smoke-btn.pulse-anim { animation: btn-pulse 0.55s ease-out; }
-  @keyframes btn-pulse {
-    0%   { box-shadow: 0 0 0 1px var(--border), 0 0 30px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06); }
-    40%  { box-shadow: 0 0 0 2px var(--accent), 0 0 80px rgba(59,130,246,0.65), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06); }
-    100% { box-shadow: 0 0 0 1px var(--border), 0 0 30px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06); }
-  }
-  .smoke-btn-icon { font-size: 28px; line-height: 1; }
-  .smoke-btn-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); }
+.coin-pill-icon {
+  width: 22px; height: 22px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold3) 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 10px var(--glow-gold);
+  flex-shrink: 0;
+}
 
-  /* ── COIN TOAST ── */
-  .coin-toast {
-    height: 28px; display: flex; align-items: center; justify-content: center; gap: 6px;
-    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--gold2);
-    opacity: 0; transform: translateY(8px); transition: opacity 0.3s, transform 0.3s;
-    pointer-events: none;
-  }
-  .coin-toast.show { opacity: 1; transform: translateY(0); animation: toast-fade 2.2s ease-out forwards; }
-  @keyframes toast-fade { 0%{opacity:1} 60%{opacity:1} 100%{opacity:0} }
+.coin-count {
+  font-size: 14px; font-weight: 600;
+  color: var(--gold2);
+  letter-spacing: 0.3px;
+  min-width: 28px;
+}
 
-  /* ── SECTIONS ── */
-  section {
-    margin: 0 14px 12px;
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 18px; padding: 15px; position: relative; overflow: hidden;
-  }
-  section::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
-  }
-  .section-title {
-    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--text3); margin-bottom: 12px;
-  }
+/* ── SVG ICON SYSTEM ── */
+.icon { display: inline-block; flex-shrink: 0; }
 
-  /* ── STAT CARDS ── */
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-  .stat-card {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 12px; padding: 11px;
-  }
-  .stat-card.wide { grid-column: span 2; }
-  .stat-card.accent-card {
-    background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, var(--bg3) 100%);
-    border-color: rgba(59,130,246,0.35);
-  }
-  .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
-  .stat-value { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.1; }
-  .stat-value.lg    { font-size: 26px; color: var(--accent2); }
-  .stat-value.green { color: var(--green); }
-  .stat-value.gold  { color: var(--gold2); }
-  .trend-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 8px; border-radius: 50px; font-size: 10px; font-weight: 700; margin-top: 4px;
-  }
-  .trend-badge.up   { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
-  .trend-badge.down { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-  .trend-badge.same { background: rgba(90,127,168,0.1); color: var(--text3); border: 1px solid var(--border); }
+/* ── HERO ── */
+.hero {
+  padding: 28px 20px 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
 
-  /* ── TODAY'S SMOKE LIST ── */
-  .today-list { display: flex; flex-direction: column; gap: 7px; }
+.timer-wrap { text-align: center; }
 
-  .today-entry {
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 11px; padding: 9px 12px;
-    animation: entry-in 0.3s ease-out;
-  }
-  @keyframes entry-in { from { opacity:0; transform: translateY(-6px); } to { opacity:1; transform: translateY(0); } }
+.timer-label {
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 6px;
+}
 
-  .today-entry-left { display: flex; flex-direction: column; gap: 2px; }
-  .today-entry-time { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--text); }
-  .today-entry-gap  { font-size: 11px; color: var(--text3); }
-  .today-entry-coins { font-size: 11px; color: var(--gold2); }
+.timer-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px; font-weight: 500;
+  color: var(--text); letter-spacing: 1px; line-height: 1;
+  transition: color 1s ease;
+}
+.timer-value.good  { color: var(--blue2); }
+.timer-value.great { color: var(--green); }
 
-  .entry-del-btn {
-    background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25);
-    color: var(--red); border-radius: 8px; width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; cursor: pointer; flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
-  }
+/* ── MAIN BUTTON ── */
+.btn-zone { position: relative; display: flex; align-items: center; justify-content: center; }
 
-  .add-entry-row {
-    display: flex; gap: 8px; margin-top: 10px;
-  }
-  .time-input {
-    flex: 1; background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 10px; padding: 9px 12px;
-    color: var(--text); font-family: 'Space Mono', monospace; font-size: 14px;
-    outline: none; -webkit-appearance: none;
-  }
-  .time-input:focus { border-color: var(--accent); }
-  .add-btn {
-    background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.35);
-    color: var(--accent2); border-radius: 10px; padding: 9px 16px;
-    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
-    cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
-  }
-  .today-empty { color: var(--text3); font-size: 13px; text-align: center; padding: 16px 0; }
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+.orbit-ring-1 {
+  width: 192px; height: 192px;
+  border-color: var(--border);
+  animation: orbit1 16s linear infinite;
+}
+.orbit-ring-1::before {
+  content: '';
+  position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--blue2);
+  box-shadow: 0 0 10px var(--blue2), 0 0 20px var(--glow-blue);
+}
+.orbit-ring-2 {
+  width: 216px; height: 216px;
+  border-color: rgba(79,142,247,0.08);
+  animation: orbit2 24s linear infinite reverse;
+}
+@keyframes orbit1 { to { transform: rotate(360deg); } }
+@keyframes orbit2 { to { transform: rotate(360deg); } }
 
-  /* ── GRAPH ── */
-  .graph-wrap { width: 100%; height: 160px; position: relative; }
-  canvas.chart { width: 100% !important; border-radius: 8px; }
-  .graph-empty { display: flex; align-items: center; justify-content: center; height: 130px; color: var(--text3); font-size: 13px; font-style: italic; text-align: center; padding: 0 20px; }
+.smoke-btn {
+  width: 158px; height: 158px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, var(--surface2) 0%, var(--surface) 55%, #080f1e 100%);
+  border: 1px solid var(--border2);
+  cursor: pointer; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    0 0 40px rgba(79,142,247,0.1),
+    0 12px 40px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  transition: transform 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+.smoke-btn:active { transform: scale(0.93); }
+.smoke-btn.fired { animation: btn-fire 0.6s ease-out; }
+@keyframes btn-fire {
+  0%   { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(79,142,247,0.1), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  35%  { box-shadow: 0 0 0 2px var(--blue), 0 0 80px rgba(79,142,247,0.55), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(79,142,247,0.1), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+}
 
-  /* ── HISTORY ── */
-  .history-list { display: flex; flex-direction: column; gap: 7px; max-height: 400px; overflow-y: auto; }
-  .history-item {
-    display: flex; justify-content: space-between; align-items: center;
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 10px; padding: 10px 13px;
-  }
-  .history-time { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text2); }
-  .history-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
-  .history-gap  { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent2); }
+.btn-icon { opacity: 0.9; }
+.btn-label {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--text3);
+}
 
-  /* ── STORE ── */
-  .store-empty {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 50px 20px; gap: 12px; text-align: center;
-  }
-  .store-empty-icon { font-size: 48px; }
-  .store-empty-title { font-size: 18px; font-weight: 700; color: var(--text2); }
-  .store-empty-sub { font-size: 13px; color: var(--text3); line-height: 1.6; }
+/* ── COIN TOAST ── */
+.coin-toast {
+  height: 28px; display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--gold2);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.35s, transform 0.35s;
+  pointer-events: none;
+}
+.coin-toast.show { opacity: 1; transform: translateY(0); animation: toast-out 2.4s ease-out forwards; }
+@keyframes toast-out { 0%{opacity:1} 55%{opacity:1} 100%{opacity:0} }
 
-  /* ── DATA / GRAPHS PAGE ── */
-  .data-section { padding: 14px 14px 0; }
+/* ── CARDS / SECTIONS ── */
+.cards { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
 
-  /* ── EXPORT / IMPORT ── */
-  .io-row { display: flex; gap: 8px; }
-  .io-btn {
-    flex: 1; padding: 11px; border-radius: 12px; font-family: 'Syne', sans-serif;
-    font-size: 13px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; border: none;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .io-btn.export { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.35); color: var(--accent2); }
-  .io-btn.import { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
-  .io-btn.danger { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: var(--red); }
-  #importFile { display: none; }
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 16px;
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 16px; right: 16px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(79,142,247,0.2), transparent);
+}
 
-  /* ── BOTTOM NAV ── */
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: rgba(7,20,40,0.97); backdrop-filter: blur(16px);
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: space-around;
-    padding: 8px 0 max(10px, env(safe-area-inset-bottom));
-    z-index: 100;
-  }
-  .nav-btn {
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    background: none; border: none; cursor: pointer;
-    padding: 5px 14px; border-radius: 12px; transition: background 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .nav-btn.active { background: rgba(59,130,246,0.12); }
-  .nav-btn span:first-child { font-size: 19px; }
-  .nav-label { font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); }
-  .nav-btn.active .nav-label { color: var(--accent2); }
+.card-title {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 14px;
+}
 
-  /* ── PAGES ── */
-  .page { display: none; padding-bottom: 10px; }
-  .page.active { display: block; }
+/* ── STAT GRID ── */
+.sg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sg-wide { grid-column: span 2; }
 
-  /* ── PARTICLES ── */
-  .particle-container { position: fixed; pointer-events: none; z-index: 999; inset: 0; }
-  .particle {
-    position: absolute; font-size: 17px; pointer-events: none;
-    animation: particle-fly 1.2s ease-out forwards;
-  }
-  @keyframes particle-fly {
-    0%   { transform: translate(0,0) scale(1); opacity: 1; }
-    100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity: 0; }
-  }
+.stat {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 12px 13px;
+}
+.stat.accent {
+  background: linear-gradient(135deg, rgba(79,142,247,0.08) 0%, var(--bg3) 100%);
+  border-color: rgba(79,142,247,0.25);
+}
+.stat.gold-accent {
+  background: linear-gradient(135deg, rgba(232,160,32,0.08) 0%, var(--bg3) 100%);
+  border-color: rgba(232,160,32,0.2);
+}
+.stat.green-accent {
+  background: linear-gradient(135deg, rgba(45,212,160,0.08) 0%, var(--bg3) 100%);
+  border-color: rgba(45,212,160,0.2);
+}
 
-  /* ── DIVIDER ── */
-  .divider { height: 1px; background: var(--border); margin: 12px 0; opacity: 0.5; }
+.stat-label {
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 5px;
+}
+.stat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 600;
+  color: var(--text); line-height: 1;
+}
+.stat-val.lg { font-size: 30px; }
+.stat-val.blue  { color: var(--blue2); }
+.stat-val.gold  { color: var(--gold2); }
+.stat-val.green { color: var(--green); }
+.stat-val.shield-color { color: var(--shield2); }
 
-  ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.stat-sub {
+  font-size: 11px; color: var(--text3); margin-top: 3px;
+}
+
+/* ── STREAK DISPLAY ── */
+.streak-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 14px; padding: 13px 14px;
+}
+.streak-left { display: flex; flex-direction: column; gap: 3px; }
+.streak-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; font-weight: 600; line-height: 1;
+  color: var(--gold2);
+}
+.streak-label { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+.streak-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.streak-flames { font-size: 22px; letter-spacing: -2px; }
+.streak-status { font-size: 11px; color: var(--text3); }
+
+/* ── TREND BADGE ── */
+.trend-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 100px; font-size: 10px; font-weight: 600;
+  margin-top: 4px; letter-spacing: 0.5px;
+}
+.trend-pill.up   { background: rgba(45,212,160,0.12); color: var(--green2); border: 1px solid rgba(45,212,160,0.25); }
+.trend-pill.down { background: rgba(240,96,96,0.1); color: var(--red); border: 1px solid rgba(240,96,96,0.2); }
+.trend-pill.same { background: rgba(72,102,136,0.15); color: var(--text3); border: 1px solid var(--border); }
+
+/* ── TODAY LIST ── */
+.today-list { display: flex; flex-direction: column; gap: 6px; }
+
+.today-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 13px;
+  animation: row-in 0.25s ease-out;
+}
+@keyframes row-in { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+
+.today-row-left { display: flex; flex-direction: column; gap: 2px; }
+.today-time { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 500; color: var(--text); }
+.today-meta { font-size: 11px; color: var(--text3); }
+.today-coins { font-size: 11px; color: var(--gold2); }
+
+.del-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer;
+  background: rgba(240,96,96,0.08); border: 1px solid rgba(240,96,96,0.18);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.del-btn:active { background: rgba(240,96,96,0.2); }
+
+.empty-state {
+  text-align: center; padding: 20px 0;
+  font-size: 13px; color: var(--text3);
+}
+
+/* ── ADD ROW ── */
+.add-row { display: flex; gap: 8px; margin-top: 10px; }
+.sep { height: 1px; background: var(--border); margin: 10px 0; opacity: 0.5; }
+
+.t-input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 11px; padding: 10px 13px;
+  color: var(--text); font-family: 'Outfit', sans-serif; font-size: 14px;
+  outline: none;
+}
+.t-input:focus { border-color: rgba(79,142,247,0.5); }
+
+.add-btn {
+  background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3);
+  color: var(--blue2); border-radius: 11px; padding: 10px 18px;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── GRAPH ── */
+.graph-wrap { width: 100%; height: 160px; position: relative; }
+.graph-empty {
+  display: flex; align-items: center; justify-content: center;
+  height: 140px; color: var(--text3); font-size: 12px;
+  text-align: center; padding: 0 24px; line-height: 1.6;
+}
+canvas.chart { width: 100% !important; border-radius: 8px; }
+
+/* ── HISTORY ── */
+.hist-list { display: flex; flex-direction: column; gap: 6px; max-height: 380px; overflow-y: auto; }
+.hist-row {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 11px; padding: 10px 13px;
+}
+.hist-time { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--text2); }
+.hist-sub  { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.hist-gap  { font-size: 13px; font-weight: 500; color: var(--blue2); }
+
+/* ── STORE ── */
+.store-balance {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 24px 0 8px;
+}
+.store-balance-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px; font-weight: 600; color: var(--gold2);
+}
+.store-balance-label { font-size: 11px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+
+.store-item {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 10px; position: relative; overflow: hidden;
+}
+.store-item.shield-item {
+  border-color: rgba(167,139,250,0.3);
+  background: linear-gradient(135deg, rgba(167,139,250,0.07) 0%, var(--bg3) 100%);
+}
+.store-item-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.shield-bg { background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25); }
+
+.store-item-info { flex: 1; }
+.store-item-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.store-item-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+.store-item-owned { font-size: 11px; color: var(--shield2); margin-top: 4px; font-weight: 500; }
+
+.buy-btn {
+  border: none; border-radius: 10px; padding: 9px 14px; cursor: pointer;
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  flex-shrink: 0; transition: opacity 0.2s, transform 0.15s;
+}
+.buy-btn:active { transform: scale(0.95); }
+.buy-btn.shield-buy { background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: var(--shield2); }
+.buy-btn.cant-afford { opacity: 0.4; cursor: not-allowed; }
+.buy-btn-price { font-size: 10px; opacity: 0.7; }
+
+.shields-owned {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 10px; padding: 8px 12px; margin-top: 4px;
+  font-size: 12px; color: var(--shield2);
+}
+
+/* ── USE SHIELD BUTTON ── */
+.use-shield-btn {
+  width: 100%; padding: 11px; border-radius: 12px; border: none; cursor: pointer;
+  background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25);
+  color: var(--shield2); font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 8px; transition: background 0.2s;
+}
+.use-shield-btn:active { background: rgba(167,139,250,0.22); }
+.use-shield-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── SETTINGS ── */
+.io-row { display: flex; gap: 8px; }
+.io-btn {
+  flex: 1; padding: 12px; border-radius: 13px;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.io-btn.export { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.25); color: var(--blue2); }
+.io-btn.import { background: rgba(45,212,160,0.1); border: 1px solid rgba(45,212,160,0.22); color: var(--green2); }
+.io-btn.danger { background: rgba(240,96,96,0.08); border: 1px solid rgba(240,96,96,0.2); color: var(--red); }
+.io-hint { font-size: 11px; color: var(--text3); line-height: 1.65; margin: 10px 0 14px; }
+#importFile { display: none; }
+
+/* ── BOTTOM NAV ── */
+.nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(5,13,28,0.96); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around;
+  padding: 10px 0 max(12px, env(safe-area-inset-bottom));
+  z-index: 100;
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  padding: 4px 18px; border-radius: 12px;
+  transition: background 0.2s;
+}
+.nav-item.active { background: rgba(79,142,247,0.1); }
+.nav-icon { opacity: 0.45; transition: opacity 0.2s; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text3);
+}
+.nav-item.active .nav-label { color: var(--blue2); }
+
+/* ── PARTICLES ── */
+.particles { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+.pt {
+  position: absolute; width: 4px; height: 4px; border-radius: 50%;
+  animation: pt-fly 1.1s ease-out forwards;
+}
+@keyframes pt-fly {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 20px 20px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 600; color: var(--text2);
+  letter-spacing: 0.5px;
+}
 </style>
 </head>
 <body>
 
-<div class="particle-container" id="particles"></div>
+<div class="particles" id="particles"></div>
 
 <div class="app">
 
-  <!-- ══════════════════════════════
-       HOME PAGE
-  ══════════════════════════════ -->
-  <div class="page active" id="page-home">
+<!-- ══════════════ HOME ══════════════ -->
+<div class="page active" id="page-home">
 
-    <header>
-      <div class="logo">Interval</div>
-      <div class="coin-badge" id="coinBadge">
-        <div class="coin-icon">🪙</div>
-        <span id="totalCoinsDisplay">0</span>
+  <header>
+    <div class="logo">interval<span class="logo-dot"></span></div>
+    <div class="coin-pill" id="coinPill">
+      <div class="coin-pill-icon">
+        <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#050d1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9.5 9.5c0-1.1.9-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.5-2.5 1.5-2.5.5-2.5 1.5 .9 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg>
       </div>
-    </header>
+      <span class="coin-count" id="coinCount">0</span>
+    </div>
+  </header>
 
-    <div class="hero">
-      <div class="timer-display">
-        <div class="timer-label">Time Since Last Smoke</div>
-        <div class="timer-value" id="timerDisplay">--:--:--</div>
+  <div class="hero">
+    <div class="timer-wrap">
+      <div class="timer-label">Time Since Last Smoke</div>
+      <div class="timer-value" id="timerVal">--:--:--</div>
+    </div>
+
+    <div class="btn-zone">
+      <div class="orbit-ring orbit-ring-2"></div>
+      <div class="orbit-ring orbit-ring-1"></div>
+      <button class="smoke-btn" id="smokeBtn" onclick="logSmoke()">
+        <svg class="btn-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 16h12M2 19h12M18 16v3M17 7c0-2.8 2-3 2-5M21 7c0-2.8 2-3 2-5M15 16c0-1.7 1.3-2 2-2s2 .3 2 2v3"/>
+        </svg>
+        <span class="btn-label">I Just Smoked</span>
+      </button>
+    </div>
+
+    <div class="coin-toast" id="coinToast">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/></svg>
+      <span id="toastAmt">+0</span> coins earned
+    </div>
+  </div>
+
+  <div class="cards">
+
+    <!-- STREAK -->
+    <div class="card">
+      <div class="card-title">Daily Streak</div>
+      <div class="streak-row">
+        <div class="streak-left">
+          <div class="streak-num" id="streakNum">0</div>
+          <div class="streak-label">days · first smoke after 5 pm</div>
+        </div>
+        <div class="streak-right">
+          <div class="streak-flames" id="streakFlames"></div>
+          <div class="streak-status" id="streakStatus">—</div>
+        </div>
       </div>
+      <button class="use-shield-btn" id="useShieldBtn" onclick="useShield()" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Use Streak Shield (<span id="shieldsOwnedInline">0</span> owned)
+      </button>
+    </div>
 
-      <div class="smoke-btn-wrap">
-        <div class="smoke-btn-ring"></div>
-        <button class="smoke-btn" id="smokeBtn" onclick="logSmoke()">
-          <div class="smoke-btn-icon">🚬</div>
-          <div class="smoke-btn-label">I Just Smoked</div>
+    <!-- TODAY STATS -->
+    <div class="card">
+      <div class="card-title">Today</div>
+      <div class="sg">
+        <div class="stat accent sg-wide">
+          <div class="stat-label">Weekly Avg Gap</div>
+          <div class="stat-val lg blue" id="weekAvgGap">--</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Smokes Today</div>
+          <div class="stat-val" id="smokesToday">0</div>
+        </div>
+        <div class="stat gold-accent">
+          <div class="stat-label">First Smoke</div>
+          <div class="stat-val gold" id="firstSmokeToday">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Avg First Smoke</div>
+          <div class="stat-val" id="avgFirstSmoke">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Longest Gap Ever</div>
+          <div class="stat-val blue" id="longestGap">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY LIST -->
+    <div class="card">
+      <div class="card-title">Today's Log</div>
+      <div class="today-list" id="todayList">
+        <div class="empty-state">Nothing logged today.</div>
+      </div>
+      <div class="sep"></div>
+      <div class="add-row">
+        <input type="time" class="t-input" id="addTimeInput">
+        <button class="add-btn" onclick="addManual()">+ Add</button>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /home -->
+
+
+<!-- ══════════════ TRENDS ══════════════ -->
+<div class="page" id="page-trends">
+  <div class="page-header">
+    <div class="logo">interval<span class="logo-dot"></span></div>
+    <div class="page-title">Trends</div>
+  </div>
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-title">All-Time</div>
+      <div class="sg">
+        <div class="stat green-accent sg-wide">
+          <div class="stat-label">Overall Avg Gap</div>
+          <div class="stat-val lg green" id="t-avgGap">--</div>
+          <div class="stat-sub">waking hours only</div>
+        </div>
+        <div class="stat accent">
+          <div class="stat-label">Weekly Avg Gap</div>
+          <div class="stat-val blue" id="t-weekAvg">--</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Last Week Avg</div>
+          <div class="stat-val" id="t-lastWeekAvg">--</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Weekly Trend</div>
+          <div class="stat-val" id="t-trendVal">—</div>
+          <div id="t-trendBadge"></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total Smokes</div>
+          <div class="stat-val" id="t-total">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Smokes This Week</div>
+          <div class="stat-val" id="t-weekCount">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Daily Avg Count</div>
+          <div class="stat-val" id="t-dailyAvg">—</div>
+        </div>
+        <div class="stat gold-accent">
+          <div class="stat-label">Best Streak</div>
+          <div class="stat-val gold" id="t-bestStreak">0</div>
+          <div class="stat-sub">days</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Gap History</div>
+      <div class="graph-wrap">
+        <div class="graph-empty" id="gapEmpty">Smoke at least twice in a day to see your gap chart</div>
+        <canvas id="gapChart" class="chart" height="160" style="display:none;"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Daily Smoke Count</div>
+      <div class="graph-wrap">
+        <div class="graph-empty" id="dailyEmpty">Smoke on multiple days to see daily trends</div>
+        <canvas id="dailyChart" class="chart" height="160" style="display:none;"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Full History</div>
+      <div class="hist-list" id="histList">
+        <div class="empty-state">No data yet.</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /trends -->
+
+
+<!-- ══════════════ STORE ══════════════ -->
+<div class="page" id="page-store">
+  <div class="page-header">
+    <div class="logo">interval<span class="logo-dot"></span></div>
+    <div class="page-title">Store</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;padding:4px 0 20px;">
+    <div class="store-balance-label">Your Balance</div>
+    <div class="store-balance-num" id="storeCoins">0</div>
+    <div class="store-balance-label">coins</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">Protection</div>
+
+      <div class="store-item shield-item">
+        <div class="store-item-icon shield-bg">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--shield2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <div class="store-item-info">
+          <div class="store-item-name">Streak Shield</div>
+          <div class="store-item-desc">Protects your streak for one day if you smoke before 5 pm. Use it from the Home tab.</div>
+          <div class="shields-owned" id="shieldsOwnedRow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span id="shieldsOwnedText">You own 0 shields</span>
+          </div>
+        </div>
+        <button class="buy-btn shield-buy" id="buyShieldBtn" onclick="buyShield()">
+          Buy
+          <span class="buy-btn-price">15,000</span>
         </button>
       </div>
 
-      <div class="coin-toast" id="coinToast">
-        <span>🪙</span><span id="coinsEarnedAmt">+0</span> coins
-      </div>
-    </div>
-
-    <!-- TOP STATS -->
-    <section>
-      <div class="section-title">Today</div>
-      <div class="stats-grid">
-        <div class="stat-card accent-card">
-          <div class="stat-label">Avg Gap (this week)</div>
-          <div class="stat-value lg green" id="weekAvgGap">--</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Smokes Today</div>
-          <div class="stat-value" id="smokesToday">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">First Smoke</div>
-          <div class="stat-value gold" id="firstSmokeToday">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Avg First Smoke</div>
-          <div class="stat-value" id="avgFirstSmoke">—</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TODAY'S LOG -->
-    <section>
-      <div class="section-title">Today's Smokes</div>
-      <div class="today-list" id="todayList">
-        <div class="today-empty">No smokes logged today.</div>
-      </div>
-      <div class="divider"></div>
-      <div class="add-entry-row">
-        <input type="time" class="time-input" id="manualTimeInput">
-        <button class="add-btn" onclick="addManualEntry()">+ Add</button>
-      </div>
-    </section>
-
-  </div><!-- /home -->
-
-
-  <!-- ══════════════════════════════
-       DATA PAGE
-  ══════════════════════════════ -->
-  <div class="page" id="page-data">
-
-    <header>
-      <div class="logo">Interval</div>
-      <div style="font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;">Trends</div>
-    </header>
-
-    <div style="height:14px;"></div>
-
-    <!-- FULL STATS -->
-    <section>
-      <div class="section-title">All-Time Stats</div>
-      <div class="stats-grid">
-        <div class="stat-card wide accent-card">
-          <div class="stat-label">Avg Gap (waking hours only)</div>
-          <div class="stat-value lg green" id="d-avgGap">--</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Longest Ever Gap</div>
-          <div class="stat-value" id="d-longestGap">--</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Smokes</div>
-          <div class="stat-value" id="d-totalSmokes">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Smokes This Week</div>
-          <div class="stat-value" id="d-weekSmokes">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Weekly Trend</div>
-          <div class="stat-value" id="d-trendVal">—</div>
-          <div id="d-trendBadge"></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Daily Avg Smokes</div>
-          <div class="stat-value" id="d-dailyAvg">—</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- GAP CHART -->
-    <section>
-      <div class="section-title">Gap Between Smokes</div>
-      <div class="graph-wrap" id="gapGraphWrap">
-        <div class="graph-empty" id="gapGraphEmpty">Smoke at least twice to see your gap history</div>
-        <canvas id="gapChart" class="chart" height="160" style="display:none;"></canvas>
-      </div>
-    </section>
-
-    <!-- DAILY COUNT CHART -->
-    <section>
-      <div class="section-title">Daily Smoke Count</div>
-      <div class="graph-wrap" id="dailyGraphWrap">
-        <div class="graph-empty" id="dailyGraphEmpty">Smoke on multiple days to see daily trends</div>
-        <canvas id="dailyChart" class="chart" height="160" style="display:none;"></canvas>
-      </div>
-    </section>
-
-    <!-- HISTORY -->
-    <section>
-      <div class="section-title">Full History</div>
-      <div class="history-list" id="historyList">
-        <div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">No data yet.</div>
-      </div>
-    </section>
-
-  </div><!-- /data -->
-
-
-  <!-- ══════════════════════════════
-       STORE PAGE
-  ══════════════════════════════ -->
-  <div class="page" id="page-store">
-    <header>
-      <div class="logo">Interval</div>
-      <div class="coin-badge" style="pointer-events:none;">
-        <div class="coin-icon">🪙</div>
-        <span id="storeCoinsDisplay">0</span>
-      </div>
-    </header>
-    <div class="store-empty">
-      <div class="store-empty-icon">🏪</div>
-      <div class="store-empty-title">Store Coming Soon</div>
-      <div class="store-empty-sub">Keep earning coins — rewards and upgrades will be available here.</div>
     </div>
   </div>
+</div><!-- /store -->
 
 
-  <!-- ══════════════════════════════
-       SETTINGS PAGE
-  ══════════════════════════════ -->
-  <div class="page" id="page-settings">
-    <header>
-      <div class="logo">Interval</div>
-      <div style="font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;">Settings</div>
-    </header>
-    <div style="height:14px;"></div>
-    <section>
-      <div class="section-title">Data</div>
-      <div class="io-row" style="margin-bottom:9px;">
-        <button class="io-btn export" onclick="exportData()">⬇ Export JSON</button>
-        <label class="io-btn import" for="importFile">⬆ Import JSON</label>
+<!-- ══════════════ SETTINGS ══════════════ -->
+<div class="page" id="page-settings">
+  <div class="page-header">
+    <div class="logo">interval<span class="logo-dot"></span></div>
+    <div class="page-title">Settings</div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">Data Backup</div>
+      <div class="io-row" style="margin-bottom:0;">
+        <button class="io-btn export" onclick="exportData()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export JSON
+        </button>
+        <label class="io-btn import" for="importFile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import JSON
+        </label>
         <input type="file" id="importFile" accept=".json" onchange="importData(event)">
       </div>
-      <div style="font-size:11px;color:var(--text3);line-height:1.6;margin-bottom:14px;">
-        Export saves all your data as a .json file. Import it anytime to restore — even after updating the app.
+      <div class="io-hint">Export saves your data as a file. Import it after any app update to restore everything.</div>
+      <button class="io-btn danger" style="width:100%;" onclick="confirmReset()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        Reset All Data
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">How Coins Work</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.75;">
+        Base coins per gap: <span style="color:var(--blue2)">minutes ^ 1.3</span><br>
+        First smoke after noon: <span style="color:var(--green)">×1.1 bonus all day</span><br>
+        First smoke before noon: <span style="color:var(--red)">×0.8 penalty all day</span><br>
+        Shield cost: <span style="color:var(--shield2)">15,000 coins</span>
       </div>
-      <button class="io-btn danger" style="width:100%;" onclick="confirmReset()">⚠ Reset All Data</button>
-    </section>
+    </div>
   </div>
+</div><!-- /settings -->
 
 </div><!-- /app -->
 
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <button class="nav-btn active" id="nav-home" onclick="showPage('home')">
-    <span>🏠</span><span class="nav-label">Home</span>
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-item active" id="nav-home" onclick="showPage('home')">
+    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="nav-label">Home</span>
   </button>
-  <button class="nav-btn" id="nav-data" onclick="showPage('data')">
-    <span>📈</span><span class="nav-label">Trends</span>
+  <button class="nav-item" id="nav-trends" onclick="showPage('trends')">
+    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span class="nav-label">Trends</span>
   </button>
-  <button class="nav-btn" id="nav-store" onclick="showPage('store')">
-    <span>🏪</span><span class="nav-label">Store</span>
+  <button class="nav-item" id="nav-store" onclick="showPage('store')">
+    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span class="nav-label">Store</span>
   </button>
-  <button class="nav-btn" id="nav-settings" onclick="showPage('settings')">
-    <span>⚙️</span><span class="nav-label">Settings</span>
+  <button class="nav-item" id="nav-settings" onclick="showPage('settings')">
+    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    <span class="nav-label">Settings</span>
   </button>
-</div>
+</nav>
 
 <script>
-// ════════════════════════════════════════════
-// STATE & PERSISTENCE
-// ════════════════════════════════════════════
-let state = { smokes: [], totalCoins: 0, longestGap: 0 };
-let timerInterval = null;
+// ══════════════════════════════════════════════
+// STATE
+// Raw data only. smokes = sorted array of ms timestamps.
+// Everything (gaps, coins, streaks) is computed fresh each time.
+// Only store what cannot be recomputed:
+//   coinBalance  — spendable currency (earned minus spent)
+//   shields      — owned count
+//   shieldDays   — dayKeys where a shield was activated
+//   bestStreak   — historical max, can't recompute without full history of shield use
+// ══════════════════════════════════════════════
+let S = {
+  smokes:      [],   // [ms, ms, ms, ...]  always sorted ascending
+  coinBalance: 0,
+  shields:     0,
+  shieldDays:  [],   // ["2024-03-15", ...]
+  bestStreak:  0,
+};
 
-function save() { localStorage.setItem('interval_v3', JSON.stringify(state)); }
+let timerTick = null;
+
+// ══════════════════════════════════════════════
+// PERSIST
+// ══════════════════════════════════════════════
+function save() {
+  localStorage.setItem('interval_v2', JSON.stringify(S));
+}
 
 function load() {
   try {
-    const r = localStorage.getItem('interval_v3');
-    // Also try to migrate from v2
-    if (!r) {
-      const old = localStorage.getItem('interval_v2');
-      if (old) { state = JSON.parse(old); save(); return; }
+    const r = localStorage.getItem('interval_v2');
+    if (r) { S = { ...S, ...JSON.parse(r) }; return; }
+
+    // Migrate from interval_v1 (smokes were objects with .ts)
+    const v1 = localStorage.getItem('interval_v1');
+    if (v1) {
+      const o = JSON.parse(v1);
+      S.smokes = (o.smokes || []).map(s => typeof s === 'object' ? s.ts : s).filter(Boolean).sort((a,b)=>a-b);
+      S.shields = o.shields || 0;
+      S.bestStreak = o.bestStreak || 0;
+      S.coinBalance = computeTotalCoins(S.smokes); // recompute from scratch
+      save(); return;
     }
-    if (r) state = JSON.parse(r);
-  } catch(e) {}
+
+    // Migrate from smokegap_v3
+    const v3 = localStorage.getItem('smokegap_v3');
+    if (v3) {
+      const o = JSON.parse(v3);
+      S.smokes = (o.smokes || []).map(s => s.ts).filter(Boolean).sort((a,b)=>a-b);
+      S.coinBalance = computeTotalCoins(S.smokes);
+      save();
+    }
+  } catch(e) { console.warn('Load error', e); }
 }
 
-// ════════════════════════════════════════════
-// DAY / WEEK HELPERS  (5 AM boundary)
-// ════════════════════════════════════════════
-function getDayKey(ts) {
+// ══════════════════════════════════════════════
+// TIME HELPERS
+// ══════════════════════════════════════════════
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function dayKey(ts) {
   const d = new Date(ts);
   if (d.getHours() < 5) d.setDate(d.getDate() - 1);
-  return `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return `${d.getFullYear()}-${pad(d.getMonth())}-${pad(d.getDate())}`;
 }
-function getTodayKey() { return getDayKey(Date.now()); }
+function todayKey() { return dayKey(Date.now()); }
 
-function getWeekNum(ts) {
-  const d = new Date(ts);
-  d.setHours(0,0,0,0);
+function weekNum(ts) {
+  const d = new Date(ts); d.setHours(0,0,0,0);
   d.setDate(d.getDate() + 4 - (d.getDay() || 7));
   const y = new Date(d.getFullYear(), 0, 1);
   return Math.ceil(((d - y) / 86400000 + 1) / 7);
 }
-function getThisWeekNum() { return getWeekNum(Date.now()); }
+function thisWeek() { return weekNum(Date.now()); }
 
-// ════════════════════════════════════════════
-// COIN FORMULA
-// ════════════════════════════════════════════
-function calcCoins(ms) {
-  const mins = ms / 60000;
-  return mins < 1 ? 0 : Math.floor(Math.pow(mins, 1.3));
-}
-
-// ════════════════════════════════════════════
-// GAP VALIDITY
-// A gap counts in averages only if both smokes are in the same waking day
-// (i.e. getDayKey of smoke A === getDayKey of smoke B)
-// ════════════════════════════════════════════
-function isWakingGap(smoke) {
-  // smoke has prevTs property set when logged
-  if (!smoke.gap || !smoke.prevTs) return false;
-  return getDayKey(smoke.prevTs) === getDayKey(smoke.ts);
-}
-
-// ════════════════════════════════════════════
-// FORMAT HELPERS
-// ════════════════════════════════════════════
-function pad(n) { return String(n).padStart(2, '0'); }
-
-function fmtHHMMSS(ms) {
+function fmtHMS(ms) {
   if (!ms || ms < 0) return '--:--:--';
   const s = Math.floor(ms / 1000);
   return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;
 }
-
 function fmtShort(ms) {
   if (!ms || ms < 0) return '--';
-  const s = Math.floor(ms / 1000);
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  if (h > 0) return `${h}h ${m}m`;
-  return `${m}m ${pad(s % 60)}s`;
+  const s = Math.floor(ms / 1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+function fmtTime(ts) { return new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+function fmtDT(ts)   { return new Date(ts).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+
+// ══════════════════════════════════════════════
+// COMPUTE HELPERS  (work on raw timestamp arrays)
+// ══════════════════════════════════════════════
+
+// Build enriched smoke objects from raw timestamps for rendering/logic.
+// Each object: { ts, prevTs, gap, waking, coins }
+function buildSmokes(timestamps) {
+  return timestamps.map((ts, i) => {
+    const prevTs = i > 0 ? timestamps[i-1] : null;
+    const gap    = prevTs ? ts - prevTs : 0;
+    const waking = gap > 0 && prevTs != null && dayKey(prevTs) === dayKey(ts);
+    const mult   = waking ? getDayMultFromTs(ts, timestamps) : 1;
+    const coins  = waking ? calcCoins(gap, mult) : 0;
+    return { ts, prevTs, gap, waking, coins };
+  });
 }
 
-function fmtTime(ts) {
-  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+// Day multiplier based on first smoke hour of that waking day
+function getDayMultFromTs(ts, timestamps) {
+  const dk = dayKey(ts);
+  const firstInDay = timestamps.find(t => dayKey(t) === dk);
+  if (!firstInDay) return 1;
+  const h = new Date(firstInDay).getHours();
+  return h < 12 ? 0.8 : 1.1;
 }
 
-function fmtDateTime(ts) {
-  return new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+// Compute total coins earned from a raw timestamp array
+function computeTotalCoins(timestamps) {
+  return buildSmokes(timestamps).reduce((sum, s) => sum + s.coins, 0);
 }
 
-// ════════════════════════════════════════════
+function calcCoins(gapMs, mult) {
+  const mins = gapMs / 60000;
+  if (mins < 1) return 0;
+  return Math.floor(Math.pow(mins, 1.3) * mult);
+}
+
+// Build dayKey -> firstTs map
+function buildDayFirstMap(timestamps) {
+  const m = {};
+  timestamps.forEach(ts => {
+    const dk = dayKey(ts);
+    if (!m[dk] || ts < m[dk]) m[dk] = ts;
+  });
+  return m;
+}
+
+// Compute current streak from timestamps + shieldDays
+function computeStreak(timestamps, shieldDays) {
+  const firstMap = buildDayFirstMap(timestamps);
+  const days = Object.keys(firstMap).sort().reverse(); // newest first
+  if (!days.length) return 0;
+
+  let streak = 0;
+  for (let i = 0; i < days.length; i++) {
+    const dk = days[i];
+    const firstH = new Date(firstMap[dk]).getHours();
+    const shielded = shieldDays.includes(dk);
+    const qualifies = firstH >= 17 || shielded;
+
+    if (i === 0) {
+      if (!qualifies) break;
+      streak = 1;
+    } else {
+      // Check consecutive with previous (days[i-1] is the more recent)
+      const prevDk = days[i-1];
+      const d1 = new Date(prevDk.replace(/-(\d+)-(\d+)$/, (_, m, d) => `-${String(parseInt(m)+1).padStart(2,'0')}-${d}`));
+      const d2 = new Date(dk.replace(/-(\d+)-(\d+)$/, (_, m, d) => `-${String(parseInt(m)+1).padStart(2,'0')}-${d}`));
+      const diffDays = Math.round((d1 - d2) / 86400000);
+      if (diffDays !== 1) break;
+      if (!qualifies) break;
+      streak++;
+    }
+  }
+  return streak;
+}
+
+// ══════════════════════════════════════════════
 // LOG SMOKE
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function logSmoke(tsOverride) {
   const now = tsOverride || Date.now();
-  const smokes = state.smokes;
 
-  // Find previous smoke (chronologically before now)
-  const prev = [...smokes].reverse().find(s => s.ts < now);
-  const prevTs = prev ? prev.ts : null;
-  const gap = prevTs ? now - prevTs : 0;
-  const coins = (gap > 0 && getDayKey(prevTs) === getDayKey(now)) ? calcCoins(gap) : 0;
+  // Insert in sorted order
+  const idx = S.smokes.findIndex(t => t > now);
+  if (idx === -1) S.smokes.push(now);
+  else S.smokes.splice(idx, 0, now);
 
-  if (gap > 0 && gap > state.longestGap && getDayKey(prevTs) === getDayKey(now)) {
-    state.longestGap = gap;
-  }
+  // Recompute coinBalance from scratch (handles mult changes from inserting)
+  S.coinBalance = computeTotalCoins(S.smokes);
 
-  const entry = { ts: now, prevTs: prevTs, gap: gap, coins: coins };
+  // Update bestStreak
+  const streak = computeStreak(S.smokes, S.shieldDays);
+  if (streak > S.bestStreak) S.bestStreak = streak;
 
-  // Insert in chronological order
-  const insertIdx = smokes.findIndex(s => s.ts > now);
-  if (insertIdx === -1) smokes.push(entry);
-  else smokes.splice(insertIdx, 0, entry);
-
-  // Recalculate the entry immediately AFTER this one (its gap/prevTs changes)
-  recalcAfter(now);
-
-  state.totalCoins += coins;
   save();
 
   if (!tsOverride) {
-    // Button animation
-    const btn = document.getElementById('smokeBtn');
-    btn.classList.remove('pulse-anim');
-    void btn.offsetWidth;
-    btn.classList.add('pulse-anim');
-    setTimeout(() => btn.classList.remove('pulse-anim'), 600);
+    // Figure out coins just earned for this smoke (for toast)
+    const built = buildSmokes(S.smokes);
+    const entry = built.find(s => s.ts === now);
+    const coinsEarned = entry ? entry.coins : 0;
 
-    if (coins > 0) { showCoinToast(coins); spawnParticles(); flashCoinBadge(); }
+    animBtn();
+    if (coinsEarned > 0) { showToast(coinsEarned); spawnParticles(); flashPill(); }
     restartTimer();
   }
 
   updateAll();
 }
 
-// After inserting/removing at ts, recalculate the next entry's gap
-function recalcAfter(ts) {
-  const smokes = state.smokes;
-  const idx = smokes.findIndex(s => s.ts === ts);
-  if (idx === -1 || idx === smokes.length - 1) return;
-  const next = smokes[idx + 1];
-  const oldCoins = next.coins || 0;
-  next.prevTs = ts;
-  next.gap = next.ts - ts;
-  next.coins = (getDayKey(ts) === getDayKey(next.ts)) ? calcCoins(next.gap) : 0;
-  state.totalCoins += (next.coins - oldCoins);
-}
-
-// ════════════════════════════════════════════
-// MANUAL ADD
-// ════════════════════════════════════════════
-function addManualEntry() {
-  const input = document.getElementById('manualTimeInput');
-  const val = input.value;
-  if (!val) return;
-
-  // Build today's timestamp from the time input
-  const [hh, mm] = val.split(':').map(Number);
-  const now = new Date();
-
-  // Determine which calendar date "today" (5am boundary) refers to
-  const todayKey = getTodayKey();
-  const [yr, mo, dy] = todayKey.split('-').map(Number);
-  const ts = new Date(yr, mo, dy, hh, mm, 0, 0).getTime();
-
-  // Validate it's within today's waking window
-  if (getDayKey(ts) !== getTodayKey()) {
-    alert("That time doesn't fall within today's window (5 AM to 4:59 AM next day).");
-    return;
-  }
-
-  logSmoke(ts);
-  input.value = '';
-}
-
-// ════════════════════════════════════════════
-// DELETE ENTRY
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// DELETE
+// ══════════════════════════════════════════════
 function deleteEntry(ts) {
-  const smokes = state.smokes;
-  const idx = smokes.findIndex(s => s.ts === ts);
-  if (idx === -1) return;
-
-  // Remove coins this entry earned
-  state.totalCoins -= (smokes[idx].coins || 0);
-
-  smokes.splice(idx, 1);
-
-  // Recalc the entry now at idx (previously idx+1), which has a new predecessor
-  if (idx < smokes.length) {
-    const next = smokes[idx];
-    const prev = idx > 0 ? smokes[idx - 1] : null;
-    const oldCoins = next.coins || 0;
-    next.prevTs = prev ? prev.ts : null;
-    next.gap = prev ? next.ts - prev.ts : 0;
-    next.coins = (prev && getDayKey(prev.ts) === getDayKey(next.ts)) ? calcCoins(next.gap) : 0;
-    state.totalCoins += (next.coins - oldCoins);
-  }
-
-  // Recalculate longestGap
-  const wakingGaps = smokes.filter(isWakingGap).map(s => s.gap);
-  state.longestGap = wakingGaps.length ? Math.max(...wakingGaps) : 0;
-
+  S.smokes = S.smokes.filter(t => t !== ts);
+  S.coinBalance = computeTotalCoins(S.smokes);
+  const streak = computeStreak(S.smokes, S.shieldDays);
+  if (streak > S.bestStreak) S.bestStreak = streak;
   save();
   restartTimer();
   updateAll();
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// MANUAL ADD
+// ══════════════════════════════════════════════
+function addManual() {
+  const val = document.getElementById('addTimeInput').value;
+  if (!val) return;
+  const [hh, mm] = val.split(':').map(Number);
+  const tk = todayKey();
+  const [yr, mo, dy] = tk.split('-').map(Number);
+  const ts = new Date(yr, mo, dy, hh, mm, 0, 0).getTime();
+  if (dayKey(ts) !== tk) { alert("That time doesn't fall within today (5am–4:59am)."); return; }
+  logSmoke(ts);
+  document.getElementById('addTimeInput').value = '';
+}
+
+// ══════════════════════════════════════════════
+// STORE
+// ══════════════════════════════════════════════
+const SHIELD_COST = 15000;
+
+function buyShield() {
+  if (S.coinBalance < SHIELD_COST) return;
+  S.coinBalance -= SHIELD_COST;
+  S.shields++;
+  save();
+  updateAll();
+}
+
+function useShield() {
+  if (S.shields <= 0) return;
+  const tk = todayKey();
+  if (S.shieldDays.includes(tk)) { alert('Shield already used today.'); return; }
+  if (!confirm('Use a Streak Shield to protect today\'s streak?')) return;
+  S.shields--;
+  S.shieldDays.push(tk);
+  const streak = computeStreak(S.smokes, S.shieldDays);
+  if (streak > S.bestStreak) S.bestStreak = streak;
+  save();
+  updateAll();
+}
+
+// ══════════════════════════════════════════════
 // TIMER
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function restartTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(tickTimer, 1000);
-  tickTimer();
+  if (timerTick) clearInterval(timerTick);
+  timerTick = setInterval(tick, 1000);
+  tick();
 }
 
-function tickTimer() {
-  const el = document.getElementById('timerDisplay');
-  const smokes = state.smokes;
-  const last = smokes.length ? smokes[smokes.length - 1].ts : null;
+function tick() {
+  const el = document.getElementById('timerVal');
+  const last = S.smokes.length ? S.smokes[S.smokes.length-1] : null;
   if (!last) { el.textContent = '--:--:--'; el.className = 'timer-value'; return; }
-
   const elapsed = Date.now() - last;
-  el.textContent = fmtHHMMSS(elapsed);
-  const mins = elapsed / 60000;
-  el.className = 'timer-value' + (mins >= 90 ? ' great' : mins >= 45 ? ' good' : '');
+  el.textContent = fmtHMS(elapsed);
+  const m = elapsed / 60000;
+  el.className = 'timer-value' + (m >= 90 ? ' great' : m >= 45 ? ' good' : '');
 }
 
-// ════════════════════════════════════════════
-// COIN ANIMATIONS
-// ════════════════════════════════════════════
-function showCoinToast(coins) {
+// ══════════════════════════════════════════════
+// ANIMATIONS
+// ══════════════════════════════════════════════
+function animBtn() {
+  const b = document.getElementById('smokeBtn');
+  b.classList.remove('fired'); void b.offsetWidth; b.classList.add('fired');
+  setTimeout(() => b.classList.remove('fired'), 700);
+}
+function showToast(coins) {
+  document.getElementById('toastAmt').textContent = '+' + coins;
   const t = document.getElementById('coinToast');
-  document.getElementById('coinsEarnedAmt').textContent = '+' + coins;
-  t.classList.remove('show');
-  void t.offsetWidth;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2300);
+  t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
-
-function flashCoinBadge() {
-  const b = document.getElementById('coinBadge');
-  b.classList.add('flash');
-  setTimeout(() => b.classList.remove('flash'), 600);
+function flashPill() {
+  const p = document.getElementById('coinPill');
+  p.classList.add('flash'); setTimeout(() => p.classList.remove('flash'), 700);
 }
-
 function spawnParticles() {
-  const container = document.getElementById('particles');
-  const btn = document.getElementById('smokeBtn');
-  const r = btn.getBoundingClientRect();
-  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-  const emojis = ['🪙','✨','⭐','💫','🌟'];
-  for (let i = 0; i < 8; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    const angle = (Math.PI * 2 * i / 8) + (Math.random() - 0.5) * 0.5;
-    const dist = 60 + Math.random() * 70;
-    p.style.left = cx + 'px'; p.style.top = cy + 'px';
-    p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
-    p.style.setProperty('--ty', Math.sin(angle) * dist - 20 + 'px');
-    p.style.animationDelay = (Math.random() * 0.2) + 's';
-    container.appendChild(p);
-    setTimeout(() => p.remove(), 1500);
+  const c = document.getElementById('particles');
+  const b = document.getElementById('smokeBtn').getBoundingClientRect();
+  const cx = b.left + b.width/2, cy = b.top + b.height/2;
+  const colors = ['#4f8ef7','#7aaeff','#2dd4a0','#e8a020','#f0bc5a'];
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div'); p.className = 'pt';
+    const angle = (Math.PI*2*i/10) + (Math.random()-.5)*.6;
+    const dist = 55 + Math.random()*65;
+    p.style.cssText = `left:${cx}px;top:${cy}px;background:${colors[i%colors.length]};--tx:${Math.cos(angle)*dist}px;--ty:${Math.sin(angle)*dist-15}px;animation-delay:${Math.random()*.15}s`;
+    c.appendChild(p); setTimeout(() => p.remove(), 1200);
   }
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // UPDATE ALL UI
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
+function avg(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+
 function updateAll() {
-  const smokes = state.smokes;
-  const todayKey = getTodayKey();
-  const thisWeek = getThisWeekNum();
+  const timestamps = S.smokes;
+  const smokes = buildSmokes(timestamps);  // enriched for rendering
+  const tk = todayKey();
+  const wk = thisWeek();
 
-  // Today's smokes
-  const todaySmokes = smokes.filter(s => getDayKey(s.ts) === todayKey);
+  const todaySmokes  = smokes.filter(s => dayKey(s.ts) === tk);
+  const wakingGaps   = smokes.filter(s => s.waking).map(s => s.gap);
+  const weekWaking   = smokes.filter(s => s.waking && weekNum(s.ts) === wk).map(s => s.gap);
+  const lastWkWaking = smokes.filter(s => s.waking && weekNum(s.ts) === wk-1).map(s => s.gap);
 
-  // Waking-hours gaps only
-  const wakingGaps = smokes.filter(isWakingGap).map(s => s.gap);
-  const thisWeekWakingGaps = smokes.filter(s => isWakingGap(s) && getWeekNum(s.ts) === thisWeek).map(s => s.gap);
-  const lastWeekWakingGaps = smokes.filter(s => isWakingGap(s) && getWeekNum(s.ts) === thisWeek - 1).map(s => s.gap);
+  const weekAvg   = avg(weekWaking);
+  const allAvg    = avg(wakingGaps);
+  const lastWkAvg = avg(lastWkWaking);
 
-  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+  const dayFirstMap = buildDayFirstMap(timestamps);
+  const todayFirst  = dayFirstMap[tk] || null;
 
-  const weekAvg = avg(thisWeekWakingGaps);
-  const allAvg  = avg(wakingGaps);
-  const lastWeekAvg = avg(lastWeekWakingGaps);
-
-  // First smoke of today
-  const todayFirst = todaySmokes.length ? todaySmokes[0].ts : null;
-
-  // Avg first smoke (per day)
-  const dayFirstMap = {};
-  smokes.forEach(s => {
-    const dk = getDayKey(s.ts);
-    if (!dayFirstMap[dk] || s.ts < dayFirstMap[dk]) dayFirstMap[dk] = s.ts;
-  });
   const firstTimes = Object.values(dayFirstMap);
-  let avgFirstMs = 0;
-  if (firstTimes.length) {
-    const msFromMidnight = firstTimes.map(ts => {
-      const d = new Date(ts);
-      return d.getHours() * 3600000 + d.getMinutes() * 60000;
-    });
-    avgFirstMs = avg(msFromMidnight);
-  }
+  const avgFirstMs = firstTimes.length ? avg(firstTimes.map(ts => {
+    const d = new Date(ts);
+    return d.getHours()*3600000 + d.getMinutes()*60000;
+  })) : 0;
 
-  // Weekly smokes
-  const weekSmokes = smokes.filter(s => getWeekNum(s.ts) === thisWeek);
+  const weekSmokeCount = timestamps.filter(ts => weekNum(ts) === wk).length;
+  const days = Object.keys(dayFirstMap);
+  const dailyAvg = days.length ? (timestamps.length / days.length).toFixed(1) : '—';
 
-  // Daily avg smokes (across all days recorded)
-  const daysRecorded = Object.keys(dayFirstMap).length;
-  const dailyAvgSmokes = daysRecorded ? (smokes.length / daysRecorded).toFixed(1) : '—';
+  const longestGap = wakingGaps.length ? Math.max(...wakingGaps) : 0;
+  const streak = computeStreak(timestamps, S.shieldDays);
+  if (streak > S.bestStreak) { S.bestStreak = streak; }
 
-  // ── HOME ──
-  document.getElementById('totalCoinsDisplay').textContent = state.totalCoins.toLocaleString();
-  document.getElementById('storeCoinsDisplay').textContent = state.totalCoins.toLocaleString();
-  document.getElementById('weekAvgGap').textContent = weekAvg ? fmtShort(weekAvg) : '--';
-  document.getElementById('smokesToday').textContent = todaySmokes.length;
+  // ── Coins ──
+  const coinStr = S.coinBalance.toLocaleString();
+  document.getElementById('coinCount').textContent = coinStr;
+  document.getElementById('storeCoins').textContent = coinStr;
+
+  // ── Streak ──
+  document.getElementById('streakNum').textContent = streak;
+  document.getElementById('streakFlames').textContent = streak > 0 ? '🔥'.repeat(Math.min(streak, 5)) : '';
+
+  const todayFirstH = todayFirst ? new Date(todayFirst).getHours() : -1;
+  const shieldedToday = S.shieldDays.includes(tk);
+  let streakSt = todayFirst
+    ? (shieldedToday ? '🛡 Shield active today' : todayFirstH >= 17 ? '✓ Today qualifies' : 'First smoke too early today')
+    : 'No smoke yet today';
+  document.getElementById('streakStatus').textContent = streakSt;
+
+  const shieldBtn = document.getElementById('useShieldBtn');
+  shieldBtn.disabled = S.shields <= 0 || shieldedToday;
+  document.getElementById('shieldsOwnedInline').textContent = S.shields;
+  document.getElementById('shieldsOwnedText').textContent = `You own ${S.shields} shield${S.shields !== 1 ? 's' : ''}`;
+  document.getElementById('buyShieldBtn').classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
+
+  // ── Home stats ──
+  document.getElementById('weekAvgGap').textContent   = weekAvg   ? fmtShort(weekAvg) : '--';
+  document.getElementById('smokesToday').textContent  = todaySmokes.length;
   document.getElementById('firstSmokeToday').textContent = todayFirst ? fmtTime(todayFirst) : '—';
+  document.getElementById('longestGap').textContent   = longestGap ? fmtShort(longestGap) : '--';
 
   if (avgFirstMs > 0) {
-    const h = Math.floor(avgFirstMs / 3600000);
-    const m = Math.floor((avgFirstMs % 3600000) / 60000);
-    const fakeDate = new Date(); fakeDate.setHours(h, m, 0, 0);
-    document.getElementById('avgFirstSmoke').textContent = fakeDate.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  } else {
-    document.getElementById('avgFirstSmoke').textContent = '—';
-  }
+    const h = Math.floor(avgFirstMs/3600000), m = Math.floor((avgFirstMs%3600000)/60000);
+    const d = new Date(); d.setHours(h, m, 0, 0);
+    document.getElementById('avgFirstSmoke').textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  } else document.getElementById('avgFirstSmoke').textContent = '—';
 
   renderTodayList(todaySmokes);
 
-  // ── DATA ──
-  document.getElementById('d-avgGap').textContent = allAvg ? fmtShort(allAvg) : '--';
-  document.getElementById('d-longestGap').textContent = state.longestGap ? fmtShort(state.longestGap) : '--';
-  document.getElementById('d-totalSmokes').textContent = smokes.length;
-  document.getElementById('d-weekSmokes').textContent = weekSmokes.length;
-  document.getElementById('d-dailyAvg').textContent = dailyAvgSmokes;
+  // ── Trends ──
+  document.getElementById('t-avgGap').textContent     = allAvg    ? fmtShort(allAvg) : '--';
+  document.getElementById('t-weekAvg').textContent    = weekAvg   ? fmtShort(weekAvg) : '--';
+  document.getElementById('t-lastWeekAvg').textContent= lastWkAvg ? fmtShort(lastWkAvg) : '--';
+  document.getElementById('t-total').textContent      = timestamps.length;
+  document.getElementById('t-weekCount').textContent  = weekSmokeCount;
+  document.getElementById('t-dailyAvg').textContent   = dailyAvg;
+  document.getElementById('t-bestStreak').textContent = S.bestStreak;
 
-  // Trend
-  const trendVal = document.getElementById('d-trendVal');
-  const trendBadge = document.getElementById('d-trendBadge');
-  if (weekAvg && lastWeekAvg) {
-    const pct = ((weekAvg - lastWeekAvg) / lastWeekAvg * 100).toFixed(0);
-    if (weekAvg > lastWeekAvg) {
-      trendVal.textContent = `+${pct}%`; trendVal.style.color = 'var(--green)';
-      trendBadge.innerHTML = `<div class="trend-badge up">▲ Improving</div>`;
-    } else if (weekAvg < lastWeekAvg) {
-      trendVal.textContent = `${pct}%`; trendVal.style.color = 'var(--red)';
-      trendBadge.innerHTML = `<div class="trend-badge down">▼ Declining</div>`;
+  const tv = document.getElementById('t-trendVal');
+  const tb = document.getElementById('t-trendBadge');
+  if (weekAvg && lastWkAvg) {
+    const pct = ((weekAvg-lastWkAvg)/lastWkAvg*100).toFixed(0);
+    if (weekAvg > lastWkAvg) {
+      tv.textContent=`+${pct}%`; tv.className='stat-val green';
+      tb.innerHTML=`<div class="trend-pill up">▲ Improving</div>`;
+    } else if (weekAvg < lastWkAvg) {
+      tv.textContent=`${pct}%`; tv.className='stat-val'; tv.style.color='var(--red)';
+      tb.innerHTML=`<div class="trend-pill down">▼ Declining</div>`;
     } else {
-      trendVal.textContent = '0%'; trendVal.style.color = '';
-      trendBadge.innerHTML = `<div class="trend-badge same">— Same</div>`;
+      tv.textContent='0%'; tv.className='stat-val'; tv.style.color='';
+      tb.innerHTML=`<div class="trend-pill same">— Same</div>`;
     }
-  } else {
-    trendVal.textContent = '—'; trendVal.style.color = ''; trendBadge.innerHTML = '';
-  }
+  } else { tv.textContent='—'; tv.style.color=''; tb.innerHTML=''; }
 
-  drawGapChart(smokes);
-  drawDailyChart(smokes, dayFirstMap);
+  drawCharts(smokes, dayFirstMap);
   renderHistory(smokes);
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // TODAY LIST
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function renderTodayList(todaySmokes) {
   const list = document.getElementById('todayList');
-  if (!todaySmokes.length) {
-    list.innerHTML = '<div class="today-empty">No smokes logged today.</div>';
-    return;
-  }
-
-  list.innerHTML = todaySmokes.map((s, i) => {
-    const gapStr = (isWakingGap(s) && s.gap)
-      ? `<div class="today-entry-gap">Gap: ${fmtShort(s.gap)}${s.coins ? ` · 🪙 +${s.coins}` : ''}</div>`
-      : `<div class="today-entry-gap" style="color:var(--text3)">First smoke of the day</div>`;
-
-    return `
-      <div class="today-entry">
-        <div class="today-entry-left">
-          <div class="today-entry-time">${fmtTime(s.ts)}</div>
-          ${gapStr}
-        </div>
-        <button class="entry-del-btn" onclick="deleteEntry(${s.ts})">✕</button>
-      </div>`;
+  if (!todaySmokes.length) { list.innerHTML = '<div class="empty-state">Nothing logged today.</div>'; return; }
+  list.innerHTML = todaySmokes.map(s => {
+    const gapLine = s.waking
+      ? `<div class="today-meta">Gap: ${fmtShort(s.gap)}</div><div class="today-coins">+ ${s.coins} coins</div>`
+      : `<div class="today-meta" style="color:var(--text3)">First smoke of the day</div>`;
+    return `<div class="today-row">
+      <div class="today-row-left">
+        <div class="today-time">${fmtTime(s.ts)}</div>
+        ${gapLine}
+      </div>
+      <button class="del-btn" onclick="deleteEntry(${s.ts})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
   }).join('');
 }
 
-// ════════════════════════════════════════════
-// CHARTS (pure canvas)
-// ════════════════════════════════════════════
-function drawGapChart(smokes) {
-  const points = smokes.filter(isWakingGap);
-  const canvas = document.getElementById('gapChart');
-  const empty  = document.getElementById('gapGraphEmpty');
+// ══════════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════════
+function drawCharts(smokes, dayFirstMap) {
+  const gapPts   = smokes.filter(s => s.waking);
+  const gapCanvas = document.getElementById('gapChart');
+  const gapEmpty  = document.getElementById('gapEmpty');
+  if (gapPts.length >= 2) {
+    gapCanvas.style.display='block'; gapEmpty.style.display='none';
+    drawLine(gapCanvas, gapPts.map(s=>s.gap/60000), v=>v>=60?(v/60).toFixed(1)+'h':Math.round(v)+'m');
+  } else { gapCanvas.style.display='none'; gapEmpty.style.display='flex'; }
 
-  if (points.length < 2) {
-    canvas.style.display = 'none'; empty.style.display = 'flex'; return;
-  }
-  canvas.style.display = 'block'; empty.style.display = 'none';
-
-  renderLineChart(canvas, points.map(s => s.gap / 60000), v => v >= 60 ? (v/60).toFixed(1)+'h' : Math.round(v)+'m');
-}
-
-function drawDailyChart(smokes, dayFirstMap) {
   const days = Object.keys(dayFirstMap).sort();
-  const canvas = document.getElementById('dailyChart');
-  const empty  = document.getElementById('dailyGraphEmpty');
-
-  if (days.length < 2) {
-    canvas.style.display = 'none'; empty.style.display = 'flex'; return;
-  }
-  canvas.style.display = 'block'; empty.style.display = 'none';
-
-  const counts = days.map(dk => smokes.filter(s => getDayKey(s.ts) === dk).length);
-  renderBarChart(canvas, counts, days.map(dk => {
-    const [,m,d] = dk.split('-');
-    return `${parseInt(m)+1}/${d}`;
-  }));
+  const dcCanvas = document.getElementById('dailyChart');
+  const dcEmpty  = document.getElementById('dailyEmpty');
+  if (days.length >= 2) {
+    dcCanvas.style.display='block'; dcEmpty.style.display='none';
+    const counts = days.map(dk => S.smokes.filter(ts=>dayKey(ts)===dk).length);
+    const labels = days.map(dk => { const [,m,d]=dk.split('-'); return `${parseInt(m)+1}/${d}`; });
+    drawBars(dcCanvas, counts, labels);
+  } else { dcCanvas.style.display='none'; dcEmpty.style.display='flex'; }
 }
 
-function renderLineChart(canvas, values, labelFn) {
-  const dpr = window.devicePixelRatio || 1;
-  const W = canvas.parentElement.clientWidth;
-  const H = 160;
-  canvas.width = W * dpr; canvas.height = H * dpr;
-  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, W, H);
+function canvasSetup(canvas) {
+  const dpr=window.devicePixelRatio||1, W=canvas.parentElement.clientWidth, H=160;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr); ctx.clearRect(0,0,W,H);
+  return {ctx,W,H};
+}
 
-  const pad = { top: 12, right: 14, bottom: 20, left: 44 };
-  const gW = W - pad.left - pad.right;
-  const gH = H - pad.top - pad.bottom;
-  const n = values.length;
-  const maxV = Math.max(...values) * 1.15;
-
-  // Grid
-  for (let i = 0; i <= 4; i++) {
-    const y = pad.top + gH - (i / 4) * gH;
-    ctx.strokeStyle = 'rgba(26,58,110,0.55)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + gW, y); ctx.stroke();
-    ctx.fillStyle = 'rgba(90,127,168,0.8)';
-    ctx.font = `9px 'Space Mono', monospace`; ctx.textAlign = 'right';
-    ctx.fillText(labelFn((i / 4) * maxV), pad.left - 5, y + 3);
+function drawLine(canvas, values, labelFn) {
+  const {ctx,W,H}=canvasSetup(canvas);
+  const p={top:12,right:14,bottom:20,left:44},gW=W-p.left-p.right,gH=H-p.top-p.bottom;
+  const n=values.length,maxV=Math.max(...values)*1.15;
+  for(let i=0;i<=4;i++){
+    const y=p.top+gH-(i/4)*gH;
+    ctx.strokeStyle='rgba(28,50,82,0.7)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(p.left,y);ctx.lineTo(p.left+gW,y);ctx.stroke();
+    ctx.fillStyle='rgba(72,102,136,0.9)';ctx.font='9px Outfit,sans-serif';ctx.textAlign='right';
+    ctx.fillText(labelFn((i/4)*maxV),p.left-5,y+3);
   }
-
-  const pts = values.map((v, i) => ({
-    x: pad.left + (n === 1 ? gW/2 : (i / (n-1)) * gW),
-    y: pad.top + gH - (v / maxV) * gH
-  }));
-
-  // Fill
-  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + gH);
-  grad.addColorStop(0, 'rgba(59,130,246,0.28)');
-  grad.addColorStop(1, 'rgba(59,130,246,0)');
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pad.top + gH);
-  pts.forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.lineTo(pts[pts.length-1].x, pad.top + gH);
-  ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
-
-  // Line
-  ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
-  for (let i = 1; i < pts.length; i++) {
-    const mx = (pts[i-1].x + pts[i].x) / 2;
-    ctx.bezierCurveTo(mx, pts[i-1].y, mx, pts[i].y, pts[i].x, pts[i].y);
-  }
-  ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.stroke();
-
-  // Dots
-  const maxVal = Math.max(...values);
-  pts.forEach((p, i) => {
-    const isHigh = values[i] === maxVal;
-    ctx.beginPath(); ctx.arc(p.x, p.y, isHigh ? 5 : 3.5, 0, Math.PI*2);
-    ctx.fillStyle = isHigh ? '#10b981' : '#60a5fa'; ctx.fill();
-    if (isHigh) {
-      ctx.beginPath(); ctx.arc(p.x, p.y, 7.5, 0, Math.PI*2);
-      ctx.strokeStyle = 'rgba(16,185,129,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
-    }
+  const pts=values.map((v,i)=>({x:p.left+(n===1?gW/2:(i/(n-1))*gW),y:p.top+gH-(v/maxV)*gH}));
+  const grad=ctx.createLinearGradient(0,p.top,0,p.top+gH);
+  grad.addColorStop(0,'rgba(79,142,247,0.22)');grad.addColorStop(1,'rgba(79,142,247,0)');
+  ctx.beginPath();ctx.moveTo(pts[0].x,p.top+gH);
+  pts.forEach(pt=>ctx.lineTo(pt.x,pt.y));
+  ctx.lineTo(pts[pts.length-1].x,p.top+gH);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  for(let i=1;i<pts.length;i++){const mx=(pts[i-1].x+pts[i].x)/2;ctx.bezierCurveTo(mx,pts[i-1].y,mx,pts[i].y,pts[i].x,pts[i].y);}
+  ctx.strokeStyle='#4f8ef7';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+  const maxVal=Math.max(...values);
+  pts.forEach((pt,i)=>{
+    const hi=values[i]===maxVal;
+    ctx.beginPath();ctx.arc(pt.x,pt.y,hi?5:3,0,Math.PI*2);
+    ctx.fillStyle=hi?'#2dd4a0':'#7aaeff';ctx.fill();
+    if(hi){ctx.beginPath();ctx.arc(pt.x,pt.y,8,0,Math.PI*2);ctx.strokeStyle='rgba(45,212,160,0.3)';ctx.lineWidth=1.5;ctx.stroke();}
   });
 }
 
-function renderBarChart(canvas, values, labels) {
-  const dpr = window.devicePixelRatio || 1;
-  const W = canvas.parentElement.clientWidth;
-  const H = 160;
-  canvas.width = W * dpr; canvas.height = H * dpr;
-  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, W, H);
-
-  const pad = { top: 12, right: 10, bottom: 24, left: 30 };
-  const gW = W - pad.left - pad.right;
-  const gH = H - pad.top - pad.bottom;
-  const n = values.length;
-  const maxV = Math.max(...values, 1);
-
-  // Grid lines
-  for (let i = 0; i <= 4; i++) {
-    const y = pad.top + gH - (i / 4) * gH;
-    ctx.strokeStyle = 'rgba(26,58,110,0.55)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + gW, y); ctx.stroke();
-    if (i > 0) {
-      ctx.fillStyle = 'rgba(90,127,168,0.8)';
-      ctx.font = `9px 'Space Mono', monospace`; ctx.textAlign = 'right';
-      ctx.fillText(Math.round((i/4)*maxV), pad.left - 4, y + 3);
-    }
+function drawBars(canvas, values, labels) {
+  const {ctx,W,H}=canvasSetup(canvas);
+  const p={top:12,right:10,bottom:22,left:28},gW=W-p.left-p.right,gH=H-p.top-p.bottom;
+  const n=values.length,maxV=Math.max(...values,1);
+  for(let i=0;i<=4;i++){
+    const y=p.top+gH-(i/4)*gH;
+    ctx.strokeStyle='rgba(28,50,82,0.7)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(p.left,y);ctx.lineTo(p.left+gW,y);ctx.stroke();
+    if(i>0){ctx.fillStyle='rgba(72,102,136,0.9)';ctx.font='9px Outfit,sans-serif';ctx.textAlign='right';ctx.fillText(Math.round((i/4)*maxV),p.left-3,y+3);}
   }
-
-  const barW = Math.min(gW / n * 0.6, 28);
-  const step = gW / n;
-
-  values.forEach((v, i) => {
-    const bH = (v / maxV) * gH;
-    const x = pad.left + i * step + step/2 - barW/2;
-    const y = pad.top + gH - bH;
-
-    const grad = ctx.createLinearGradient(0, y, 0, pad.top + gH);
-    grad.addColorStop(0, 'rgba(59,130,246,0.8)');
-    grad.addColorStop(1, 'rgba(59,130,246,0.2)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.roundRect(x, y, barW, bH, [4, 4, 0, 0]);
-    ctx.fill();
-
-    // X label
-    ctx.fillStyle = 'rgba(90,127,168,0.8)';
-    ctx.font = `8px 'Space Mono', monospace`; ctx.textAlign = 'center';
-    if (n <= 14 || i % Math.ceil(n/10) === 0)
-      ctx.fillText(labels[i], x + barW/2, pad.top + gH + 14);
+  const bW=Math.min(gW/n*.65,30),step=gW/n;
+  values.forEach((v,i)=>{
+    const bH=(v/maxV)*gH,x=p.left+i*step+step/2-bW/2,y=p.top+gH-bH;
+    const g=ctx.createLinearGradient(0,y,0,p.top+gH);
+    g.addColorStop(0,'rgba(79,142,247,0.75)');g.addColorStop(1,'rgba(79,142,247,0.15)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(x,y,bW,bH,[3,3,0,0]);ctx.fill();
+    if(n<=16||i%Math.ceil(n/10)===0){ctx.fillStyle='rgba(72,102,136,0.85)';ctx.font='8px Outfit,sans-serif';ctx.textAlign='center';ctx.fillText(labels[i],x+bW/2,p.top+gH+14);}
   });
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // HISTORY
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 function renderHistory(smokes) {
-  const list = document.getElementById('historyList');
-  if (!smokes.length) {
-    list.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">No data yet.</div>';
-    return;
-  }
-  list.innerHTML = [...smokes].reverse().map(s => `
-    <div class="history-item">
+  const list = document.getElementById('histList');
+  if (!smokes.length) { list.innerHTML='<div class="empty-state">No data yet.</div>'; return; }
+  list.innerHTML = [...smokes].reverse().map(s=>`
+    <div class="hist-row">
       <div>
-        <div class="history-time">${fmtDateTime(s.ts)}</div>
-        <div class="history-meta">${isWakingGap(s) ? `Gap: ${fmtShort(s.gap)} · 🪙 +${s.coins}` : 'First smoke of day'}</div>
+        <div class="hist-time">${fmtDT(s.ts)}</div>
+        <div class="hist-sub">${s.waking?`Gap: ${fmtShort(s.gap)} · +${s.coins} coins`:'First smoke of day'}</div>
       </div>
-      <div class="history-gap">${isWakingGap(s) ? fmtShort(s.gap) : '—'}</div>
+      <div class="hist-gap">${s.waking?fmtShort(s.gap):'—'}</div>
     </div>`).join('');
 }
 
-// ════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════
 function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  if (name === 'data') {
-    setTimeout(() => { drawGapChart(state.smokes); drawDailyChart(state.smokes, buildDayFirstMap()); }, 50);
-  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if (name==='trends') setTimeout(()=>drawCharts(buildSmokes(S.smokes), buildDayFirstMap(S.smokes)), 50);
 }
 
-function buildDayFirstMap() {
-  const map = {};
-  state.smokes.forEach(s => {
-    const dk = getDayKey(s.ts);
-    if (!map[dk] || s.ts < map[dk]) map[dk] = s.ts;
-  });
-  return map;
-}
-
-// ════════════════════════════════════════════
-// EXPORT / IMPORT
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// EXPORT / IMPORT / RESET
+// ══════════════════════════════════════════════
 function exportData() {
-  const json = JSON.stringify(state, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+  const blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
-  a.href = url;
+  a.href = URL.createObjectURL(blob);
   a.download = `interval-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
-  URL.revokeObjectURL(url);
 }
 
-function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+function importData(e) {
+  const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = ev => {
     try {
-      const imported = JSON.parse(e.target.result);
-      if (!imported.smokes) throw new Error('Invalid file');
-      if (!confirm(`Import ${imported.smokes.length} entries? This will replace your current data.`)) return;
-      state = imported;
-      save();
-      restartTimer();
-      updateAll();
-      alert('Data imported successfully!');
-    } catch(err) {
-      alert('Could not read that file. Make sure it\'s a Interval backup.');
-    }
+      const d = JSON.parse(ev.target.result);
+      if (!Array.isArray(d.smokes)) throw new Error('No smokes array');
+
+      // New format: smokes are numbers
+      if (d.smokes.length === 0 || typeof d.smokes[0] === 'number') {
+        if (!confirm(`Import ${d.smokes.length} entries? This replaces current data.`)) return;
+        S.smokes      = [...d.smokes].sort((a,b)=>a-b);
+        S.shields     = d.shields || 0;
+        S.shieldDays  = d.shieldDays || [];
+        S.bestStreak  = d.bestStreak || 0;
+        S.coinBalance = computeTotalCoins(S.smokes) - ((d.shields||0) * SHIELD_COST);
+        // If they had coins and spent some, coinBalance is stored directly
+        if (typeof d.coinBalance === 'number') S.coinBalance = d.coinBalance;
+      }
+      // Old format: smokes are objects with .ts
+      else if (typeof d.smokes[0] === 'object' && d.smokes[0].ts) {
+        if (!confirm(`Import ${d.smokes.length} entries (older format)? This replaces current data.`)) return;
+        S.smokes      = d.smokes.map(s=>s.ts).filter(Boolean).sort((a,b)=>a-b);
+        S.shields     = d.shields || 0;
+        S.shieldDays  = [];
+        S.bestStreak  = d.bestStreak || 0;
+        S.coinBalance = computeTotalCoins(S.smokes);
+      } else throw new Error('Unrecognised format');
+
+      save(); restartTimer(); updateAll();
+      alert('Imported successfully!');
+    } catch(err) { alert("Couldn't read that file. Use an Interval backup."); }
   };
-  reader.readAsText(file);
-  event.target.value = '';
+  reader.readAsText(file); e.target.value='';
 }
 
 function confirmReset() {
-  if (confirm('⚠ Delete ALL data? This cannot be undone.')) {
-    state = { smokes: [], totalCoins: 0, longestGap: 0 };
-    save(); updateAll();
-    document.getElementById('timerDisplay').textContent = '--:--:--';
-    if (timerInterval) clearInterval(timerInterval);
-  }
+  if (!confirm('Delete ALL data? This cannot be undone.')) return;
+  S = { smokes:[], coinBalance:0, shields:0, shieldDays:[], bestStreak:0 };
+  save(); updateAll();
+  document.getElementById('timerVal').textContent='--:--:--';
+  if (timerTick) clearInterval(timerTick);
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // INIT
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════
 window.addEventListener('load', () => {
   load();
-  // Set manual time input to current time as default
   const now = new Date();
-  document.getElementById('manualTimeInput').value =
-    `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  document.getElementById('addTimeInput').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
   updateAll();
-  if (state.smokes.length) restartTimer();
+  if (S.smokes.length) restartTimer();
 });
 
-window.addEventListener('resize', () => updateAll());
+window.addEventListener('resize', updateAll);
 </script>
 </body>
 </html>
