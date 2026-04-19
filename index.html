@@ -53,7 +53,6 @@ body::before {
     radial-gradient(ellipse 40% 30% at 10% 80%, rgba(79,142,247,0.04) 0%, transparent 50%);
 }
 
-/* subtle grain overlay */
 body::after {
   content: '';
   position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.018;
@@ -67,11 +66,9 @@ body::after {
   position: relative; z-index: 1;
 }
 
-/* ── PAGES ── */
 .page { display: none; }
 .page.active { display: block; }
 
-/* ── HEADER ── */
 header {
   padding: 20px 20px 0;
   display: flex; justify-content: space-between; align-items: center;
@@ -84,10 +81,6 @@ header {
   color: var(--text);
 }
 
-
-
-
-/* ── HEADER CLUSTER ── */
 .streak-shield-pill {
   display: flex; align-items: center;
   background: var(--surface);
@@ -113,7 +106,6 @@ header {
   flex-shrink: 0;
 }
 
-/* ── USE SHIELD BTN (now in store page only) ── */
 .coin-pill {
   display: flex; align-items: center; gap: 7px;
   background: var(--surface);
@@ -141,10 +133,8 @@ header {
   min-width: 28px;
 }
 
-/* ── SVG ICON SYSTEM ── */
 .icon { display: inline-block; flex-shrink: 0; }
 
-/* ── HERO ── */
 .hero {
   padding: 28px 20px 18px;
   display: flex; flex-direction: column; align-items: center; gap: 26px;
@@ -167,7 +157,6 @@ header {
 .timer-value.good  { color: var(--blue2); }
 .timer-value.great { color: var(--green); }
 
-/* ── MAIN BUTTON ── */
 .btn-zone { position: relative; display: flex; align-items: center; justify-content: center; margin-top: 24px; }
 
 @keyframes orbit1 { to { transform: rotate(360deg); } }
@@ -217,7 +206,6 @@ header {
   color: var(--text3);
 }
 
-/* ── COIN TOAST ── */
 .coin-toast {
   height: 28px; display: flex; align-items: center; justify-content: center; gap: 6px;
   font-size: 13px; font-weight: 500; color: var(--gold2);
@@ -228,7 +216,6 @@ header {
 .coin-toast.show { opacity: 1; transform: translateY(0); animation: toast-out 2.4s ease-out forwards; }
 @keyframes toast-out { 0%{opacity:1} 55%{opacity:1} 100%{opacity:0} }
 
-/* ── CARDS / SECTIONS ── */
 .cards { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
 
 .card {
@@ -249,7 +236,6 @@ header {
   color: var(--text3); margin-bottom: 14px;
 }
 
-/* ── STAT GRID ── */
 .sg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .sg-wide { grid-column: span 2; }
 
@@ -291,7 +277,6 @@ header {
   font-size: 11px; color: var(--text3); margin-top: 3px;
 }
 
-/* ── STREAK DISPLAY ── */
 .streak-row {
   display: flex; align-items: center; justify-content: space-between;
   background: var(--bg3); border: 1px solid var(--border);
@@ -308,7 +293,6 @@ header {
 .streak-flames { font-size: 22px; letter-spacing: -2px; }
 .streak-status { font-size: 11px; color: var(--text3); }
 
-/* ── TREND BADGE ── */
 .trend-pill {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 3px 9px; border-radius: 100px; font-size: 10px; font-weight: 600;
@@ -318,7 +302,6 @@ header {
 .trend-pill.down { background: rgba(240,96,96,0.1); color: var(--red); border: 1px solid rgba(240,96,96,0.2); }
 .trend-pill.same { background: rgba(72,102,136,0.15); color: var(--text3); border: 1px solid var(--border); }
 
-/* ── TODAY LIST ── */
 .today-list { display: flex; flex-direction: column; gap: 6px; }
 
 .today-row {
@@ -347,7 +330,6 @@ header {
   font-size: 13px; color: var(--text3);
 }
 
-/* ── ADD ROW ── */
 .add-row { display: flex; gap: 8px; margin-top: 10px; }
 .sep { height: 1px; background: var(--border); margin: 10px 0; opacity: 0.5; }
 
@@ -366,7 +348,6 @@ header {
   cursor: pointer;
 }
 
-/* ── GRAPH ── */
 .graph-wrap { width: 100%; height: 160px; position: relative; }
 .graph-empty {
   display: flex; align-items: center; justify-content: center;
@@ -375,7 +356,6 @@ header {
 }
 canvas.chart { width: 100% !important; border-radius: 8px; }
 
-/* ── HISTORY ── */
 .hist-list { display: flex; flex-direction: column; gap: 6px; max-height: 380px; overflow-y: auto; }
 .hist-row {
   display: flex; justify-content: space-between; align-items: center;
@@ -386,7 +366,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 .hist-sub  { font-size: 10px; color: var(--text3); margin-top: 1px; }
 .hist-gap  { font-size: 13px; font-weight: 500; color: var(--blue2); }
 
-/* ── STORE ── */
 .store-balance {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 24px 0 8px;
@@ -437,7 +416,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   font-size: 12px; color: var(--shield2);
 }
 
-/* ── USE SHIELD BUTTON ── */
 .use-shield-btn {
   width: 100%; padding: 11px; border-radius: 12px; border: none; cursor: pointer;
   background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25);
@@ -448,7 +426,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 .use-shield-btn:active { background: rgba(167,139,250,0.22); }
 .use-shield-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* ── SETTINGS ── */
 .io-row { display: flex; gap: 8px; }
 .io-btn {
   flex: 1; padding: 12px; border-radius: 13px;
@@ -462,7 +439,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 .io-hint { font-size: 11px; color: var(--text3); line-height: 1.65; margin: 10px 0 14px; }
 #importFile { display: none; }
 
-/* ── BOTTOM NAV ── */
 .nav {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: rgba(5,13,28,0.96); backdrop-filter: blur(20px);
@@ -486,7 +462,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 }
 .nav-item.active .nav-label { color: var(--blue2); }
 
-/* ── PARTICLES ── */
 .particles { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
 .pt {
   position: absolute; width: 4px; height: 4px; border-radius: 50%;
@@ -497,11 +472,9 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-/* ── PAGE HEADER ── */
 .page-header {
   padding: 20px 20px 0;
   display: flex; justify-content: space-between; align-items: center;
@@ -512,6 +485,103 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   font-size: 22px; font-weight: 600; color: var(--text2);
   letter-spacing: 0.5px;
 }
+
+.aq-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 16px 8px;
+}
+.aq-tank-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; padding: 7px 14px;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  color: var(--text2); cursor: pointer;
+}
+.aq-header-btns { display: flex; gap: 8px; }
+.aq-mode-btn {
+  width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text3); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.aq-mode-btn.active { background: rgba(79,142,247,0.15); border-color: rgba(79,142,247,0.4); color: var(--blue2); }
+
+.aq-viewport {
+  margin: 0 14px; border-radius: 16px; overflow: hidden;
+  position: relative; height: 280px;
+  border: 1px solid var(--border);
+}
+.aq-viewport canvas { position: absolute; top:0; left:0; }
+.aq-creatures-layer {
+  position: absolute; top:0; left:0; width:100%; height:100%;
+  pointer-events: none;
+}
+.aq-creature {
+  position: absolute; line-height:1;
+  transform-origin: center center;
+  transition: none;
+  will-change: transform;
+  pointer-events: all;
+  user-select: none;
+}
+.aq-reposition-hint {
+  position: absolute; bottom: 8px; left: 0; right: 0;
+  text-align: center; font-size: 11px; color: rgba(255,255,255,0.5);
+  pointer-events: none;
+}
+
+.edit-panel {
+  margin: 10px 14px 0; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 14px; max-height: 300px; overflow-y: auto;
+}
+.store-sub-title { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; }
+.edit-section-title {
+  font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 10px;
+}
+.edit-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.edit-emoji { font-size: 20px; width: 28px; text-align: center; flex-shrink:0; }
+.edit-info { flex:1; }
+.edit-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.edit-price { font-size: 11px; color: var(--text3); }
+.edit-count { font-size: 11px; color: var(--text3); min-width: 60px; text-align:right; }
+.edit-btn {
+  width: 28px; height: 28px; border-radius: 8px; border: none; cursor: pointer;
+  font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.edit-btn.add    { background: rgba(79,142,247,0.15); color: var(--blue2); border: 1px solid rgba(79,142,247,0.3); }
+.edit-btn.remove { background: rgba(240,96,96,0.1);  color: var(--red);   border: 1px solid rgba(240,96,96,0.2); }
+.edit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.tank-selector { position: fixed; inset:0; z-index: 200; }
+.tank-selector-bg { position: absolute; inset:0; background: rgba(0,0,0,0.5); }
+.tank-selector-sheet {
+  position: absolute; bottom:0; left:0; right:0;
+  background: var(--bg2); border-radius: 20px 20px 0 0;
+  border-top: 1px solid var(--border); padding: 20px 16px 40px;
+  max-width: 430px; margin: 0 auto;
+}
+.tank-selector-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 14px;
+}
+.tank-option {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border-radius: 14px; cursor: pointer;
+  border: 1px solid transparent; margin-bottom: 8px;
+  transition: background 0.2s;
+}
+.tank-option:active { background: var(--bg3); }
+.tank-option.active { background: rgba(79,142,247,0.08); border-color: rgba(79,142,247,0.25); }
+.tank-option.locked { opacity: 0.6; }
+.tank-option-emoji { font-size: 28px; }
+.tank-option-info { flex:1; }
+.tank-option-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.tank-option-sub  { font-size: 12px; color: var(--text3); margin-top:2px; }
+.tank-active-dot  { width:8px; height:8px; border-radius:50%; background: var(--blue2); }
+.tank-lock { font-size: 16px; }
 </style>
 </head>
 <body>
@@ -520,9 +590,8 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 
 <div class="app">
 
-<!-- ══════════════ HOME ══════════════ -->
+<!-- HOME -->
 <div class="page active" id="page-home">
-
   <header>
     <div class="streak-shield-pill">
       <span class="ss-item" id="headerShields">
@@ -568,8 +637,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
   </div>
 
   <div class="cards">
-
-    <!-- TODAY STATS -->
     <div class="card">
       <div class="sg">
         <div class="stat" id="firstSmokeStat">
@@ -591,7 +658,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
       </div>
     </div>
 
-    <!-- TODAY LIST -->
     <div class="card">
       <div class="card-title">Today's Log</div>
       <div class="today-list" id="todayList">
@@ -603,19 +669,16 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <button class="add-btn" onclick="addManual()">+ Add</button>
       </div>
     </div>
-
   </div>
-</div><!-- /home -->
+</div>
 
-
-<!-- ══════════════ TRENDS ══════════════ -->
+<!-- TRENDS -->
 <div class="page" id="page-trends">
   <div class="page-header">
     <div class="logo">interval</div>
     <div class="page-title">Trends</div>
   </div>
   <div class="cards">
-
     <div class="card">
       <div class="card-title">All-Time</div>
       <div class="sg">
@@ -679,56 +742,24 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         <div class="empty-state">No data yet.</div>
       </div>
     </div>
-
   </div>
-</div><!-- /trends -->
+</div>
 
-
-<!-- ══════════════ STORE ══════════════ -->
+<!-- STORE -->
 <div class="page" id="page-store">
   <div class="page-header">
     <div class="logo">interval</div>
     <div class="page-title">Store</div>
   </div>
-
-  <div style="display:flex;flex-direction:column;align-items:center;padding:4px 0 20px;">
+  <div style="display:flex;flex-direction:column;align-items:center;padding:4px 0 16px;">
     <div class="store-balance-label">Your Balance</div>
     <div class="store-balance-num" id="storeCoins">0</div>
     <div class="store-balance-label">coins</div>
   </div>
+  <div class="cards" id="storeCards"></div>
+</div>
 
-  <div class="cards">
-    <div class="card">
-      <div class="card-title">Protection</div>
-
-      <div class="store-item shield-item">
-        <div class="store-item-icon shield-bg">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--shield2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-        </div>
-        <div class="store-item-info">
-          <div class="store-item-name">Streak Shield</div>
-          <div class="store-item-desc">Protects your streak for one day if you smoke before 5 pm.</div>
-          <div class="shields-owned" id="shieldsOwnedRow">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span id="shieldsOwnedText">You own 0 shields</span>
-          </div>
-        </div>
-        <button class="buy-btn shield-buy" id="buyShieldBtn" onclick="buyShield()">
-          Buy
-          <span class="buy-btn-price">25,000</span>
-        </button>
-      </div>
-      <button class="use-shield-btn" id="useShieldBtn" onclick="useShield()" disabled>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-        Activate Shield for Today
-      </button>
-
-    </div>
-  </div>
-</div><!-- /store -->
-
-
-<!-- ══════════════ SETTINGS ══════════════ -->
+<!-- SETTINGS -->
 <div class="page" id="page-settings">
   <div class="page-header">
     <div class="logo">interval</div>
@@ -765,11 +796,17 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
       </div>
     </div>
   </div>
-</div><!-- /settings -->
+</div>
+
+<!-- AQUARIUM -->
+<div class="page" id="page-aquarium">
+  <div style="display:flex;align-items:center;justify-content:center;height:300px;color:var(--text3);font-size:13px;">
+    Loading aquarium...
+  </div>
+</div>
 
 </div><!-- /app -->
 
-<!-- NAV -->
 <nav class="nav">
   <button class="nav-item active" id="nav-home" onclick="showPage('home')">
     <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -783,6 +820,10 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
     <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
     <span class="nav-label">Store</span>
   </button>
+  <button class="nav-item" id="nav-aquarium" onclick="showPage('aquarium')">
+    <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M4 20V10l8-7 8 7v10"/><path d="M9 20v-5h6v5"/><path d="M8 13c1 1 2 1 3 0s2-1 3 0"/></svg>
+    <span class="nav-label">Tank</span>
+  </button>
   <button class="nav-item" id="nav-settings" onclick="showPage('settings')">
     <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
     <span class="nav-label">Settings</span>
@@ -792,19 +833,15 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 <script>
 // ══════════════════════════════════════════════
 // STATE
-// Raw data only. smokes = sorted array of ms timestamps.
-// Everything (gaps, coins, streaks) is computed fresh each time.
-// Only store what cannot be recomputed:
-//   coinBalance  — spendable currency (earned minus spent)
-//   shields      — owned count
-//   shieldDays   — dayKeys where a shield was activated
-//   bestStreak   — historical max, can't recompute without full history of shield use
 // ══════════════════════════════════════════════
 let S = {
-  smokes:      [],   // [ms, ms, ms, ...]  always sorted ascending
+  smokes:      [],
   coinBalance: 0,
   shields:     0,
-  shieldDays:  [],   // ["2024-03-15", ...]
+  shieldDays:  [],
+  tanks:       null,
+  activeTank:  'classic',
+  inventory:   {},
   bestStreak:  0,
 };
 
@@ -822,18 +859,16 @@ function load() {
     const r = localStorage.getItem('interval_v2');
     if (r) { S = { ...S, ...JSON.parse(r) }; return; }
 
-    // Migrate from interval_v1 (smokes were objects with .ts)
     const v1 = localStorage.getItem('interval_v1');
     if (v1) {
       const o = JSON.parse(v1);
       S.smokes = (o.smokes || []).map(s => typeof s === 'object' ? s.ts : s).filter(Boolean).sort((a,b)=>a-b);
       S.shields = o.shields || 0;
       S.bestStreak = o.bestStreak || 0;
-      S.coinBalance = computeTotalCoins(S.smokes); // recompute from scratch
+      S.coinBalance = computeTotalCoins(S.smokes);
       save(); return;
     }
 
-    // Migrate from smokegap_v3
     const v3 = localStorage.getItem('smokegap_v3');
     if (v3) {
       const o = JSON.parse(v3);
@@ -852,7 +887,7 @@ function pad(n) { return String(n).padStart(2, '0'); }
 function dayKey(ts) {
   const d = new Date(ts);
   if (d.getHours() < 5) d.setDate(d.getDate() - 1);
-  return `${d.getFullYear()}-${pad(d.getMonth())}-${pad(d.getDate())}`;
+  return d.getFullYear() + '-' + pad(d.getMonth()) + '-' + pad(d.getDate());
 }
 function todayKey() { return dayKey(Date.now()); }
 
@@ -867,22 +902,19 @@ function thisWeek() { return weekNum(Date.now()); }
 function fmtHMS(ms) {
   if (!ms || ms < 0) return '--:--:--';
   const s = Math.floor(ms / 1000);
-  return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;
+  return pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
 }
 function fmtShort(ms) {
   if (!ms || ms < 0) return '--';
   const s = Math.floor(ms / 1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
-  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  return h > 0 ? h + 'h ' + m + 'm' : m + 'm';
 }
 function fmtTime(ts) { return new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
 function fmtDT(ts)   { return new Date(ts).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
 
 // ══════════════════════════════════════════════
-// COMPUTE HELPERS  (work on raw timestamp arrays)
+// COMPUTE HELPERS
 // ══════════════════════════════════════════════
-
-// Build enriched smoke objects from raw timestamps for rendering/logic.
-// Each object: { ts, prevTs, gap, waking, coins }
 function buildSmokes(timestamps) {
   return timestamps.map((ts, i) => {
     const prevTs = i > 0 ? timestamps[i-1] : null;
@@ -894,7 +926,6 @@ function buildSmokes(timestamps) {
   });
 }
 
-// Day multiplier based on first smoke hour of that waking day
 function getDayMultFromTs(ts, timestamps) {
   const dk = dayKey(ts);
   const firstInDay = timestamps.find(t => dayKey(t) === dk);
@@ -903,7 +934,6 @@ function getDayMultFromTs(ts, timestamps) {
   return h < 12 ? 0.8 : 1.1;
 }
 
-// Compute total coins earned from a raw timestamp array
 function computeTotalCoins(timestamps) {
   return buildSmokes(timestamps).reduce((sum, s) => sum + s.coins, 0);
 }
@@ -914,7 +944,6 @@ function calcCoins(gapMs, mult) {
   return Math.floor(Math.pow(mins, 1.3) * mult);
 }
 
-// Build dayKey -> firstTs map
 function buildDayFirstMap(timestamps) {
   const m = {};
   timestamps.forEach(ts => {
@@ -924,10 +953,9 @@ function buildDayFirstMap(timestamps) {
   return m;
 }
 
-// Compute current streak from timestamps + shieldDays
 function computeStreak(timestamps, shieldDays) {
   const firstMap = buildDayFirstMap(timestamps);
-  const days = Object.keys(firstMap).sort().reverse(); // newest first
+  const days = Object.keys(firstMap).sort().reverse();
   if (!days.length) return 0;
 
   let streak = 0;
@@ -941,10 +969,9 @@ function computeStreak(timestamps, shieldDays) {
       if (!qualifies) break;
       streak = 1;
     } else {
-      // Check consecutive with previous (days[i-1] is the more recent)
       const prevDk = days[i-1];
-      const d1 = new Date(prevDk.replace(/-(\d+)-(\d+)$/, (_, m, d) => `-${String(parseInt(m)+1).padStart(2,'0')}-${d}`));
-      const d2 = new Date(dk.replace(/-(\d+)-(\d+)$/, (_, m, d) => `-${String(parseInt(m)+1).padStart(2,'0')}-${d}`));
+      const d1 = new Date(prevDk.replace(/-(\d+)-(\d+)$/, function(_, m, d) { return '-' + String(parseInt(m)+1).padStart(2,'0') + '-' + d; }));
+      const d2 = new Date(dk.replace(/-(\d+)-(\d+)$/, function(_, m, d) { return '-' + String(parseInt(m)+1).padStart(2,'0') + '-' + d; }));
       const diffDays = Math.round((d1 - d2) / 86400000);
       if (diffDays !== 1) break;
       if (!qualifies) break;
@@ -960,15 +987,12 @@ function computeStreak(timestamps, shieldDays) {
 function logSmoke(tsOverride) {
   const now = tsOverride || Date.now();
 
-  // Insert in sorted order
   const idx = S.smokes.findIndex(t => t > now);
   if (idx === -1) S.smokes.push(now);
   else S.smokes.splice(idx, 0, now);
 
-  // Recompute coinBalance from scratch (handles mult changes from inserting)
   S.coinBalance = computeTotalCoins(S.smokes);
 
-  // Update bestStreak
   const streak = computeStreak(S.smokes, S.shieldDays);
   if (streak > S.bestStreak) S.bestStreak = streak;
 
@@ -976,7 +1000,6 @@ function logSmoke(tsOverride) {
   save();
 
   if (!tsOverride) {
-    // Figure out coins just earned for this smoke (for toast)
     const built = buildSmokes(S.smokes);
     const entry = built.find(s => s.ts === now);
     const coinsEarned = entry ? entry.coins : 0;
@@ -1009,11 +1032,13 @@ function deleteEntry(ts) {
 function addManual() {
   const val = document.getElementById('addTimeInput').value;
   if (!val) return;
-  const [hh, mm] = val.split(':').map(Number);
+  const parts = val.split(':').map(Number);
+  const hh = parts[0], mm = parts[1];
   const tk = todayKey();
-  const [yr, mo, dy] = tk.split('-').map(Number);
+  const tkParts = tk.split('-').map(Number);
+  const yr = tkParts[0], mo = tkParts[1], dy = tkParts[2];
   const ts = new Date(yr, mo, dy, hh, mm, 0, 0).getTime();
-  if (dayKey(ts) !== tk) { alert("That time doesn't fall within today (5am–4:59am)."); return; }
+  if (dayKey(ts) !== tk) { alert("That time doesn't fall within today (5am\u20134:59am)."); return; }
   logSmoke(ts);
   document.getElementById('addTimeInput').value = '';
 }
@@ -1021,7 +1046,7 @@ function addManual() {
 // ══════════════════════════════════════════════
 // STORE
 // ══════════════════════════════════════════════
-const SHIELD_COST = 25000;
+var SHIELD_COST = 25000;
 
 function buyShield() {
   if (S.coinBalance < SHIELD_COST) return;
@@ -1048,16 +1073,13 @@ function applyShield(tk) {
   updateAll();
 }
 
-// Auto-apply shield when first smoke of day would break streak
 function maybeAutoShield(tk) {
   if (S.shields <= 0) return;
   if (S.shieldDays.includes(tk)) return;
-  // Check if today's first smoke was before 5pm (streak-breaking)
   const firstTs = S.smokes.find(ts => dayKey(ts) === tk);
   if (!firstTs) return;
   const h = new Date(firstTs).getHours();
   if (h < 17) {
-    // Would break streak — auto-apply shield silently
     applyShield(tk);
   }
 }
@@ -1087,17 +1109,17 @@ function tick() {
 function animBtn() {
   const b = document.getElementById('smokeBtn');
   b.classList.remove('fired'); void b.offsetWidth; b.classList.add('fired');
-  setTimeout(() => b.classList.remove('fired'), 700);
+  setTimeout(function() { b.classList.remove('fired'); }, 700);
 }
 function showToast(coins) {
   document.getElementById('toastAmt').textContent = '+' + coins;
   const t = document.getElementById('coinToast');
   t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 function flashPill() {
   const p = document.getElementById('coinPill');
-  p.classList.add('flash'); setTimeout(() => p.classList.remove('flash'), 700);
+  p.classList.add('flash'); setTimeout(function() { p.classList.remove('flash'); }, 700);
 }
 function spawnParticles() {
   const c = document.getElementById('particles');
@@ -1108,26 +1130,26 @@ function spawnParticles() {
     const p = document.createElement('div'); p.className = 'pt';
     const angle = (Math.PI*2*i/10) + (Math.random()-.5)*.6;
     const dist = 55 + Math.random()*65;
-    p.style.cssText = `left:${cx}px;top:${cy}px;background:${colors[i%colors.length]};--tx:${Math.cos(angle)*dist}px;--ty:${Math.sin(angle)*dist-15}px;animation-delay:${Math.random()*.15}s`;
-    c.appendChild(p); setTimeout(() => p.remove(), 1200);
+    p.style.cssText = 'left:' + cx + 'px;top:' + cy + 'px;background:' + colors[i%colors.length] + ';--tx:' + Math.cos(angle)*dist + 'px;--ty:' + (Math.sin(angle)*dist-15) + 'px;animation-delay:' + Math.random()*.15 + 's';
+    c.appendChild(p); setTimeout(function() { p.remove(); }, 1200);
   }
 }
 
 // ══════════════════════════════════════════════
 // UPDATE ALL UI
 // ══════════════════════════════════════════════
-function avg(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+function avg(arr) { return arr.length ? arr.reduce(function(a,b){return a+b;},0)/arr.length : 0; }
 
 function updateAll() {
   const timestamps = S.smokes;
-  const smokes = buildSmokes(timestamps);  // enriched for rendering
+  const smokes = buildSmokes(timestamps);
   const tk = todayKey();
   const wk = thisWeek();
 
-  const todaySmokes  = smokes.filter(s => dayKey(s.ts) === tk);
-  const wakingGaps   = smokes.filter(s => s.waking).map(s => s.gap);
-  const weekWaking   = smokes.filter(s => s.waking && weekNum(s.ts) === wk).map(s => s.gap);
-  const lastWkWaking = smokes.filter(s => s.waking && weekNum(s.ts) === wk-1).map(s => s.gap);
+  const todaySmokes  = smokes.filter(function(s) { return dayKey(s.ts) === tk; });
+  const wakingGaps   = smokes.filter(function(s) { return s.waking; }).map(function(s) { return s.gap; });
+  const weekWaking   = smokes.filter(function(s) { return s.waking && weekNum(s.ts) === wk; }).map(function(s) { return s.gap; });
+  const lastWkWaking = smokes.filter(function(s) { return s.waking && weekNum(s.ts) === wk-1; }).map(function(s) { return s.gap; });
 
   const weekAvg   = avg(weekWaking);
   const allAvg    = avg(wakingGaps);
@@ -1137,93 +1159,69 @@ function updateAll() {
   const todayFirst  = dayFirstMap[tk] || null;
 
   const firstTimes = Object.values(dayFirstMap);
-  const avgFirstMs = firstTimes.length ? avg(firstTimes.map(ts => {
+  const avgFirstMs = firstTimes.length ? avg(firstTimes.map(function(ts) {
     const d = new Date(ts);
     return d.getHours()*3600000 + d.getMinutes()*60000;
   })) : 0;
 
-  const weekSmokeCount = timestamps.filter(ts => weekNum(ts) === wk).length;
+  const weekSmokeCount = timestamps.filter(function(ts) { return weekNum(ts) === wk; }).length;
   const days = Object.keys(dayFirstMap);
   const dailyAvg = days.length ? (timestamps.length / days.length).toFixed(1) : '—';
 
-  const longestGap = wakingGaps.length ? Math.max(...wakingGaps) : 0;
   const streak = computeStreak(timestamps, S.shieldDays);
   if (streak > S.bestStreak) { S.bestStreak = streak; }
 
-  // ── Coins ──
   const coinStr = S.coinBalance.toLocaleString();
   document.getElementById('coinCount').textContent = coinStr;
   document.getElementById('storeCoins').textContent = coinStr;
 
-  // ── Streak / shield header pill ──
   const shieldedToday = S.shieldDays.includes(tk);
   document.getElementById('headerStreakCount').textContent = streak;
   document.getElementById('headerShieldCount').textContent = S.shields;
-
-  // Dim shield icon if 0 owned
   document.getElementById('headerShields').style.opacity = S.shields > 0 ? '1' : '0.35';
 
-  // Use shield btn in store page
   const shieldBtn = document.getElementById('useShieldBtn');
-  if (shieldBtn) {
-    shieldBtn.disabled = S.shields <= 0 || shieldedToday;
-  }
-  const sot = document.getElementById('shieldsOwnedText'); if(sot) sot.textContent = `You own ${S.shields} shield${S.shields !== 1 ? 's' : ''}`;
-  const bsb = document.getElementById('buyShieldBtn'); if(bsb) bsb.classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
+  if (shieldBtn) shieldBtn.disabled = S.shields <= 0 || shieldedToday;
+  const sot = document.getElementById('shieldsOwnedText');
+  if (sot) sot.textContent = 'You own ' + S.shields + ' shield' + (S.shields !== 1 ? 's' : '');
+  const bsb = document.getElementById('buyShieldBtn');
+  if (bsb) bsb.classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
 
-  // ── Home stats ──
   document.getElementById('weekAvgGap').textContent   = weekAvg   ? fmtShort(weekAvg) : '--';
-  const todayWaking = smokes.filter(s => s.waking && dayKey(s.ts) === tk).map(s => s.gap);
+  const todayWaking = smokes.filter(function(s) { return s.waking && dayKey(s.ts) === tk; }).map(function(s) { return s.gap; });
   const todayAvg = avg(todayWaking);
   document.getElementById('todayAvgGap').textContent = todayAvg ? fmtShort(todayAvg) : '--';
   document.getElementById('smokesToday').textContent  = todaySmokes.length;
-  const lgEl = document.getElementById('longestGap'); if (lgEl) lgEl.textContent = longestGap ? fmtShort(longestGap) : '--';
 
-  // ── First smoke dynamic color ──
   const todayFirstH = todayFirst ? new Date(todayFirst).getHours() + new Date(todayFirst).getMinutes()/60 : -1;
   const firstSmokeEl = document.getElementById('firstSmokeToday');
   const firstSmokeStat = document.getElementById('firstSmokeStat');
   firstSmokeEl.textContent = todayFirst ? fmtTime(todayFirst) : '—';
 
   if (todayFirst && todayFirstH >= 0) {
-    // Map hour to 0..1: 0=red (5am), 1=green (17:00=5pm)
-    // Before 5am treated as red, after 5pm treated as full green
     const t = Math.max(0, Math.min(1, (todayFirstH - 5) / (17 - 5)));
-
-    // Interpolate: red(240,96,96) -> yellow(240,190,50) -> green(45,212,160)
     let r, g, b;
     if (t < 0.5) {
-      // red -> yellow
       const tt = t / 0.5;
       r = 240; g = Math.round(96 + tt * (190-96)); b = Math.round(96 - tt*96);
     } else {
-      // yellow -> green
       const tt = (t - 0.5) / 0.5;
       r = Math.round(240 - tt*(240-45)); g = Math.round(190 + tt*(212-190)); b = Math.round(tt*160);
     }
-    const col = `rgb(${r},${g},${b})`;
-    const colAlpha = `rgba(${r},${g},${b},0.12)`;
-    const colBorder = `rgba(${r},${g},${b},0.3)`;
-
-    firstSmokeStat.style.background = `linear-gradient(135deg, ${colAlpha} 0%, var(--bg3) 100%)`;
+    const col = 'rgb(' + r + ',' + g + ',' + b + ')';
+    const colAlpha = 'rgba(' + r + ',' + g + ',' + b + ',0.12)';
+    const colBorder = 'rgba(' + r + ',' + g + ',' + b + ',0.3)';
+    firstSmokeStat.style.background = 'linear-gradient(135deg, ' + colAlpha + ' 0%, var(--bg3) 100%)';
     firstSmokeStat.style.borderColor = colBorder;
     firstSmokeEl.style.color = col;
   } else {
-    // No smoke yet — neutral
     firstSmokeStat.style.background = '';
     firstSmokeStat.style.borderColor = '';
     firstSmokeEl.style.color = 'var(--text3)';
   }
 
-  if (avgFirstMs > 0) {
-    const h = Math.floor(avgFirstMs/3600000), m = Math.floor((avgFirstMs%3600000)/60000);
-    const d = new Date(); d.setHours(h, m, 0, 0);
-    const afe = document.getElementById('avgFirstSmoke'); if(afe) afe.textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  } else { const afe2 = document.getElementById('avgFirstSmoke'); if(afe2) afe2.textContent = '—'; }
-
   renderTodayList(todaySmokes);
 
-  // ── Trends ──
   document.getElementById('t-avgGap').textContent     = allAvg    ? fmtShort(allAvg) : '--';
   document.getElementById('t-weekAvg').textContent    = weekAvg   ? fmtShort(weekAvg) : '--';
   document.getElementById('t-lastWeekAvg').textContent= lastWkAvg ? fmtShort(lastWkAvg) : '--';
@@ -1237,14 +1235,14 @@ function updateAll() {
   if (weekAvg && lastWkAvg) {
     const pct = ((weekAvg-lastWkAvg)/lastWkAvg*100).toFixed(0);
     if (weekAvg > lastWkAvg) {
-      tv.textContent=`+${pct}%`; tv.className='stat-val green';
-      tb.innerHTML=`<div class="trend-pill up">▲ Improving</div>`;
+      tv.textContent = '+' + pct + '%'; tv.className='stat-val green';
+      tb.innerHTML = '<div class="trend-pill up">▲ Improving</div>';
     } else if (weekAvg < lastWkAvg) {
-      tv.textContent=`${pct}%`; tv.className='stat-val'; tv.style.color='var(--red)';
-      tb.innerHTML=`<div class="trend-pill down">▼ Declining</div>`;
+      tv.textContent = pct + '%'; tv.className='stat-val'; tv.style.color='var(--red)';
+      tb.innerHTML = '<div class="trend-pill down">▼ Declining</div>';
     } else {
-      tv.textContent='0%'; tv.className='stat-val'; tv.style.color='';
-      tb.innerHTML=`<div class="trend-pill same">— Same</div>`;
+      tv.textContent = '0%'; tv.className='stat-val'; tv.style.color='';
+      tb.innerHTML = '<div class="trend-pill same">— Same</div>';
     }
   } else { tv.textContent='—'; tv.style.color=''; tb.innerHTML=''; }
 
@@ -1258,19 +1256,19 @@ function updateAll() {
 function renderTodayList(todaySmokes) {
   const list = document.getElementById('todayList');
   if (!todaySmokes.length) { list.innerHTML = '<div class="empty-state">Nothing logged today.</div>'; return; }
-  list.innerHTML = todaySmokes.map(s => {
+  list.innerHTML = todaySmokes.map(function(s) {
     const gapLine = s.waking
-      ? `<div class="today-meta">Gap: ${fmtShort(s.gap)}</div><div class="today-coins">+ ${s.coins} coins</div>`
-      : `<div class="today-meta" style="color:var(--text3)">First smoke of the day</div>`;
-    return `<div class="today-row">
-      <div class="today-row-left">
-        <div class="today-time">${fmtTime(s.ts)}</div>
-        ${gapLine}
-      </div>
-      <button class="del-btn" onclick="deleteEntry(${s.ts})">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>`;
+      ? '<div class="today-meta">Gap: ' + fmtShort(s.gap) + '</div><div class="today-coins">+ ' + s.coins + ' coins</div>'
+      : '<div class="today-meta" style="color:var(--text3)">First smoke of the day</div>';
+    return '<div class="today-row">' +
+      '<div class="today-row-left">' +
+        '<div class="today-time">' + fmtTime(s.ts) + '</div>' +
+        gapLine +
+      '</div>' +
+      '<button class="del-btn" onclick="deleteEntry(' + s.ts + ')">' +
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+      '</button>' +
+    '</div>';
   }).join('');
 }
 
@@ -1278,12 +1276,12 @@ function renderTodayList(todaySmokes) {
 // CHARTS
 // ══════════════════════════════════════════════
 function drawCharts(smokes, dayFirstMap) {
-  const gapPts   = smokes.filter(s => s.waking);
+  const gapPts   = smokes.filter(function(s) { return s.waking; });
   const gapCanvas = document.getElementById('gapChart');
   const gapEmpty  = document.getElementById('gapEmpty');
   if (gapPts.length >= 2) {
     gapCanvas.style.display='block'; gapEmpty.style.display='none';
-    drawLine(gapCanvas, gapPts.map(s=>s.gap/60000), v=>v>=60?(v/60).toFixed(1)+'h':Math.round(v)+'m');
+    drawLine(gapCanvas, gapPts.map(function(s){return s.gap/60000;}), function(v){return v>=60?(v/60).toFixed(1)+'h':Math.round(v)+'m';});
   } else { gapCanvas.style.display='none'; gapEmpty.style.display='flex'; }
 
   const days = Object.keys(dayFirstMap).sort();
@@ -1291,8 +1289,8 @@ function drawCharts(smokes, dayFirstMap) {
   const dcEmpty  = document.getElementById('dailyEmpty');
   if (days.length >= 2) {
     dcCanvas.style.display='block'; dcEmpty.style.display='none';
-    const counts = days.map(dk => S.smokes.filter(ts=>dayKey(ts)===dk).length);
-    const labels = days.map(dk => { const [,m,d]=dk.split('-'); return `${parseInt(m)+1}/${d}`; });
+    const counts = days.map(function(dk) { return S.smokes.filter(function(ts){return dayKey(ts)===dk;}).length; });
+    const labels = days.map(function(dk) { const parts=dk.split('-'); return (parseInt(parts[1])+1)+'/'+parts[2]; });
     drawBars(dcCanvas, counts, labels);
   } else { dcCanvas.style.display='none'; dcEmpty.style.display='flex'; }
 }
@@ -1302,13 +1300,14 @@ function canvasSetup(canvas) {
   canvas.width=W*dpr; canvas.height=H*dpr;
   canvas.style.width=W+'px'; canvas.style.height=H+'px';
   const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr); ctx.clearRect(0,0,W,H);
-  return {ctx,W,H};
+  return {ctx:ctx,W:W,H:H};
 }
 
 function drawLine(canvas, values, labelFn) {
-  const {ctx,W,H}=canvasSetup(canvas);
+  const setup=canvasSetup(canvas);
+  const ctx=setup.ctx,W=setup.W,H=setup.H;
   const p={top:12,right:14,bottom:20,left:44},gW=W-p.left-p.right,gH=H-p.top-p.bottom;
-  const n=values.length,maxV=Math.max(...values)*1.15;
+  const n=values.length,maxV=Math.max.apply(null,values)*1.15;
   for(let i=0;i<=4;i++){
     const y=p.top+gH-(i/4)*gH;
     ctx.strokeStyle='rgba(28,50,82,0.7)';ctx.lineWidth=1;
@@ -1316,17 +1315,17 @@ function drawLine(canvas, values, labelFn) {
     ctx.fillStyle='rgba(72,102,136,0.9)';ctx.font='9px Outfit,sans-serif';ctx.textAlign='right';
     ctx.fillText(labelFn((i/4)*maxV),p.left-5,y+3);
   }
-  const pts=values.map((v,i)=>({x:p.left+(n===1?gW/2:(i/(n-1))*gW),y:p.top+gH-(v/maxV)*gH}));
+  const pts=values.map(function(v,i){return {x:p.left+(n===1?gW/2:(i/(n-1))*gW),y:p.top+gH-(v/maxV)*gH};});
   const grad=ctx.createLinearGradient(0,p.top,0,p.top+gH);
   grad.addColorStop(0,'rgba(79,142,247,0.22)');grad.addColorStop(1,'rgba(79,142,247,0)');
   ctx.beginPath();ctx.moveTo(pts[0].x,p.top+gH);
-  pts.forEach(pt=>ctx.lineTo(pt.x,pt.y));
+  pts.forEach(function(pt){ctx.lineTo(pt.x,pt.y);});
   ctx.lineTo(pts[pts.length-1].x,p.top+gH);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
   ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
   for(let i=1;i<pts.length;i++){const mx=(pts[i-1].x+pts[i].x)/2;ctx.bezierCurveTo(mx,pts[i-1].y,mx,pts[i].y,pts[i].x,pts[i].y);}
   ctx.strokeStyle='#4f8ef7';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
-  const maxVal=Math.max(...values);
-  pts.forEach((pt,i)=>{
+  const maxVal=Math.max.apply(null,values);
+  pts.forEach(function(pt,i){
     const hi=values[i]===maxVal;
     ctx.beginPath();ctx.arc(pt.x,pt.y,hi?5:3,0,Math.PI*2);
     ctx.fillStyle=hi?'#2dd4a0':'#7aaeff';ctx.fill();
@@ -1335,9 +1334,10 @@ function drawLine(canvas, values, labelFn) {
 }
 
 function drawBars(canvas, values, labels) {
-  const {ctx,W,H}=canvasSetup(canvas);
+  const setup=canvasSetup(canvas);
+  const ctx=setup.ctx,W=setup.W,H=setup.H;
   const p={top:12,right:10,bottom:22,left:28},gW=W-p.left-p.right,gH=H-p.top-p.bottom;
-  const n=values.length,maxV=Math.max(...values,1);
+  const n=values.length,maxV=Math.max.apply(null,values.concat([1]));
   for(let i=0;i<=4;i++){
     const y=p.top+gH-(i/4)*gH;
     ctx.strokeStyle='rgba(28,50,82,0.7)';ctx.lineWidth=1;
@@ -1345,7 +1345,7 @@ function drawBars(canvas, values, labels) {
     if(i>0){ctx.fillStyle='rgba(72,102,136,0.9)';ctx.font='9px Outfit,sans-serif';ctx.textAlign='right';ctx.fillText(Math.round((i/4)*maxV),p.left-3,y+3);}
   }
   const bW=Math.min(gW/n*.65,30),step=gW/n;
-  values.forEach((v,i)=>{
+  values.forEach(function(v,i){
     const bH=(v/maxV)*gH,x=p.left+i*step+step/2-bW/2,y=p.top+gH-bH;
     const g=ctx.createLinearGradient(0,y,0,p.top+gH);
     g.addColorStop(0,'rgba(79,142,247,0.75)');g.addColorStop(1,'rgba(79,142,247,0.15)');
@@ -1360,25 +1360,28 @@ function drawBars(canvas, values, labels) {
 function renderHistory(smokes) {
   const list = document.getElementById('histList');
   if (!smokes.length) { list.innerHTML='<div class="empty-state">No data yet.</div>'; return; }
-  list.innerHTML = [...smokes].reverse().map(s=>`
-    <div class="hist-row">
-      <div>
-        <div class="hist-time">${fmtDT(s.ts)}</div>
-        <div class="hist-sub">${s.waking?`Gap: ${fmtShort(s.gap)} · +${s.coins} coins`:'First smoke of day'}</div>
-      </div>
-      <div class="hist-gap">${s.waking?fmtShort(s.gap):'—'}</div>
-    </div>`).join('');
+  list.innerHTML = smokes.slice().reverse().map(function(s){
+    return '<div class="hist-row">' +
+      '<div>' +
+        '<div class="hist-time">' + fmtDT(s.ts) + '</div>' +
+        '<div class="hist-sub">' + (s.waking ? 'Gap: ' + fmtShort(s.gap) + ' · +' + s.coins + ' coins' : 'First smoke of day') + '</div>' +
+      '</div>' +
+      '<div class="hist-gap">' + (s.waking ? fmtShort(s.gap) : '—') + '</div>' +
+    '</div>';
+  }).join('');
 }
 
 // ══════════════════════════════════════════════
 // NAV
 // ══════════════════════════════════════════════
 function showPage(name) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(b){b.classList.remove('active');});
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
-  if (name==='trends') setTimeout(()=>drawCharts(buildSmokes(S.smokes), buildDayFirstMap(S.smokes)), 50);
+  if (name==='trends') setTimeout(function(){drawCharts(buildSmokes(S.smokes), buildDayFirstMap(S.smokes));}, 50);
+  if (name==='aquarium') { initTankState(); setTimeout(renderAquarium, 30); }
+  if (name==='store') { initTankState(); renderStore(); }
 }
 
 // ══════════════════════════════════════════════
@@ -1388,33 +1391,32 @@ function exportData() {
   const blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `interval-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = 'interval-backup-' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
 }
 
 function importData(e) {
   const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = ev => {
+  reader.onload = function(ev) {
     try {
       const d = JSON.parse(ev.target.result);
       if (!Array.isArray(d.smokes)) throw new Error('No smokes array');
 
-      // New format: smokes are numbers
       if (d.smokes.length === 0 || typeof d.smokes[0] === 'number') {
-        if (!confirm(`Import ${d.smokes.length} entries? This replaces current data.`)) return;
-        S.smokes      = [...d.smokes].sort((a,b)=>a-b);
+        if (!confirm('Import ' + d.smokes.length + ' entries? This replaces current data.')) return;
+        S.smokes      = d.smokes.slice().sort(function(a,b){return a-b;});
         S.shields     = d.shields || 0;
         S.shieldDays  = d.shieldDays || [];
         S.bestStreak  = d.bestStreak || 0;
+        S.tanks       = d.tanks || null;
+        S.activeTank  = d.activeTank || 'classic';
+        S.inventory   = d.inventory || {};
         S.coinBalance = computeTotalCoins(S.smokes) - ((d.shields||0) * SHIELD_COST);
-        // If they had coins and spent some, coinBalance is stored directly
         if (typeof d.coinBalance === 'number') S.coinBalance = d.coinBalance;
-      }
-      // Old format: smokes are objects with .ts
-      else if (typeof d.smokes[0] === 'object' && d.smokes[0].ts) {
-        if (!confirm(`Import ${d.smokes.length} entries (older format)? This replaces current data.`)) return;
-        S.smokes      = d.smokes.map(s=>s.ts).filter(Boolean).sort((a,b)=>a-b);
+      } else if (typeof d.smokes[0] === 'object' && d.smokes[0].ts) {
+        if (!confirm('Import ' + d.smokes.length + ' entries (older format)? This replaces current data.')) return;
+        S.smokes      = d.smokes.map(function(s){return s.ts;}).filter(Boolean).sort(function(a,b){return a-b;});
         S.shields     = d.shields || 0;
         S.shieldDays  = [];
         S.bestStreak  = d.bestStreak || 0;
@@ -1430,7 +1432,7 @@ function importData(e) {
 
 function confirmReset() {
   if (!confirm('Delete ALL data? This cannot be undone.')) return;
-  S = { smokes:[], coinBalance:0, shields:0, shieldDays:[], bestStreak:0 };
+  S = { smokes:[], coinBalance:0, shields:0, shieldDays:[], bestStreak:0, tanks:null, activeTank:'classic', inventory:{} };
   save(); updateAll();
   document.getElementById('timerVal').textContent='--:--:--';
   if (timerTick) clearInterval(timerTick);
@@ -1439,15 +1441,620 @@ function confirmReset() {
 // ══════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════
-window.addEventListener('load', () => {
+window.addEventListener('load', function() {
   load();
   const now = new Date();
-  document.getElementById('addTimeInput').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  document.getElementById('addTimeInput').value = pad(now.getHours()) + ':' + pad(now.getMinutes());
   updateAll();
   if (S.smokes.length) restartTimer();
 });
 
 window.addEventListener('resize', updateAll);
+
+// ══════════════════════════════════════════════
+// TANK CATALOGUE
+// ══════════════════════════════════════════════
+var TANKS = {
+  classic: {
+    id: 'classic', name: 'Classic Aquarium', emoji: '🐠',
+    cost: 0, owned: true,
+    bg: ['#0a2a4a','#0d3560'],
+    floorColor: '#c2a870', floorH: 18,
+    waterTint: 'rgba(30,100,180,0.18)',
+    lightColor: 'rgba(180,220,255,0.07)',
+    type: 'water',
+    creatures: ['clownfish','guppy','angelfish','tetra','goldfish','betta','snail'],
+    decorations: ['seagrass','rock','castle','bubbler','pebbles'],
+  },
+  deep: {
+    id: 'deep', name: 'Deep Ocean', emoji: '🌊',
+    cost: 80000,
+    bg: ['#020a18','#030d22'],
+    floorColor: '#1a1a2e', floorH: 12,
+    waterTint: 'rgba(0,20,80,0.3)',
+    lightColor: 'rgba(80,120,255,0.05)',
+    type: 'water',
+    creatures: ['anglerfish','jellyfish','shark','manta','viperfish','nautilus'],
+    decorations: ['vent','deepsea_rock','tubeworm','stalactite','debris'],
+  },
+  reef: {
+    id: 'reef', name: 'Coral Reef', emoji: '🪸',
+    cost: 150000,
+    bg: ['#0d3d5c','#1a5c7a'],
+    floorColor: '#e8c87a', floorH: 22,
+    waterTint: 'rgba(0,180,200,0.15)',
+    lightColor: 'rgba(255,240,180,0.1)',
+    type: 'water',
+    creatures: ['clownfish','parrotfish','surgeonfish','seahorse','starfish','pufferfish','turtle'],
+    decorations: ['coral_red','coral_brain','anemone','fan_coral','seashell'],
+  },
+  desert: {
+    id: 'desert', name: 'Desert Terrarium', emoji: '🦂',
+    cost: 200000,
+    bg: ['#3d2200','#5c3300'],
+    floorColor: '#d4a85a', floorH: 28,
+    waterTint: 'rgba(180,120,20,0.1)',
+    lightColor: 'rgba(255,200,100,0.12)',
+    type: 'land',
+    creatures: ['scorpion','beetle','gecko','tarantula','centipede','ant'],
+    decorations: ['cactus','skull','driftwood','sandrock','tumbleweed'],
+  },
+  jungle: {
+    id: 'jungle', name: 'Jungle Terrarium', emoji: '🌿',
+    cost: 250000,
+    bg: ['#0a1f0a','#112b11'],
+    floorColor: '#3a5c2a', floorH: 24,
+    waterTint: 'rgba(20,120,20,0.15)',
+    lightColor: 'rgba(180,255,150,0.08)',
+    type: 'land',
+    creatures: ['frog','chameleon','gecko','millipede','butterfly','snail','moth'],
+    decorations: ['fern','mushroom','log','moss_rock','bromeliad'],
+  },
+};
+
+var CREATURE_DEFS = {
+  clownfish:  { name:'Clownfish',   emoji:'🐠', size:18, price:500,   swim:'horizontal' },
+  guppy:      { name:'Guppy',       emoji:'🐟', size:13, price:200,   swim:'horizontal' },
+  angelfish:  { name:'Angelfish',   emoji:'🐡', size:22, price:1200,  swim:'horizontal' },
+  tetra:      { name:'Neon Tetra',  emoji:'🐟', size:10, price:150,   swim:'horizontal' },
+  goldfish:   { name:'Goldfish',    emoji:'🐠', size:20, price:800,   swim:'horizontal' },
+  betta:      { name:'Betta Fish',  emoji:'🐠', size:19, price:1000,  swim:'horizontal' },
+  snail:      { name:'Snail',       emoji:'🐌', size:12, price:300,   swim:'floor'      },
+  anglerfish: { name:'Anglerfish',  emoji:'🐟', size:28, price:5000,  swim:'horizontal' },
+  jellyfish:  { name:'Jellyfish',   emoji:'🪼', size:24, price:3000,  swim:'vertical'   },
+  shark:      { name:'Shark',       emoji:'🦈', size:42, price:15000, swim:'horizontal' },
+  manta:      { name:'Manta Ray',   emoji:'🐋', size:38, price:10000, swim:'horizontal' },
+  viperfish:  { name:'Viperfish',   emoji:'🐟', size:22, price:4000,  swim:'horizontal' },
+  nautilus:   { name:'Nautilus',    emoji:'🐚', size:20, price:3500,  swim:'horizontal' },
+  parrotfish: { name:'Parrotfish',  emoji:'🐠', size:26, price:2000,  swim:'horizontal' },
+  surgeonfish:{ name:'Surgeonfish', emoji:'🐟', size:22, price:1800,  swim:'horizontal' },
+  seahorse:   { name:'Seahorse',    emoji:'🦄', size:16, price:2500,  swim:'vertical'   },
+  starfish:   { name:'Starfish',    emoji:'⭐', size:18, price:1500,  swim:'floor'      },
+  pufferfish: { name:'Pufferfish',  emoji:'🐡', size:24, price:3000,  swim:'horizontal' },
+  turtle:     { name:'Sea Turtle',  emoji:'🐢', size:32, price:8000,  swim:'horizontal' },
+  scorpion:   { name:'Scorpion',    emoji:'🦂', size:22, price:2000,  swim:'floor'      },
+  beetle:     { name:'Beetle',      emoji:'🪲', size:14, price:500,   swim:'floor'      },
+  gecko:      { name:'Gecko',       emoji:'🦎', size:20, price:1500,  swim:'wall'       },
+  tarantula:  { name:'Tarantula',   emoji:'🕷️', size:26, price:4000,  swim:'floor'      },
+  centipede:  { name:'Centipede',   emoji:'🐛', size:18, price:800,   swim:'floor'      },
+  ant:        { name:'Ant',         emoji:'🐜', size:9,  price:100,   swim:'floor'      },
+  frog:       { name:'Tree Frog',   emoji:'🐸', size:18, price:1200,  swim:'wall'       },
+  chameleon:  { name:'Chameleon',   emoji:'🦎', size:24, price:5000,  swim:'wall'       },
+  millipede:  { name:'Millipede',   emoji:'🐛', size:16, price:600,   swim:'floor'      },
+  butterfly:  { name:'Butterfly',   emoji:'🦋', size:20, price:2000,  swim:'horizontal' },
+  moth:       { name:'Moth',        emoji:'🦋', size:17, price:1000,  swim:'horizontal' },
+};
+
+var DECO_DEFS = {
+  seagrass:    { name:'Seagrass',      emoji:'🌿', price:300  },
+  rock:        { name:'Rock',          emoji:'🪨', price:200  },
+  castle:      { name:'Castle',        emoji:'🏰', price:2000 },
+  bubbler:     { name:'Bubbler',       emoji:'💨', price:500  },
+  pebbles:     { name:'Pebbles',       emoji:'⚫', price:100  },
+  vent:        { name:'Hydro Vent',    emoji:'♨️', price:3000 },
+  deepsea_rock:{ name:'Deep Rock',     emoji:'🪨', price:800  },
+  tubeworm:    { name:'Tube Worm',     emoji:'🌀', price:1500 },
+  stalactite:  { name:'Stalactite',    emoji:'❄️', price:2000 },
+  debris:      { name:'Ship Debris',   emoji:'⚓', price:4000 },
+  coral_red:   { name:'Red Coral',     emoji:'🪸', price:1000 },
+  coral_brain: { name:'Brain Coral',   emoji:'🟠', price:1500 },
+  anemone:     { name:'Anemone',       emoji:'🌺', price:800  },
+  fan_coral:   { name:'Fan Coral',     emoji:'🌸', price:1200 },
+  seashell:    { name:'Seashell',      emoji:'🐚', price:400  },
+  cactus:      { name:'Cactus',        emoji:'🌵', price:500  },
+  skull:       { name:'Skull',         emoji:'💀', price:800  },
+  driftwood:   { name:'Driftwood',     emoji:'🪵', price:400  },
+  sandrock:    { name:'Sand Rock',     emoji:'🪨', price:300  },
+  tumbleweed:  { name:'Tumbleweed',    emoji:'🌾', price:600  },
+  fern:        { name:'Fern',          emoji:'🌿', price:400  },
+  mushroom:    { name:'Mushroom',      emoji:'🍄', price:600  },
+  log:         { name:'Log',           emoji:'🪵', price:500  },
+  moss_rock:   { name:'Moss Rock',     emoji:'🪨', price:700  },
+  bromeliad:   { name:'Bromeliad',     emoji:'🌺', price:900  },
+};
+
+// ══════════════════════════════════════════════
+// AQUARIUM STATE
+// ══════════════════════════════════════════════
+function initTankState() {
+  if (!S.tanks) {
+    S.tanks = { classic: { owned: true, creatures: [], decos: [] } };
+  }
+  if (!S.activeTank) S.activeTank = 'classic';
+}
+
+// ══════════════════════════════════════════════
+// AQUARIUM RENDERER
+// ══════════════════════════════════════════════
+var aqAnimFrame = null;
+var aqCreatureStates = [];
+var aqMode = 'view';
+var aqDragItem = null;
+var aqCanvas = null, aqCtx = null;
+
+function renderAquarium() {
+  initTankState();
+  const page = document.getElementById('page-aquarium');
+  if (!page) return;
+
+  const tankId = S.activeTank || 'classic';
+  const tankDef = TANKS[tankId];
+  const tankData = S.tanks[tankId] || { owned: true, creatures: [], decos: [] };
+
+  const editPanelHtml = aqMode === 'edit' ? renderEditPanel(tankId, tankDef, tankData) : '';
+  const repositionHint = aqMode === 'reposition' ? '<div class="aq-reposition-hint">Drag creatures and decorations to reposition</div>' : '';
+
+  page.innerHTML =
+    '<div class="aq-header">' +
+      '<button class="aq-tank-btn" onclick="openTankSelector()">' +
+        tankDef.emoji + ' ' + tankDef.name +
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '</button>' +
+      '<div class="aq-header-btns">' +
+        '<button class="aq-mode-btn ' + (aqMode==='edit'?'active':'') + '" onclick="setAqMode(\'edit\')">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+        '</button>' +
+        '<button class="aq-mode-btn ' + (aqMode==='reposition'?'active':'') + '" onclick="setAqMode(\'reposition\')">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>' +
+        '</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="aq-viewport" id="aqViewport">' +
+      '<canvas id="aqCanvas"></canvas>' +
+      '<div class="aq-creatures-layer" id="aqCreaturesLayer"></div>' +
+      repositionHint +
+    '</div>' +
+    editPanelHtml +
+    renderTankSelector();
+
+  setupAqCanvas(tankDef, tankData);
+  spawnCreatureStates(tankDef, tankData);
+  startAqAnimation(tankDef, tankData);
+  if (aqMode === 'reposition') setupDrag(tankData);
+}
+
+function setupAqCanvas(tankDef, tankData) {
+  const vp = document.getElementById('aqViewport');
+  const canvas = document.getElementById('aqCanvas');
+  aqCanvas = canvas;
+  const W = vp.clientWidth, H = 280;
+  canvas.width = W; canvas.height = H;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  aqCtx = canvas.getContext('2d');
+  drawTankBg(aqCtx, W, H, tankDef, tankData);
+}
+
+function drawTankBg(ctx, W, H, def, tankData) {
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, def.bg[0]);
+  grad.addColorStop(1, def.bg[1]);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  if (def.type === 'water') {
+    ctx.save();
+    for (let i = 0; i < 5; i++) {
+      const x = W * (0.1 + i * 0.2);
+      const rayGrad = ctx.createLinearGradient(x, 0, x + 20, H);
+      rayGrad.addColorStop(0, def.lightColor);
+      rayGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = rayGrad;
+      ctx.beginPath();
+      ctx.moveTo(x - 8, 0); ctx.lineTo(x + 28, 0);
+      ctx.lineTo(x + 48, H); ctx.lineTo(x + 12, H);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  const floorY = H - def.floorH;
+  ctx.fillStyle = def.floorColor;
+  ctx.fillRect(0, floorY, W, def.floorH);
+
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  for (let i = 0; i < 30; i++) {
+    const fx = (i * 37 + 10) % W;
+    const fy = floorY + 4 + (i * 13) % (def.floorH - 8);
+    ctx.beginPath(); ctx.arc(fx, fy, 1.5, 0, Math.PI*2); ctx.fill();
+  }
+
+  ctx.fillStyle = def.waterTint;
+  ctx.fillRect(0, 0, W, H);
+
+  (tankData.decos || []).forEach(function(d) {
+    const def2 = DECO_DEFS[d.defKey];
+    if (!def2) return;
+    ctx.font = (d.size||28) + 'px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(def2.emoji, d.x * W, d.y * H);
+  });
+}
+
+function spawnCreatureStates(tankDef, tankData) {
+  const vp = document.getElementById('aqViewport');
+  const W = vp.clientWidth, H = 280;
+  const floorY = H - tankDef.floorH;
+
+  aqCreatureStates = (tankData.creatures || []).map(function(c) {
+    const def = CREATURE_DEFS[c.defKey];
+    if (!def) return null;
+
+    const swim = def.swim;
+    const x = c.x != null ? c.x * W : Math.random() * W;
+    const y = c.y != null ? c.y * H : (swim === 'floor' ? floorY - def.size/2 : swim === 'wall' ? Math.random() * floorY : Math.random() * (floorY - 40) + 20);
+
+    return {
+      id: c.id, defKey: c.defKey, def: def,
+      x: x, y: y, W: W, H: H, floorY: floorY,
+      vx: (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.5),
+      vy: swim === 'vertical' ? (Math.random() > 0.5 ? 1 : -1) * 0.3 : (Math.random() - 0.5) * 0.15,
+      wobble: Math.random() * Math.PI * 2,
+      swim: swim,
+    };
+  }).filter(Boolean);
+}
+
+function startAqAnimation(tankDef, tankData) {
+  if (aqAnimFrame) cancelAnimationFrame(aqAnimFrame);
+
+  const layer = document.getElementById('aqCreaturesLayer');
+  if (!layer) return;
+
+  layer.innerHTML = '';
+  aqCreatureStates.forEach(function(cs) {
+    const el = document.createElement('div');
+    el.className = 'aq-creature';
+    el.id = 'creature-' + cs.id;
+    el.style.fontSize = cs.def.size + 'px';
+    el.textContent = cs.def.emoji;
+    layer.appendChild(el);
+  });
+
+  function frame() {
+    const vp = document.getElementById('aqViewport');
+    if (!vp) { cancelAnimationFrame(aqAnimFrame); return; }
+    const W = vp.clientWidth, H = 280;
+
+    aqCreatureStates.forEach(function(cs) {
+      cs.wobble += 0.03;
+
+      if (cs.swim === 'floor') {
+        cs.x += cs.vx * 0.8;
+        cs.y = cs.floorY - cs.def.size * 0.4;
+        if (cs.x < -20 || cs.x > W + 20) cs.vx *= -1;
+      } else if (cs.swim === 'wall') {
+        cs.y += cs.vy * 0.8;
+        cs.x = cs.vx > 0 ? W - 20 : 20;
+        if (cs.y < 20 || cs.y > cs.floorY - 20) cs.vy *= -1;
+      } else if (cs.swim === 'vertical') {
+        cs.y += cs.vy;
+        cs.x += Math.sin(cs.wobble) * 0.4;
+        if (cs.y < 10 || cs.y > cs.floorY - 10) cs.vy *= -1;
+        cs.x = Math.max(20, Math.min(W - 20, cs.x));
+      } else {
+        cs.x += cs.vx;
+        cs.y += Math.sin(cs.wobble) * 0.3;
+        if (cs.x < -30) { cs.x = W + 30; }
+        if (cs.x > W + 30) { cs.x = -30; }
+        cs.y = Math.max(20, Math.min(cs.floorY - cs.def.size, cs.y));
+      }
+
+      const el = document.getElementById('creature-' + cs.id);
+      if (!el) return;
+      const flip = (cs.swim === 'horizontal' || cs.swim === 'floor') && cs.vx < 0;
+      el.style.transform = 'translate(' + cs.x + 'px, ' + cs.y + 'px) ' + (flip ? 'scaleX(-1)' : '');
+    });
+
+    aqAnimFrame = requestAnimationFrame(frame);
+  }
+  aqAnimFrame = requestAnimationFrame(frame);
+}
+
+function setupDrag(tankData) {
+  const layer = document.getElementById('aqCreaturesLayer');
+  const vp = document.getElementById('aqViewport');
+  if (!layer || !vp) return;
+
+  layer.querySelectorAll('.aq-creature').forEach(function(el) {
+    el.style.cursor = 'grab';
+    el.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      const id = el.id.replace('creature-', '');
+      aqDragItem = { el: el, id: id, type: 'creature' };
+      el.style.cursor = 'grabbing';
+    });
+  });
+
+  vp.addEventListener('pointermove', function(e) {
+    if (!aqDragItem) return;
+    const rect = vp.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cs = aqCreatureStates.find(function(c) { return c.id === aqDragItem.id; });
+    if (cs) { cs.x = x; cs.y = y; }
+    const W = vp.clientWidth, H = 280;
+    const cd = tankData.creatures.find(function(c) { return c.id === aqDragItem.id; });
+    if (cd) { cd.x = x / W; cd.y = y / H; }
+  });
+
+  vp.addEventListener('pointerup', function() {
+    if (aqDragItem) { aqDragItem.el.style.cursor = 'grab'; aqDragItem = null; save(); }
+  });
+}
+
+// ── INVENTORY HELPERS ──
+function invCount(defKey) { return (S.inventory || {})[defKey] || 0; }
+function invAdd(defKey, n) { if (!S.inventory) S.inventory = {}; S.inventory[defKey] = (S.inventory[defKey] || 0) + n; }
+function invRemove(defKey) { if (!S.inventory) S.inventory = {}; if (S.inventory[defKey] > 0) S.inventory[defKey]--; }
+
+// ── STORE RENDERER ──
+function renderStore() {
+  initTankState();
+  const cards = document.getElementById('storeCards');
+  if (!cards) return;
+
+  const ownedTankIds = Object.keys(S.tanks || {});
+  const lockedTanks = Object.values(TANKS).filter(function(t) { return !S.tanks || !S.tanks[t.id]; });
+
+  let html = '';
+
+  // Shield card
+  html += '<div class="card">' +
+    '<div class="card-title">Protection</div>' +
+    '<div class="store-item shield-item">' +
+      '<div class="store-item-icon shield-bg">' +
+        '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--shield2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>' +
+      '</div>' +
+      '<div class="store-item-info">' +
+        '<div class="store-item-name">Streak Shield</div>' +
+        '<div class="store-item-desc">Auto-activates to protect your streak if you smoke before 5 pm.</div>' +
+        '<div class="shields-owned" id="shieldsOwnedRow">' +
+          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' +
+          '<span id="shieldsOwnedText">You own 0 shields</span>' +
+        '</div>' +
+      '</div>' +
+      '<button class="buy-btn shield-buy" id="buyShieldBtn" onclick="buyShield()">' +
+        'Buy<span class="buy-btn-price">25,000</span>' +
+      '</button>' +
+    '</div>' +
+    '<button class="use-shield-btn" id="useShieldBtn" onclick="useShield()" disabled>' +
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>' +
+      'Activate Shield for Today' +
+    '</button>' +
+  '</div>';
+
+  // Owned tank sections
+  ownedTankIds.forEach(function(tid) {
+    const tankDef = TANKS[tid]; if (!tankDef) return;
+    html += '<div class="card">' +
+      '<div class="card-title">' + tankDef.emoji + ' ' + tankDef.name + '</div>' +
+      '<div class="store-sub-title">Creatures</div>' +
+      tankDef.creatures.map(function(key) { return storeItemRow(key, 'creature', tid); }).join('') +
+      '<div class="store-sub-title" style="margin-top:10px;">Decorations</div>' +
+      tankDef.decorations.map(function(key) { return storeItemRow(key, 'deco', tid); }).join('') +
+    '</div>';
+  });
+
+  // Locked tanks
+  if (lockedTanks.length > 0) {
+    html += '<div class="card"><div class="card-title">More Tanks</div>' +
+      lockedTanks.map(function(t) {
+        const canAfford = S.coinBalance >= t.cost;
+        return '<div class="store-item">' +
+          '<div class="store-item-icon" style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;font-size:26px;display:flex;align-items:center;justify-content:center;">' + t.emoji + '</div>' +
+          '<div class="store-item-info">' +
+            '<div class="store-item-name">' + t.name + '</div>' +
+            '<div class="store-item-desc">' + (t.type === 'water' ? 'Aquarium' : 'Terrarium') + ' · ' + TANKS[t.id].creatures.length + ' creatures available</div>' +
+          '</div>' +
+          '<button class="buy-btn shield-buy ' + (canAfford?'':'cant-afford') + '" onclick="buyTank(\'' + t.id + '\')">' +
+            'Buy<span class="buy-btn-price">' + t.cost.toLocaleString() + '</span>' +
+          '</button>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+  }
+
+  cards.innerHTML = html;
+
+  // Refresh dynamic state
+  const sot = document.getElementById('shieldsOwnedText');
+  if (sot) sot.textContent = 'You own ' + S.shields + ' shield' + (S.shields !== 1 ? 's' : '');
+  const bsb = document.getElementById('buyShieldBtn');
+  if (bsb) bsb.classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
+  const usb = document.getElementById('useShieldBtn');
+  if (usb) usb.disabled = S.shields <= 0 || S.shieldDays.includes(todayKey());
+}
+
+function storeItemRow(key, type, tankId) {
+  const def = type === 'creature' ? CREATURE_DEFS[key] : DECO_DEFS[key];
+  if (!def) return '';
+  const inInventory = invCount(key);
+  const canAfford = S.coinBalance >= def.price;
+  return '<div class="edit-row">' +
+    '<span class="edit-emoji">' + def.emoji + '</span>' +
+    '<div class="edit-info">' +
+      '<div class="edit-name">' + def.name + '</div>' +
+      '<div class="edit-price">🪙 ' + def.price.toLocaleString() + '</div>' +
+    '</div>' +
+    '<span class="edit-count" title="In inventory">' + inInventory + ' owned</span>' +
+    '<button class="edit-btn add ' + (canAfford?'':'cant-afford') + '" onclick="storeBuyItem(\'' + key + '\',\'' + type + '\')">' +
+      '+' +
+    '</button>' +
+  '</div>';
+}
+
+function storeBuyItem(defKey, type) {
+  const def = type === 'creature' ? CREATURE_DEFS[defKey] : DECO_DEFS[defKey];
+  if (!def || S.coinBalance < def.price) { alert('Not enough coins!'); return; }
+  if (!confirm('Buy ' + def.name + ' for \uD83E\uDE99 ' + def.price.toLocaleString() + '?')) return;
+  S.coinBalance -= def.price;
+  invAdd(defKey, 1);
+  save(); renderStore(); updateAll();
+}
+
+// ── EDIT PANEL ──
+function renderEditPanel(tankId, tankDef, tankData) {
+  const placed = tankData.creatures || [];
+  const placedDecos = tankData.decos || [];
+  const cap = 20;
+
+  const creatureRows = tankDef.creatures.map(function(key) {
+    const def = CREATURE_DEFS[key]; if (!def) return '';
+    const placedCount = placed.filter(function(c){return c.defKey===key;}).length;
+    const inInv = invCount(key);
+    const canPlace = inInv > 0 && placed.length < cap;
+    const canRemove = placedCount > 0;
+    return '<div class="edit-row">' +
+      '<span class="edit-emoji">' + def.emoji + '</span>' +
+      '<div class="edit-info">' +
+        '<div class="edit-name">' + def.name + '</div>' +
+        '<div class="edit-price">' + inInv + ' in inventory · ' + placedCount + ' placed</div>' +
+      '</div>' +
+      '<button class="edit-btn remove" onclick="removeCreature(\'' + tankId + '\',\'' + key + '\')" ' + (canRemove?'':'disabled') + '>−</button>' +
+      '<button class="edit-btn add" onclick="addCreature(\'' + tankId + '\',\'' + key + '\')" ' + (canPlace?'':'disabled') + '>+</button>' +
+    '</div>';
+  }).join('');
+
+  const decoRows = tankDef.decorations.map(function(key) {
+    const def = DECO_DEFS[key]; if (!def) return '';
+    const placedCount = placedDecos.filter(function(d){return d.defKey===key;}).length;
+    const inInv = invCount(key);
+    const canPlace = inInv > 0;
+    const canRemove = placedCount > 0;
+    return '<div class="edit-row">' +
+      '<span class="edit-emoji">' + def.emoji + '</span>' +
+      '<div class="edit-info">' +
+        '<div class="edit-name">' + def.name + '</div>' +
+        '<div class="edit-price">' + inInv + ' in inventory · ' + placedCount + ' placed</div>' +
+      '</div>' +
+      '<button class="edit-btn remove" onclick="removeDeco(\'' + tankId + '\',\'' + key + '\')" ' + (canRemove?'':'disabled') + '>−</button>' +
+      '<button class="edit-btn add" onclick="addDeco(\'' + tankId + '\',\'' + key + '\')" ' + (canPlace?'':'disabled') + '>+</button>' +
+    '</div>';
+  }).join('');
+
+  return '<div class="edit-panel">' +
+    '<div class="edit-section-title">Creatures (' + placed.length + '/' + cap + ')</div>' +
+    (creatureRows || '<div class="edit-price" style="padding:8px 0;color:var(--text3);">Buy creatures in the Store</div>') +
+    '<div class="edit-section-title" style="margin-top:12px;">Decorations</div>' +
+    (decoRows || '<div class="edit-price" style="padding:8px 0;color:var(--text3);">Buy decorations in the Store</div>') +
+  '</div>';
+}
+
+function renderTankSelector() {
+  const tankOptions = Object.values(TANKS).map(function(t) {
+    const owned = S.tanks && S.tanks[t.id];
+    const active = S.activeTank === t.id;
+    return '<div class="tank-option ' + (active?'active':'') + ' ' + (!owned?'locked':'') + '" onclick="' + (owned ? 'selectTank(\'' + t.id + '\')' : '') + '">' +
+      '<span class="tank-option-emoji">' + t.emoji + '</span>' +
+      '<div class="tank-option-info">' +
+        '<div class="tank-option-name">' + t.name + '</div>' +
+        '<div class="tank-option-sub">' + (owned ? (active ? 'Currently viewing' : 'Tap to switch') : '\uD83E\uDE99 ' + t.cost.toLocaleString()) + '</div>' +
+      '</div>' +
+      (active ? '<div class="tank-active-dot"></div>' : '') +
+      (!owned ? '<div class="tank-lock" style="font-size:11px;color:var(--text3)">Buy in Store</div>' : '') +
+    '</div>';
+  }).join('');
+
+  return '<div class="tank-selector" id="tankSelector" style="display:none;">' +
+    '<div class="tank-selector-bg" onclick="closeTankSelector()"></div>' +
+    '<div class="tank-selector-sheet">' +
+      '<div class="tank-selector-title">Your Tanks</div>' +
+      tankOptions +
+    '</div>' +
+  '</div>';
+}
+
+// ── Actions ──
+function setAqMode(mode) {
+  aqMode = aqMode === mode ? 'view' : mode;
+  if (aqAnimFrame) cancelAnimationFrame(aqAnimFrame);
+  renderAquarium();
+}
+
+function openTankSelector() {
+  document.getElementById('tankSelector').style.display = 'block';
+}
+function closeTankSelector() {
+  document.getElementById('tankSelector').style.display = 'none';
+}
+function selectTank(id) {
+  S.activeTank = id; save(); aqMode = 'view'; closeTankSelector(); renderAquarium();
+}
+function buyTank(id) {
+  const t = TANKS[id];
+  if (!t || S.coinBalance < t.cost) { alert('Not enough coins!'); return; }
+  if (!confirm('Buy ' + t.name + ' for \uD83E\uDE99 ' + t.cost.toLocaleString() + '?')) return;
+  S.coinBalance -= t.cost;
+  if (!S.tanks) S.tanks = {};
+  S.tanks[id] = { owned: true, creatures: [], decos: [] };
+  S.activeTank = id; save(); closeTankSelector(); renderAquarium();
+  updateAll();
+}
+
+function addCreature(tankId, defKey) {
+  if (invCount(defKey) <= 0) return;
+  const def = CREATURE_DEFS[defKey];
+  const td = S.tanks[tankId];
+  if (td.creatures.length >= 20) return;
+  const tankDef = TANKS[tankId];
+  const H = 280, floorY = H - tankDef.floorH;
+  const swim = def.swim;
+  const x = 0.2 + Math.random() * 0.6;
+  const y = swim === 'floor' ? (floorY - def.size/2) / H : swim === 'wall' ? 0.3 + Math.random()*0.4 : 0.2 + Math.random()*0.5;
+  td.creatures.push({ id: Date.now()+'', defKey: defKey, x: x, y: y });
+  invRemove(defKey);
+  save(); renderAquarium();
+}
+
+function removeCreature(tankId, defKey) {
+  const td = S.tanks[tankId];
+  const idx = td.creatures.map(function(c){return c.defKey;}).lastIndexOf(defKey);
+  if (idx >= 0) {
+    td.creatures.splice(idx, 1);
+    invAdd(defKey, 1);
+    save(); renderAquarium();
+  }
+}
+
+function addDeco(tankId, defKey) {
+  if (invCount(defKey) <= 0) return;
+  const td = S.tanks[tankId];
+  const tankDef = TANKS[tankId];
+  const H = 280, floorY = H - tankDef.floorH;
+  td.decos.push({ id: Date.now()+'', defKey: defKey, x: 0.1 + Math.random()*0.8, y: floorY/H, size: 28 + Math.floor(Math.random()*16) });
+  invRemove(defKey);
+  save(); renderAquarium();
+}
+
+function removeDeco(tankId, defKey) {
+  const td = S.tanks[tankId];
+  const idx = td.decos.map(function(d){return d.defKey;}).lastIndexOf(defKey);
+  if (idx >= 0) {
+    td.decos.splice(idx, 1);
+    invAdd(defKey, 1);
+    save(); renderAquarium();
+  }
+}
 </script>
 </body>
 </html>
