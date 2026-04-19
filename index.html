@@ -84,16 +84,39 @@ header {
   color: var(--text);
 }
 
-.logo-dot {
-  display: inline-block;
-  width: 6px; height: 6px;
-  background: var(--blue);
-  border-radius: 50%;
-  margin-left: 2px;
-  margin-bottom: 6px;
-  box-shadow: 0 0 8px var(--blue);
+
+
+
+/* ── HEADER RIGHT CLUSTER ── */
+.header-right {
+  display: flex; align-items: center; gap: 8px;
 }
 
+.streak-shield-pill {
+  display: flex; align-items: center; gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 12px;
+  gap: 8px;
+}
+
+.ss-item {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 13px; font-weight: 600;
+  color: var(--text2);
+}
+
+.ss-item svg { flex-shrink: 0; }
+.ss-fire { font-size: 13px; line-height: 1; }
+
+.ss-divider {
+  width: 1px; height: 12px;
+  background: var(--border2);
+  flex-shrink: 0;
+}
+
+/* ── USE SHIELD BTN (now in store page only) ── */
 .coin-pill {
   display: flex; align-items: center; gap: 7px;
   background: var(--surface);
@@ -126,7 +149,7 @@ header {
 /* ── HERO ── */
 .hero {
   padding: 28px 20px 18px;
-  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 26px;
 }
 
 .timer-wrap { text-align: center; }
@@ -149,52 +172,44 @@ header {
 /* ── MAIN BUTTON ── */
 .btn-zone { position: relative; display: flex; align-items: center; justify-content: center; }
 
-.orbit-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  pointer-events: none;
-}
-.orbit-ring-1 {
-  width: 192px; height: 192px;
-  border-color: var(--border);
-  animation: orbit1 16s linear infinite;
-}
-.orbit-ring-1::before {
-  content: '';
-  position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--blue2);
-  box-shadow: 0 0 10px var(--blue2), 0 0 20px var(--glow-blue);
-}
-.orbit-ring-2 {
-  width: 216px; height: 216px;
-  border-color: rgba(79,142,247,0.08);
-  animation: orbit2 24s linear infinite reverse;
-}
 @keyframes orbit1 { to { transform: rotate(360deg); } }
 @keyframes orbit2 { to { transform: rotate(360deg); } }
 
 .smoke-btn {
-  width: 158px; height: 158px; border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, var(--surface2) 0%, var(--surface) 55%, #080f1e 100%);
-  border: 1px solid var(--border2);
-  cursor: pointer; position: relative;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--border2);
+  cursor: pointer;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.03),
-    0 0 40px rgba(79,142,247,0.1),
-    0 12px 40px rgba(0,0,0,0.7),
-    inset 0 1px 0 rgba(255,255,255,0.05);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, opacity 0.15s;
   user-select: none;
+  position: relative;
+  z-index: 1;
 }
-.smoke-btn:active { transform: scale(0.93); }
+.smoke-btn:active { transform: scale(0.93); opacity: 0.7; }
+.pulse-ring {
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: var(--border2);
+  animation: pulse-out 9s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+}
+.pulse-ring:nth-child(2) { animation-delay: 3s; }
+.pulse-ring:nth-child(3) { animation-delay: 6s; }
+
+@keyframes pulse-out {
+  0%   { transform: scale(1);    opacity: 0.15; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
 .smoke-btn.fired { animation: btn-fire 0.6s ease-out; }
 @keyframes btn-fire {
-  0%   { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(79,142,247,0.1), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  0%   { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
   35%  { box-shadow: 0 0 0 2px var(--blue), 0 0 80px rgba(79,142,247,0.55), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
-  100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(79,142,247,0.1), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
+  100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); }
 }
 
 .btn-icon { opacity: 0.9; }
@@ -511,12 +526,25 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 <div class="page active" id="page-home">
 
   <header>
-    <div class="logo">interval<span class="logo-dot"></span></div>
-    <div class="coin-pill" id="coinPill">
-      <div class="coin-pill-icon">
-        <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#050d1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9.5 9.5c0-1.1.9-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.5-2.5 1.5-2.5.5-2.5 1.5 .9 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg>
+    <div class="logo">interval</div>
+    <div class="header-right">
+      <div class="streak-shield-pill">
+        <span class="ss-item" id="headerShields">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--shield2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span id="headerShieldCount">0</span>
+        </span>
+        <span class="ss-divider"></span>
+        <span class="ss-item" id="headerStreak">
+          <span class="ss-fire">🔥</span>
+          <span id="headerStreakCount">0</span>
+        </span>
       </div>
-      <span class="coin-count" id="coinCount">0</span>
+      <div class="coin-pill" id="coinPill">
+        <div class="coin-pill-icon">
+          <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#050d1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9.5 9.5c0-1.1.9-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.5-2.5 1.5-2.5.5-2.5 1.5 .9 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg>
+        </div>
+        <span class="coin-count" id="coinCount">0</span>
+      </div>
     </div>
   </header>
 
@@ -527,8 +555,9 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
     </div>
 
     <div class="btn-zone">
-      <div class="orbit-ring orbit-ring-2"></div>
-      <div class="orbit-ring orbit-ring-1"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
       <button class="smoke-btn" id="smokeBtn" onclick="logSmoke()">
         <svg class="btn-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--blue2)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 16h12M2 19h12M18 16v3M17 7c0-2.8 2-3 2-5M21 7c0-2.8 2-3 2-5M15 16c0-1.7 1.3-2 2-2s2 .3 2 2v3"/>
@@ -545,25 +574,6 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 
   <div class="cards">
 
-    <!-- STREAK -->
-    <div class="card">
-      <div class="card-title">Daily Streak</div>
-      <div class="streak-row">
-        <div class="streak-left">
-          <div class="streak-num" id="streakNum">0</div>
-          <div class="streak-label">days · first smoke after 5 pm</div>
-        </div>
-        <div class="streak-right">
-          <div class="streak-flames" id="streakFlames"></div>
-          <div class="streak-status" id="streakStatus">—</div>
-        </div>
-      </div>
-      <button class="use-shield-btn" id="useShieldBtn" onclick="useShield()" disabled>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Use Streak Shield (<span id="shieldsOwnedInline">0</span> owned)
-      </button>
-    </div>
-
     <!-- TODAY STATS -->
     <div class="card">
       <div class="card-title">Today</div>
@@ -576,9 +586,9 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
           <div class="stat-label">Smokes Today</div>
           <div class="stat-val" id="smokesToday">0</div>
         </div>
-        <div class="stat gold-accent">
+        <div class="stat" id="firstSmokeStat">
           <div class="stat-label">First Smoke</div>
-          <div class="stat-val gold" id="firstSmokeToday">—</div>
+          <div class="stat-val" id="firstSmokeToday">—</div>
         </div>
         <div class="stat">
           <div class="stat-label">Avg First Smoke</div>
@@ -611,7 +621,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 <!-- ══════════════ TRENDS ══════════════ -->
 <div class="page" id="page-trends">
   <div class="page-header">
-    <div class="logo">interval<span class="logo-dot"></span></div>
+    <div class="logo">interval</div>
     <div class="page-title">Trends</div>
   </div>
   <div class="cards">
@@ -687,7 +697,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 <!-- ══════════════ STORE ══════════════ -->
 <div class="page" id="page-store">
   <div class="page-header">
-    <div class="logo">interval<span class="logo-dot"></span></div>
+    <div class="logo">interval</div>
     <div class="page-title">Store</div>
   </div>
 
@@ -707,7 +717,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         </div>
         <div class="store-item-info">
           <div class="store-item-name">Streak Shield</div>
-          <div class="store-item-desc">Protects your streak for one day if you smoke before 5 pm. Use it from the Home tab.</div>
+          <div class="store-item-desc">Protects your streak for one day if you smoke before 5 pm.</div>
           <div class="shields-owned" id="shieldsOwnedRow">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span id="shieldsOwnedText">You own 0 shields</span>
@@ -715,9 +725,13 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         </div>
         <button class="buy-btn shield-buy" id="buyShieldBtn" onclick="buyShield()">
           Buy
-          <span class="buy-btn-price">15,000</span>
+          <span class="buy-btn-price">25,000</span>
         </button>
       </div>
+      <button class="use-shield-btn" id="useShieldBtn" onclick="useShield()" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        Activate Shield for Today
+      </button>
 
     </div>
   </div>
@@ -727,7 +741,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
 <!-- ══════════════ SETTINGS ══════════════ -->
 <div class="page" id="page-settings">
   <div class="page-header">
-    <div class="logo">interval<span class="logo-dot"></span></div>
+    <div class="logo">interval</div>
     <div class="page-title">Settings</div>
   </div>
   <div class="cards">
@@ -757,7 +771,7 @@ canvas.chart { width: 100% !important; border-radius: 8px; }
         Base coins per gap: <span style="color:var(--blue2)">minutes ^ 1.3</span><br>
         First smoke after noon: <span style="color:var(--green)">×1.1 bonus all day</span><br>
         First smoke before noon: <span style="color:var(--red)">×0.8 penalty all day</span><br>
-        Shield cost: <span style="color:var(--shield2)">15,000 coins</span>
+        Shield cost: <span style="color:var(--shield2)">25,000 coins</span>
       </div>
     </div>
   </div>
@@ -1015,7 +1029,7 @@ function addManual() {
 // ══════════════════════════════════════════════
 // STORE
 // ══════════════════════════════════════════════
-const SHIELD_COST = 15000;
+const SHIELD_COST = 25000;
 
 function buyShield() {
   if (S.coinBalance < SHIELD_COST) return;
@@ -1131,28 +1145,62 @@ function updateAll() {
   document.getElementById('coinCount').textContent = coinStr;
   document.getElementById('storeCoins').textContent = coinStr;
 
-  // ── Streak ──
-  document.getElementById('streakNum').textContent = streak;
-  document.getElementById('streakFlames').textContent = streak > 0 ? '🔥'.repeat(Math.min(streak, 5)) : '';
-
-  const todayFirstH = todayFirst ? new Date(todayFirst).getHours() : -1;
+  // ── Streak / shield header pill ──
   const shieldedToday = S.shieldDays.includes(tk);
-  let streakSt = todayFirst
-    ? (shieldedToday ? '🛡 Shield active today' : todayFirstH >= 17 ? '✓ Today qualifies' : 'First smoke too early today')
-    : 'No smoke yet today';
-  document.getElementById('streakStatus').textContent = streakSt;
+  document.getElementById('headerStreakCount').textContent = streak;
+  document.getElementById('headerShieldCount').textContent = S.shields;
 
+  // Dim shield icon if 0 owned
+  document.getElementById('headerShields').style.opacity = S.shields > 0 ? '1' : '0.35';
+
+  // Use shield btn in store page
   const shieldBtn = document.getElementById('useShieldBtn');
-  shieldBtn.disabled = S.shields <= 0 || shieldedToday;
-  document.getElementById('shieldsOwnedInline').textContent = S.shields;
+  if (shieldBtn) {
+    shieldBtn.disabled = S.shields <= 0 || shieldedToday;
+  }
   document.getElementById('shieldsOwnedText').textContent = `You own ${S.shields} shield${S.shields !== 1 ? 's' : ''}`;
   document.getElementById('buyShieldBtn').classList.toggle('cant-afford', S.coinBalance < SHIELD_COST);
 
   // ── Home stats ──
   document.getElementById('weekAvgGap').textContent   = weekAvg   ? fmtShort(weekAvg) : '--';
   document.getElementById('smokesToday').textContent  = todaySmokes.length;
-  document.getElementById('firstSmokeToday').textContent = todayFirst ? fmtTime(todayFirst) : '—';
   document.getElementById('longestGap').textContent   = longestGap ? fmtShort(longestGap) : '--';
+
+  // ── First smoke dynamic color ──
+  const todayFirstH = todayFirst ? new Date(todayFirst).getHours() + new Date(todayFirst).getMinutes()/60 : -1;
+  const firstSmokeEl = document.getElementById('firstSmokeToday');
+  const firstSmokeStat = document.getElementById('firstSmokeStat');
+  firstSmokeEl.textContent = todayFirst ? fmtTime(todayFirst) : '—';
+
+  if (todayFirst && todayFirstH >= 0) {
+    // Map hour to 0..1: 0=red (5am), 1=green (17:00=5pm)
+    // Before 5am treated as red, after 5pm treated as full green
+    const t = Math.max(0, Math.min(1, (todayFirstH - 5) / (17 - 5)));
+
+    // Interpolate: red(240,96,96) -> yellow(240,190,50) -> green(45,212,160)
+    let r, g, b;
+    if (t < 0.5) {
+      // red -> yellow
+      const tt = t / 0.5;
+      r = 240; g = Math.round(96 + tt * (190-96)); b = Math.round(96 - tt*96);
+    } else {
+      // yellow -> green
+      const tt = (t - 0.5) / 0.5;
+      r = Math.round(240 - tt*(240-45)); g = Math.round(190 + tt*(212-190)); b = Math.round(tt*160);
+    }
+    const col = `rgb(${r},${g},${b})`;
+    const colAlpha = `rgba(${r},${g},${b},0.12)`;
+    const colBorder = `rgba(${r},${g},${b},0.3)`;
+
+    firstSmokeStat.style.background = `linear-gradient(135deg, ${colAlpha} 0%, var(--bg3) 100%)`;
+    firstSmokeStat.style.borderColor = colBorder;
+    firstSmokeEl.style.color = col;
+  } else {
+    // No smoke yet — neutral
+    firstSmokeStat.style.background = '';
+    firstSmokeStat.style.borderColor = '';
+    firstSmokeEl.style.color = 'var(--text3)';
+  }
 
   if (avgFirstMs > 0) {
     const h = Math.floor(avgFirstMs/3600000), m = Math.floor((avgFirstMs%3600000)/60000);
